@@ -4,13 +4,14 @@ module.exports = (sequelize, DataTypes) => {
     class MovieReview extends Model {
         static associate(models) {
             MovieReview.belongsTo(models.User, {
-                foreignKey: 'userId',
-                as: 'User'
+                foreignKey: 'user_id',
+                as: 'user'
             });
             MovieReview.belongsTo(models.Movie, {
-                foreignKey: 'movieId',
-                as: 'Movie'
+                foreignKey: 'movie_id',
+                as: 'movie'
             });
+            
         }
     }
 
@@ -20,19 +21,19 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        userId: {
+        user_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'Users',
+                model: 'users',
                 key: 'id'
             }
         },
-        movieId: {
+        movie_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'Movies',
+                model: 'movies',
                 key: 'id'
             }
         },

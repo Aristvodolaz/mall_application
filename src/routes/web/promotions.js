@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
             order: [['start_date', 'DESC']]
         });
 
-        res.render('pages/promotions', {
+        res.render('pages/promotions/index', {
             title: 'Акции - ТРЦ \'Кристалл\'',
             promotions,
             user
@@ -36,7 +36,7 @@ router.get('/', async (req, res) => {
 });
 
 // Страница деталей акции
-router.get('/promotions/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const promotion = await Promotion.findByPk(req.params.id);
         
@@ -48,7 +48,7 @@ router.get('/promotions/:id', async (req, res) => {
             });
         }
         
-        res.render('pages/promotion-details', {
+        res.render('pages/promotions/show', {
             title: `${promotion.title} - ТРЦ 'Кристалл'`,
             promotion,
             user: req.session.user || null

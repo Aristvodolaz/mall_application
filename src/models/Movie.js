@@ -4,11 +4,12 @@ module.exports = (sequelize, DataTypes) => {
     class Movie extends Model {
         static associate(models) {
             Movie.hasMany(models.Screening, {
-                foreignKey: 'movieId'
+                foreignKey: 'movie_id',
+                as: 'screenings'
             });
             Movie.hasMany(models.MovieReview, {
-                foreignKey: 'movieId',
-                as: 'Reviews'
+                foreignKey: 'movie_id',
+                as: 'reviews'
             });
         }
     }
@@ -89,25 +90,13 @@ module.exports = (sequelize, DataTypes) => {
         is_featured: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
-        },
-        age_restriction: {
-            type: DataTypes.INTEGER
-        },
-        is_new: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
-        coming_soon: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
         }
     }, {
         sequelize,
         modelName: 'Movie',
         tableName: 'movies',
         timestamps: true,
-        createdAt: 'created_at',
-        updatedAt: 'updated_at'
+        underscored: true
     });
 
     return Movie;

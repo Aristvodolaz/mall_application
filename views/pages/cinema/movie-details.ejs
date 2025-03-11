@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/css/cinema.css">
 </head>
 <body>
-   
+    <%- include('../../partials/header') %>
 
     <div class="movie-details-page">
         <div class="container">
@@ -25,356 +25,153 @@
                 </nav>
             </div>
 
-            <div class="movie-details-content">
+            <div class="movie-content">
                 <div class="row">
-                    <div class="col-lg-8">
-                        <div class="movie-main">
-                            <div class="movie-header">
-                                <div class="movie-poster">
-                                    <img src="<%= movie.poster_url || '/images/movies/default.jpg' %>" alt="<%= movie.title %>">
-                                    <% if (movie.is_new) { %>
-                                        <div class="movie-badge new">Новинка</div>
-                                    <% } %>
-                                    <% if (movie.coming_soon) { %>
-                                        <div class="movie-badge coming-soon">Скоро</div>
-                                    <% } %>
-                                    <% if (movie.age_restriction) { %>
-                                        <div class="movie-badge age"><%= movie.age_restriction %>+</div>
-                                    <% } %>
-                                </div>
-                                <div class="movie-info">
-                                    <h2 class="movie-name">
-                                        <%= movie.title %>
-                                        <% if (movie.original_title) { %>
-                                            <span class="movie-original-title"><%= movie.original_title %></span>
-                                        <% } %>
-                                    </h2>
-                                    <div class="movie-meta">
-                                        <% if (movie.duration) { %>
-                                            <span class="movie-duration">
-                                                <i class="bi bi-clock"></i> <%= movie.duration %> мин.
-                                            </span>
-                                        <% } %>
-                                        <% if (movie.genre) { %>
-                                            <span class="movie-genre">
-                                                <i class="bi bi-tag"></i> <%= movie.genre %>
-                                            </span>
-                                        <% } %>
-                                        <% if (movie.release_date) { %>
-                                            <span class="movie-release">
-                                                <i class="bi bi-calendar"></i> <%= new Date(movie.release_date).toLocaleDateString('ru-RU') %>
-                                            </span>
-                                        <% } %>
-                                        <% if (movie.director) { %>
-                                            <span class="movie-director">
-                                                <i class="bi bi-camera-reels"></i> <%= movie.director %>
-                                            </span>
-                                        <% } %>
-                                    </div>
-                                    <div class="movie-rating">
-                                        <div class="rating-stars">
-                                            <div class="stars-empty">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                            <div class="stars-filled stars-filled-<%= Math.round(movie.rating) %>">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </div>
-                                        <span class="rating-value">
-                                            <%= typeof movie.rating === 'number' ? movie.rating.toFixed(1) : '0.0' %>
-                                            <span class="count">(<%= movie.reviewsCount %> <%= movie.reviewsCount === 1 ? 'отзыв' : (movie.reviewsCount < 5 ? 'отзыва' : 'отзывов') %>)</span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="movie-description">
-                                <h3>Описание</h3>
-                                <p><%= movie.description || 'Описание отсутствует' %></p>
-                            </div>
-                            
-                                                      
-                            <div id="screenings" class="movie-screenings">
-                                <h3>Расписание сеансов</h3>
-                                <% if (screeningsByDate && Object.keys(screeningsByDate).length > 0) { %>
-                                    <div class="screenings-tabs">
-                                        <ul class="nav nav-tabs" id="screeningsTabs" role="tablist">
-                                            <% Object.keys(screeningsByDate).forEach((date, index) => { %>
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link <%= index === 0 ? 'active' : '' %>" 
-                                                            id="date-<%= index %>-tab" 
-                                                            data-bs-toggle="tab" 
-                                                            data-bs-target="#date-<%= index %>" 
-                                                            type="button" 
-                                                            role="tab" 
-                                                            aria-controls="date-<%= index %>" 
-                                                            aria-selected="<%= index === 0 ? 'true' : 'false' %>">
-                                                        <%= date %>
-                                                    </button>
-                                                </li>
-                                            <% }); %>
-                                        </ul>
-                                        <div class="tab-content" id="screeningsTabsContent">
-                                            <% Object.keys(screeningsByDate).forEach((date, index) => { %>
-                                                <div class="tab-pane fade <%= index === 0 ? 'show active' : '' %>" 
-                                                     id="date-<%= index %>" 
-                                                     role="tabpanel" 
-                                                     aria-labelledby="date-<%= index %>-tab">
-                                                    <div class="screenings-list">
-                                                        <% screeningsByDate[date].forEach(screening => { %>
-                                                            <a href="/cinema/screenings/<%= screening.id %>" class="screening-item">
-                                                                <div class="screening-time"><%= screening.time %></div>
-                                                                <div class="screening-info">
-                                                                    <div class="screening-hall">Зал <%= screening.hall %></div>
-                                                                    <div class="screening-format"><%= screening.format || 'Стандарт' %></div>
-                                                                </div>
-                                                                <div class="screening-price">от <%= screening.base_price %> ₽</div>
-                                                            </a>
-                                                        <% }); %>
-                                                    </div>
-                                                </div>
-                                            <% }); %>
-                                        </div>
-                                    </div>
-                                <% } else { %>
-                                    <div class="no-screenings">
-                                        <i class="bi bi-calendar-x"></i>
-                                        <p>Нет доступных сеансов на ближайшие дни</p>
-                                    </div>
-                                <% } %>
-                            </div>
-                            
-                            <div class="movie-reviews">
-                                <h3>Отзывы</h3>
-                                <% if (reviews && reviews.length > 0) { %>
-                                    <div class="reviews-list">
-                                        <% reviews.forEach(review => { %>
-                                            <div class="review-item">
-                                                <div class="review-header">
-                                                    <div class="review-author">
-                                                        <div class="author-avatar">
-                                                            <img src="<%= review.User.avatar_url || '/images/users/default.jpg' %>" alt="<%= review.User.username %>">
-                                                        </div>
-                                                        <div class="author-name"><%= review.User.username %></div>
-                                                    </div>
-                                                    <div class="review-rating">
-                                                        <% for (let i = 1; i <= 5; i++) { %>
-                                                            <i class="bi <%= i <= review.rating ? 'bi-star-fill' : 'bi-star' %>"></i>
-                                                        <% } %>
-                                                    </div>
-                                                </div>
-                                                <div class="review-content">
-                                                    <p><%= review.content %></p>
-                                                </div>
-                                                <div class="review-date">
-                                                    <i class="bi bi-clock"></i> <%= new Date(review.created_at).toLocaleDateString('ru-RU') %>
-                                                </div>
-                                            </div>
-                                        <% }); %>
-                                    </div>
-                                <% } else { %>
-                                    <div class="no-reviews">
-                                        <i class="bi bi-chat-square-text"></i>
-                                        <p>Нет отзывов. Будьте первым, кто оставит отзыв!</p>
-                                    </div>
-                                <% } %>
-                                
-                                <% if (user) { %>
-                                    <div class="add-review">
-                                        <h4>Оставить отзыв</h4>
-                                        <form id="reviewForm" class="review-form">
-                                            <input type="hidden" name="movie_id" value="<%= movie.id %>">
-                                            <div class="form-group">
-                                                <label>Ваша оценка</label>
-                                                <div class="rating-select">
-                                                    <% for (let i = 5; i >= 1; i--) { %>
-                                                        <input type="radio" id="star<%= i %>" name="rating" value="<%= i %>" />
-                                                        <label for="star<%= i %>" title="<%= i %> звезд"><i class="bi bi-star-fill"></i></label>
-                                                    <% } %>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="reviewContent">Ваш отзыв</label>
-                                                <textarea id="reviewContent" name="content" class="form-control" rows="4" required></textarea>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">Отправить отзыв</button>
-                                        </form>
-                                    </div>
-                                <% } else { %>
-                                    <div class="login-to-review">
-                                        <p>Чтобы оставить отзыв, пожалуйста, <a href="/login">войдите</a> или <a href="/register">зарегистрируйтесь</a>.</p>
-                                    </div>
-                                <% } %>
-                            </div>
+                    <div class="col-md-4">
+                        <div class="movie-poster">
+                            <img src="<%= movie.poster_url || '/images/movies/default.jpg' %>" alt="<%= movie.title %>" class="img-fluid">
+                            <% if (movie.is_new) { %>
+                                <div class="movie-badge new">Новинка</div>
+                            <% } %>
+                            <% if (movie.coming_soon) { %>
+                                <div class="movie-badge coming-soon">Скоро</div>
+                            <% } %>
+                            <% if (movie.age_restriction) { %>
+                                <div class="age-badge"><%= movie.age_restriction %>+</div>
+                            <% } %>
                         </div>
                     </div>
-                    
-                    <div class="col-lg-4">
-                        <div class="movie-sidebar">
-                            <% if (movie.trailer_url) { %>
-                            <div class="sidebar-card">
-                                <h3>Трейлер</h3>
-                                <div class="movie-trailer">
-                                    <iframe width="100%" height="215" src="<%= movie.trailer_url %>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                </div>
+                    <div class="col-md-8">
+                        <div class="movie-info">
+                            <h2 class="movie-title">
+                                <%= movie.title %>
+                                <% if (movie.original_title) { %>
+                                    <small class="text-muted"><%= movie.original_title %></small>
+                                <% } %>
+                            </h2>
+                            
+                            <div class="movie-meta">
+                                <% if (movie.duration) { %>
+                                    <span><i class="bi bi-clock"></i> <%= movie.duration %> мин.</span>
+                                <% } %>
+                                <% if (movie.genre) { %>
+                                    <span><i class="bi bi-tag"></i> <%= movie.genre %></span>
+                                <% } %>
+                                <% if (movie.release_date) { %>
+                                    <span><i class="bi bi-calendar"></i> <%= new Date(movie.release_date).toLocaleDateString('ru-RU') %></span>
+                                <% } %>
+                                <% if (movie.director) { %>
+                                    <span><i class="bi bi-person"></i> <%= movie.director %></span>
+                                <% } %>
                             </div>
+
+                            <div class="movie-description">
+                                <p><%= movie.description || 'Описание отсутствует' %></p>
+                            </div>
+
+                            <% if (movie.cast) { %>
+                                <div class="movie-cast">
+                                    <h3>В ролях</h3>
+                                    <p><%= movie.cast %></p>
+                                </div>
                             <% } %>
-                            
-                            <div class="sidebar-card">
-                                <h3>Информация о фильме</h3>
-                                <ul class="info-list">
-                                    <% if (movie.release_date) { %>
-                                    <li>
-                                        <i class="bi bi-calendar-check"></i>
-                                        <div>
-                                            <h4>Дата выхода</h4>
-                                            <p><%= new Date(movie.release_date).toLocaleDateString('ru-RU') %></p>
-                                        </div>
-                                    </li>
-                                    <% } %>
-                                    <% if (movie.duration) { %>
-                                    <li>
-                                        <i class="bi bi-clock"></i>
-                                        <div>
-                                            <h4>Продолжительность</h4>
-                                            <p><%= movie.duration %> мин.</p>
-                                        </div>
-                                    </li>
-                                    <% } %>
-                                    <% if (movie.genre) { %>
-                                    <li>
-                                        <i class="bi bi-tag"></i>
-                                        <div>
-                                            <h4>Жанр</h4>
-                                            <p><%= movie.genre %></p>
-                                        </div>
-                                    </li>
-                                    <% } %>
-                                    <% if (movie.director) { %>
-                                    <li>
-                                        <i class="bi bi-camera-reels"></i>
-                                        <div>
-                                            <h4>Режиссер</h4>
-                                            <p><%= movie.director %></p>
-                                        </div>
-                                    </li>
-                                    <% } %>
-                                    <% if (movie.country) { %>
-                                    <li>
-                                        <i class="bi bi-globe"></i>
-                                        <div>
-                                            <h4>Страна</h4>
-                                            <p><%= movie.country %></p>
-                                        </div>
-                                    </li>
-                                    <% } %>
-                                    <% if (movie.age_restriction) { %>
-                                    <li>
-                                        <i class="bi bi-exclamation-circle"></i>
-                                        <div>
-                                            <h4>Возрастное ограничение</h4>
-                                            <p><%= movie.age_restriction %>+</p>
-                                        </div>
-                                    </li>
-                                    <% } %>
-                                </ul>
-                            </div>
-                            
-                            <div class="sidebar-card">
-                                <h3>Поделиться</h3>
-                                <div class="social-share">
-                                    <button class="share-btn vk">
-                                        <i class="bi bi-vk"></i>
-                                    </button>
-                                    <button class="share-btn telegram">
-                                        <i class="bi bi-telegram"></i>
-                                    </button>
-                                    <button class="share-btn whatsapp">
-                                        <i class="bi bi-whatsapp"></i>
-                                    </button>
-                                    <button class="share-btn copy-link">
-                                        <i class="bi bi-link-45deg"></i>
-                                    </button>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="screenings-section mt-5">
+                    <h2>Расписание сеансов</h2>
+                    
+                    <% if (Object.keys(screeningsByDate).length > 0) { %>
+                        <div class="screenings-tabs">
+                            <ul class="nav nav-tabs" id="screeningsTabs" role="tablist">
+                                <% Object.keys(screeningsByDate).forEach((date, index) => { %>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link <%= index === 0 ? 'active' : '' %>" 
+                                                id="date-<%= index %>-tab" 
+                                                data-bs-toggle="tab" 
+                                                data-bs-target="#date-<%= index %>" 
+                                                type="button" 
+                                                role="tab">
+                                            <%= date %>
+                                        </button>
+                                    </li>
+                                <% }); %>
+                            </ul>
+
+                            <div class="tab-content mt-4" id="screeningsTabsContent">
+                                <% Object.keys(screeningsByDate).forEach((date, index) => { %>
+                                    <div class="tab-pane fade <%= index === 0 ? 'show active' : '' %>" 
+                                         id="date-<%= index %>" 
+                                         role="tabpanel">
+                                        <div class="screenings-grid">
+                                            <% screeningsByDate[date].forEach(screening => { %>
+                                                <div class="screening-card">
+                                                    <div class="screening-time">
+                                                        <%= screening.formattedTime %>
+                                                    </div>
+                                                    <div class="screening-info">
+                                                        <div class="screening-hall">Зал <%= screening.hall %></div>
+                                                        <div class="screening-format">
+                                                            <% if (screening.is_imax) { %>
+                                                                IMAX
+                                                            <% } else if (screening.is_3d) { %>
+                                                                3D
+                                                            <% } else { %>
+                                                                2D
+                                                            <% } %>
+                                                        </div>
+                                                    </div>
+                                                    <div class="screening-prices">
+                                                        <div class="price-item">
+                                                            <span class="price-label">Обычный:</span>
+                                                            <span class="price-value"><%= screening.base_price %> ₽</span>
+                                                        </div>
+                                                        <div class="price-item">
+                                                            <span class="price-label">VIP:</span>
+                                                            <span class="price-value"><%= screening.vip_price %> ₽</span>
+                                                        </div>
+                                                        <div class="price-item">
+                                                            <span class="price-label">Студенческий:</span>
+                                                            <span class="price-value"><%= screening.student_price %> ₽</span>
+                                                        </div>
+                                                        <div class="price-item">
+                                                            <span class="price-label">Детский:</span>
+                                                            <span class="price-value"><%= screening.child_price %> ₽</span>
+                                                        </div>
+                                                    </div>
+                                                    <a href="/cinema/screening/<%= screening.id %>" class="btn btn-primary btn-buy-ticket">
+                                                        Купить билет
+                                                    </a>
+                                                </div>
+                                            <% }); %>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        </div>
+                    <% } else { %>
+                        <div class="no-screenings">
+                            <i class="bi bi-calendar-x"></i>
+                            <p>Нет доступных сеансов на ближайшие дни</p>
+                        </div>
+                    <% } %>
+                </div>
+
+                <% if (movie.trailer_url) { %>
+                    <div class="movie-trailer mt-5">
+                        <h2>Трейлер</h2>
+                        <div class="ratio ratio-16x9">
+                            <iframe src="<%= movie.trailer_url %>" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                <% } %>
             </div>
         </div>
     </div>
 
+    <%- include('../../partials/footer') %>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Обработчик формы отзыва
-            const reviewForm = document.getElementById('reviewForm');
-            if (reviewForm) {
-                reviewForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    
-                    const formData = new FormData(reviewForm);
-                    const data = {
-                        movie_id: formData.get('movie_id'),
-                        rating: formData.get('rating'),
-                        content: formData.get('content')
-                    };
-                    
-                    try {
-                        const response = await fetch('/api/reviews', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(data)
-                        });
-                        
-                        if (response.ok) {
-                            // Перезагружаем страницу для отображения нового отзыва
-                            window.location.reload();
-                        } else {
-                            const error = await response.json();
-                            alert(`Ошибка: ${error.message || 'Не удалось отправить отзыв'}`);
-                        }
-                    } catch (error) {
-                        console.error('Ошибка при отправке отзыва:', error);
-                        alert('Произошла ошибка при отправке отзыва');
-                    }
-                });
-            }
-            
-            // Обработчики кнопок "Поделиться"
-            const shareButtons = document.querySelectorAll('.share-btn');
-            const pageUrl = window.location.href;
-            const pageTitle = document.title;
-            
-            shareButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    if (button.classList.contains('vk')) {
-                        window.open(`https://vk.com/share.php?url=${encodeURIComponent(pageUrl)}&title=${encodeURIComponent(pageTitle)}`, '_blank');
-                    } else if (button.classList.contains('telegram')) {
-                        window.open(`https://t.me/share/url?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(pageTitle)}`, '_blank');
-                    } else if (button.classList.contains('whatsapp')) {
-                        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(pageTitle + ' ' + pageUrl)}`, '_blank');
-                    } else if (button.classList.contains('copy-link')) {
-                        navigator.clipboard.writeText(pageUrl).then(() => {
-                            alert('Ссылка скопирована в буфер обмена');
-                        }).catch(err => {
-                            console.error('Не удалось скопировать ссылку:', err);
-                        });
-                    }
-                });
-            });
-        });
-    </script>
 </body>
 </html> 

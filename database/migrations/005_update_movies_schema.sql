@@ -1,0 +1,9 @@
+-- Обновление схемы таблицы movies
+ALTER TABLE IF EXISTS public.movies
+    ALTER COLUMN release_date TYPE DATE,
+    ALTER COLUMN end_date TYPE DATE,
+    ALTER COLUMN end_date DROP NOT NULL,
+    ALTER COLUMN rating SET DEFAULT 0,
+    ALTER COLUMN age_rating SET DEFAULT 0,
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP,
+    ALTER COLUMN updated_at SET DEFAULT CURRENT_TIMESTAMP; 

@@ -62,13 +62,36 @@
                 </div>
 
                 <div class="seats-container">
-                    <!-- Здесь будет схема зала с местами -->
-                    <div class="seats-loading">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Загрузка...</span>
+                    <% if (screening.seats_layout && screening.seats_layout.rows) { %>
+                        <% for (let row = 0; row < screening.seats_layout.rows; row++) { %>
+                            <div class="seats-row">
+                                <div class="row-number"><%= row + 1 %></div>
+                                <div class="seats">
+                                    <% for (let seat = 0; seat < screening.seats_layout.seatsPerRow; seat++) { %>
+                                        <% 
+                                            const isOccupied = screening.occupiedSeats.some(s => s.row === row + 1 && s.seat === seat + 1);
+                                            const isVip = screening.seats_layout.vipSeats && screening.seats_layout.vipSeats.some(s => s.row === row + 1 && s.seat === seat + 1);
+                                            const seatPrice = isVip ? screening.vip_price : screening.base_price;
+                                        %>
+                                        <div class="seat-wrapper" 
+                                             data-row="<%= row + 1 %>" 
+                                             data-seat="<%= seat + 1 %>" 
+                                             data-price="<%= seatPrice %>">
+                                            <div class="seat <%= isOccupied ? 'occupied' : (isVip ? 'vip' : 'available') %>"
+                                                 <%= isOccupied ? 'disabled' : '' %>>
+                                                <%= seat + 1 %>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                </div>
+                                <div class="row-number"><%= row + 1 %></div>
+                            </div>
+                        <% } %>
+                    <% } else { %>
+                        <div class="alert alert-warning">
+                            Схема зала недоступна
                         </div>
-                        <p>Загрузка схемы зала...</p>
-                    </div>
+                    <% } %>
                 </div>
 
                 <div class="seats-legend">
@@ -83,6 +106,10 @@
                     <div class="legend-item">
                         <div class="seat occupied"></div>
                         <span>Занято</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="seat vip"></div>
+                        <span>VIP</span>
                     </div>
                 </div>
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Movie, Screening, CinemaTicket, MovieReview, User } = require('../../models');
+const { Movie, Screening, CinemaTicket } = require('../../models');
 const { Op } = require('sequelize');
 const auth = require('../../middleware/auth');
 const { isScreeningPassed } = require('../../utils/dateTime');
@@ -8,10 +8,9 @@ const { isScreeningPassed } = require('../../utils/dateTime');
 // Главная страница кинотеатра - список фильмов
 router.get('/', async (req, res) => {
     try {
-        // Получаем текущего пользователя из сессии
+        console.log('Получен запрос на страницу кинотеатра');
         const user = req.session.user || null;
         
-        // Фильтр для активных фильмов
         const where = {
             is_active: true,
             [Op.or]: [
@@ -20,55 +19,32 @@ router.get('/', async (req, res) => {
             ]
         };
         
-        // Получаем все активные фильмы с их отзывами
+        console.log('Загрузка активных фильмов...');
         const movies = await Movie.findAll({
             where,
-            include: [
-                {
-                    model: MovieReview,
-                    as: 'reviews',
-                    required: false,
-                    include: [
-                        {
-                            model: User,
-                            as: 'user',
-                            attributes: ['id', 'username', 'avatar_url']
-                        }
-                    ]
-                }
-            ],
             order: [['release_date', 'DESC']]
         });
         
-        // Рассчитываем средний рейтинг для каждого фильма
-        const moviesWithRatings = movies.map(movie => {
-            const movieData = movie.toJSON();
-            const reviews = movieData.reviews || [];
-            
-            // Рассчитываем средний рейтинг
-            const averageRating = reviews.length > 0 
-                ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1)
-                : null;
-            
-            // Добавляем средний рейтинг и количество отзывов
-            return {
-                ...movieData,
-                averageRating,
-                reviewsCount: reviews.length
-            };
-        });
+        console.log(`Найдено ${movies.length} активных фильмов`);
+        
+        const moviesData = movies.map(movie => ({
+            ...movie.toJSON(),
+            averageRating: 0,
+            reviewsCount: 0
+        }));
         
         res.render('pages/cinema', {
             title: 'Кинотеатр - ТРЦ \'Кристалл\'',
-            movies: moviesWithRatings,
+            movies: moviesData,
             user
         });
+        console.log('Страница кинотеатра успешно отрендерена');
     } catch (error) {
         console.error('Ошибка при получении списка фильмов:', error);
-        res.render('pages/error', {
+        res.status(500).render('pages/error', {
             title: 'Ошибка - ТРЦ \'Кристалл\'',
             message: 'Произошла ошибка при загрузке списка фильмов',
-            error,
+            error: process.env.NODE_ENV === 'development' ? error : {},
             user: req.session.user || null
         });
     }
@@ -78,47 +54,37 @@ router.get('/', async (req, res) => {
 router.get('/movie/:id', async (req, res) => {
     try {
         const movieId = req.params.id;
+        console.log('Загрузка фильма с ID:', movieId);
+        
         const user = req.session.user || null;
         
-        // Получаем фильм с отзывами
-        const movie = await Movie.findByPk(movieId, {
-            include: [
-                {
-                    model: MovieReview,
-                    as: 'reviews',
-                    include: [
-                        {
-                            model: User,
-                            as: 'user',
-                            attributes: ['id', 'username', 'avatar_url']
-                        }
-                    ]
-                }
-            ]
-        });
+        console.log('Загрузка информации о фильме...');
+        const movie = await Movie.findByPk(movieId);
+        
+        console.log('Найден фильм:', movie ? movie.title : 'не найден');
         
         if (!movie) {
-            return res.render('pages/error', {
+            console.log('Фильм не найден:', movieId);
+            return res.status(404).render('pages/error', {
                 title: 'Фильм не найден - ТРЦ \'Кристалл\'',
                 message: 'Запрашиваемый фильм не найден',
                 user
             });
         }
         
-        // Рассчитываем средний рейтинг
-        const reviews = movie.reviews || [];
-        const rating = reviews.length > 0 
-            ? parseFloat((reviews.reduce((sum, review) => sum + Number(review.rating), 0) / reviews.length).toFixed(1))
-            : 0;
-        const reviewsCount = reviews.length;
+        console.log('Загрузка предстоящих сеансов...');
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
         
-        // Получаем предстоящие сеансы для фильма
+        console.log('Текущая дата для поиска:', currentDate);
+        
         const screenings = await Screening.findAll({
             where: {
                 movie_id: movieId,
                 date: {
-                    [Op.gte]: new Date()
-                }
+                    [Op.gte]: currentDate
+                },
+                is_active: true
             },
             order: [
                 ['date', 'ASC'],
@@ -126,7 +92,13 @@ router.get('/movie/:id', async (req, res) => {
             ]
         });
         
-        // Группируем сеансы по датам
+        console.log('Найдено сеансов:', screenings.length);
+        console.log('Первый сеанс:', screenings[0] ? {
+            date: screenings[0].date,
+            time: screenings[0].time,
+            hall: screenings[0].hall
+        } : 'нет сеансов');
+        
         const screeningsByDate = {};
         
         if (screenings && screenings.length > 0) {
@@ -134,30 +106,52 @@ router.get('/movie/:id', async (req, res) => {
                 const screeningData = screening.toJSON();
                 const date = new Date(screeningData.date).toLocaleDateString('ru-RU');
                 
+                console.log('Обработка сеанса:', {
+                    id: screeningData.id,
+                    date: screeningData.date,
+                    formattedDate: date,
+                    time: screeningData.time
+                });
+                
                 if (!screeningsByDate[date]) {
                     screeningsByDate[date] = [];
                 }
                 
-                screeningsByDate[date].push(screeningData);
+                // Форматируем время
+                const timeStr = screeningData.time;
+                const [hours, minutes] = timeStr.split(':');
+                const time = new Date();
+                time.setHours(hours);
+                time.setMinutes(minutes);
+                
+                screeningsByDate[date].push({
+                    ...screeningData,
+                    formattedTime: time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+                    formattedDate: date
+                });
             });
         }
         
-        res.render('pages/movie-details', {
+        console.log('Сгруппированные сеансы:', JSON.stringify(screeningsByDate, null, 2));
+        
+        console.log('Рендеринг страницы фильма...');
+        res.render('pages/cinema/movie-details', {
             title: `${movie.title} - ТРЦ 'Кристалл'`,
             movie: {
                 ...movie.toJSON(),
-                rating,
-                reviewsCount
+                rating: 0,
+                reviewsCount: 0
             },
             screeningsByDate,
             user
         });
+        console.log('Страница фильма успешно отрендерена');
     } catch (error) {
         console.error('Ошибка при получении деталей фильма:', error);
-        res.render('pages/error', {
+        res.status(500).render('pages/error', {
             title: 'Ошибка - ТРЦ \'Кристалл\'',
             message: 'Произошла ошибка при загрузке деталей фильма',
-            error,
+            error: process.env.NODE_ENV === 'development' ? error : {},
             user: req.session.user || null
         });
     }
@@ -167,9 +161,11 @@ router.get('/movie/:id', async (req, res) => {
 router.get('/screening/:id', async (req, res) => {
     try {
         const screeningId = req.params.id;
+        console.log('Получен запрос на страницу выбора мест для сеанса:', screeningId);
+        
         const user = req.session.user || null;
         
-        // Получаем сеанс с информацией о фильме
+        console.log('Загрузка информации о сеансе...');
         const screening = await Screening.findByPk(screeningId, {
             include: [
                 {
@@ -180,14 +176,15 @@ router.get('/screening/:id', async (req, res) => {
         });
         
         if (!screening) {
-            return res.render('pages/error', {
+            console.log('Сеанс не найден:', screeningId);
+            return res.status(404).render('pages/error', {
                 title: 'Сеанс не найден - ТРЦ \'Кристалл\'',
                 message: 'Запрашиваемый сеанс не найден',
                 user
             });
         }
         
-        // Получаем занятые места для этого сеанса
+        console.log('Загрузка информации о занятых местах...');
         const occupiedTickets = await CinemaTicket.findAll({
             where: {
                 screening_id: screeningId,
@@ -202,19 +199,35 @@ router.get('/screening/:id', async (req, res) => {
             row: ticket.row,
             seat: ticket.seat
         }));
+
+        const screeningData = screening.toJSON();
+        // Парсим схему зала из JSON
+        try {
+            screeningData.seats_layout = JSON.parse(screeningData.seats_layout);
+            console.log('Схема зала успешно распарсена:', screeningData.seats_layout);
+        } catch (error) {
+            console.error('Ошибка при парсинге схемы зала:', error);
+            screeningData.seats_layout = null;
+        }
+
+        console.log('Схема зала:', screeningData.seats_layout);
+        console.log('Занятые места:', occupiedSeats);
         
-        res.render('pages/seat-selection', {
-            title: `Выбор мест - ${screening.movie.title} - ТРЦ 'Кристалл'`,
-            screening,
-            occupiedSeats,
+        res.render('pages/cinema/seat-selection', {
+            title: `Выбор мест - ${screening.movie.title}`,
+            movie: screening.movie,
+            screening: {
+                ...screeningData,
+                occupiedSeats
+            },
             user
         });
     } catch (error) {
         console.error('Ошибка при загрузке страницы выбора мест:', error);
-        res.render('pages/error', {
+        res.status(500).render('pages/error', {
             title: 'Ошибка - ТРЦ \'Кристалл\'',
             message: 'Произошла ошибка при загрузке страницы выбора мест',
-            error,
+            error: process.env.NODE_ENV === 'development' ? error : {},
             user: req.session.user || null
         });
     }

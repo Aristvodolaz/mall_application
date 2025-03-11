@@ -90,12 +90,7 @@
                                     <a href="/cinema/movies/<%= movie.id %>" class="btn btn-primary">
                                         Купить билет
                                     </a>
-                                    <% if (movie.trailer_url) { %>
-                                        <button class="btn btn-outline watch-trailer" data-trailer-url="<%= movie.trailer_url %>">
-                                            <i class="bi bi-play-circle"></i>
-                                            Трейлер
-                                        </button>
-                                    <% } %>
+                        
                                 </div>
                             </div>
                         </div>
@@ -107,23 +102,6 @@
                     <p>Попробуйте изменить параметры поиска</p>
                 </div>
             <% } %>
-        </div>
-    </div>
-</div>
-
-<!-- Модальное окно для трейлера -->
-<div class="modal fade" id="trailerModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Трейлер</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-0">
-                <div class="ratio ratio-16x9">
-                    <iframe src="" allowfullscreen></iframe>
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -279,23 +257,3 @@
 }
 </style>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Инициализация модального окна для трейлера
-    const trailerModal = new bootstrap.Modal(document.getElementById('trailerModal'));
-    const trailerIframe = document.querySelector('#trailerModal iframe');
-    
-    document.querySelectorAll('.watch-trailer').forEach(button => {
-        button.addEventListener('click', () => {
-            const trailerUrl = button.dataset.trailerUrl;
-            trailerIframe.src = trailerUrl;
-            trailerModal.show();
-        });
-    });
-
-    // Очистка src при закрытии модального окна
-    document.getElementById('trailerModal').addEventListener('hidden.bs.modal', () => {
-        trailerIframe.src = '';
-    });
-});
-</script> 

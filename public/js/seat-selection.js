@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     const seatsContainer = document.querySelector('.seats-container');
     const selectedSeatsText = document.getElementById('selectedSeatsText');
     const ticketsCount = document.getElementById('ticketsCount');
@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 seatElement.className = `seat ${seat.status}`;
                 seatElement.dataset.row = rowIndex + 1;
                 seatElement.dataset.seat = seatIndex + 1;
+                seatElement.dataset.price = seat.price;
 
                 if (seat.status === 'available') {
                     seatElement.addEventListener('click', () => toggleSeat(seatElement));
@@ -57,16 +58,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function toggleSeat(seatElement) {
-        const row = seatElement.dataset.row;
-        const seat = seatElement.dataset.seat;
-        const seatInfo = { row, seat };
+        const row = parseInt(seatElement.dataset.row);
+        const seat = parseInt(seatElement.dataset.seat);
+        const price = parseInt(seatElement.dataset.price);
+        const type = seatElement.classList.contains('vip') ? 'vip' : 'standard';
 
         if (seatElement.classList.contains('selected')) {
             seatElement.classList.remove('selected');
             selectedSeats = selectedSeats.filter(s => !(s.row === row && s.seat === seat));
         } else {
             seatElement.classList.add('selected');
-            selectedSeats.push(seatInfo);
+            selectedSeats.push({
+                row,
+                seat,
+                price,
+                type
+            });
         }
 
         updateBookingSummary();
@@ -77,10 +84,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const total = count * screeningData.basePrice;
 
         if (count > 0) {
-            selectedSeatsText.textContent = selectedSeats
+            const seatsList = selectedSeats
                 .sort((a, b) => a.row - b.row || a.seat - b.seat)
-                .map(s => `Ряд ${s.row}, Место ${s.seat}`)
+                .map(seat => `Ряд ${seat.row}, Место ${seat.seat} (${seat.type === 'vip' ? 'VIP' : 'Стандарт'})`)
                 .join('; ');
+            selectedSeatsText.textContent = seatsList || '-';
             ticketsCount.textContent = count;
             totalPrice.textContent = total;
             bookingButton.disabled = false;
@@ -101,28 +109,29 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    // Обработка нажатия кнопки бронирования
-    bookingButton.addEventListener('click', () => {
+    // Обработчик кнопки бронирования
+    bookingButton.addEventListener('click', function() {
         if (selectedSeats.length === 0) return;
 
-        const bookingData = {
+        const data = {
             screeningId: screeningData.id,
             seats: selectedSeats
         };
 
+        // Отправляем запрос на бронирование
         fetch('/api/bookings', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(bookingData)
+            body: JSON.stringify(data)
         })
         .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = `/cinema/bookings/${data.bookingId}/payment`;
+        .then(result => {
+            if (result.success) {
+                window.location.href = `/cinema/booking/${result.bookingId}`;
             } else {
-                alert(data.message || 'Произошла ошибка при бронировании');
+                alert(result.message || 'Произошла ошибка при бронировании');
             }
         })
         .catch(error => {

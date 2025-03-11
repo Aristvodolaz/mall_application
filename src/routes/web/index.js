@@ -153,87 +153,35 @@ router.get('/cinema', async (req, res) => {
 // Страница с деталями фильма
 router.get('/cinema/movies/:id', async (req, res) => {
     try {
-        const movie = await Movie.findByPk(req.params.id, {
-            include: [
-                {
-                    model: Screening,
-                    where: {
-                        date: {
-                            [Op.gte]: new Date()
-                        }
-                    },
-                    required: false,
-                    attributes: ['id', 'date', 'time', 'hall', 'format', 'base_price']
-                },
-                {
-                    model: MovieReview,
-                    as: 'Reviews',
-                    include: [{
-                        model: User,
-                        as: 'User',
-                        attributes: ['id', 'username', 'avatar_url']
-                    }],
-                    required: false
-                }
-            ]
-        });
+        const movieId = req.params.id;
+        const movie = await Movie.findByPk(movieId);
 
         if (!movie) {
-            return res.status(404).render('pages/errors/404', {
-                title: 'Страница не найдена',
+            return res.status(404).render('pages/error', {
+                title: 'Фильм не найден',
+                message: 'Запрашиваемый фильм не найден',
                 user: req.session.user || null
             });
         }
 
-        // Группируем сеансы по датам
-        const screeningsByDate = {};
-        if (movie.Screenings && movie.Screenings.length > 0) {
-            movie.Screenings.forEach(screening => {
-                const date = new Date(screening.date).toLocaleDateString('ru-RU');
-                if (!screeningsByDate[date]) {
-                    screeningsByDate[date] = [];
-                }
-                // Преобразуем время в нужный формат
-                const screeningData = screening.get({ plain: true });
-                if (screeningData.time) {
-                    screeningData.time = new Date(`2000-01-01T${screeningData.time}`).toLocaleTimeString('ru-RU', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    });
-                }
-                screeningsByDate[date].push(screeningData);
-            });
-
-            // Сортируем сеансы по времени
-            Object.keys(screeningsByDate).forEach(date => {
-                screeningsByDate[date].sort((a, b) => {
-                    return a.time.localeCompare(b.time);
-                });
-            });
-        }
-
-        // Добавляем количество отзывов
-        movie.reviewsCount = movie.Reviews ? movie.Reviews.length : 0;
-
-        // Вычисляем среднюю оценку
-        if (movie.Reviews && movie.Reviews.length > 0) {
-            const totalRating = movie.Reviews.reduce((sum, review) => sum + review.rating, 0);
-            movie.rating = totalRating / movie.Reviews.length;
-        } else {
-            movie.rating = 0;
-        }
+        const movieData = movie.toJSON();
+        movieData.rating = 0;
+        movieData.reviewsCount = 0;
+        movieData.reviews = [];
 
         res.render('pages/cinema/movie-details', {
-            title: movie.title,
-            user: req.session.user || null,
-            movie,
-            screeningsByDate,
-            reviews: movie.Reviews || []
+            title: `${movie.title} - Кинотеатр`,
+            movie: movieData,
+            screeningsByDate: {},
+            user: req.session.user || null
         });
+
     } catch (error) {
         console.error('Ошибка при загрузке страницы фильма:', error);
-        res.status(500).render('pages/errors/500', {
-            title: 'Ошибка сервера',
+        res.status(500).render('pages/error', {
+            title: 'Ошибка',
+            message: 'Произошла ошибка при загрузке страницы фильма',
+            error: process.env.NODE_ENV === 'development' ? error : {},
             user: req.session.user || null
         });
     }

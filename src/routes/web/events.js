@@ -4,7 +4,7 @@ const { Event, Ticket } = require('../../models');
 const { Op } = require('sequelize');
 
 // Список событий
-router.get('/events', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const { category, date, search } = req.query;
         const where = {
@@ -46,7 +46,7 @@ router.get('/events', async (req, res) => {
             event.dataValues.ticketsSold = event.Tickets.length;
         });
 
-        res.render('pages/events', {
+        res.render('pages/events/index', {
             title: 'События - ТРЦ \'Кристалл\'',
             events,
             user: req.session.user || null
@@ -63,7 +63,7 @@ router.get('/events', async (req, res) => {
 });
 
 // Страница деталей события
-router.get('/events/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const event = await Event.findByPk(req.params.id, {
             include: [{
@@ -87,7 +87,7 @@ router.get('/events/:id', async (req, res) => {
         // Добавляем количество доступных билетов
         event.dataValues.available_tickets = event.total_tickets - event.dataValues.ticketsSold;
 
-        res.render('pages/event-details', {
+        res.render('pages/events/show', {
             title: `${event.title} - ТРЦ 'Кристалл'`,
             event,
             user: req.session.user || null

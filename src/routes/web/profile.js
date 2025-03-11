@@ -9,7 +9,7 @@ const { Op } = require('sequelize');
 const auth = require('../../middleware/auth');
 
 // Страница профиля
-router.get('/profile', auth, async (req, res) => {
+router.get('/', auth, async (req, res) => {
     try {
         // Получаем билеты пользователя
         const tickets = await CinemaTicket.findAll({
@@ -60,7 +60,7 @@ router.get('/profile', auth, async (req, res) => {
 });
 
 // Обновление профиля
-router.post('/profile', auth, async (req, res) => {
+router.post('/', auth, async (req, res) => {
     try {
         const { username, email } = req.body;
 
@@ -102,7 +102,7 @@ router.post('/profile', auth, async (req, res) => {
 });
 
 // Загрузка аватара
-router.post('/profile/avatar', auth, avatarUploader.single('avatar'), async (req, res) => {
+router.post('/avatar', auth, avatarUploader.single('avatar'), async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({
@@ -149,4 +149,6 @@ router.post('/profile/avatar', auth, avatarUploader.single('avatar'), async (req
             message: 'Произошла ошибка при загрузке аватара'
         });
     }
-}); 
+});
+
+module.exports = router; 

@@ -1,0 +1,64 @@
+<%- include('../../partials/header') %>
+
+<div class="container mt-4">
+    <h1>Мои билеты</h1>
+
+    <% if (tickets && tickets.length > 0) { %>
+        <div class="row">
+            <% tickets.forEach(ticket => { %>
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= ticket.Screening.Movie.title %></h5>
+                            <div class="ticket-info">
+                                <p><strong>Дата:</strong> <%= ticket.Screening.date.toLocaleDateString() %></p>
+                                <p><strong>Время:</strong> <%= ticket.Screening.time %></p>
+                                <p><strong>Зал:</strong> <%= ticket.Screening.hall %></p>
+                                <p><strong>Место:</strong> <%= ticket.seat_number %></p>
+                                <p><strong>Стоимость:</strong> <%= ticket.price %> ₽</p>
+                                <p><strong>Статус:</strong> 
+                                    <span class="badge <%= ticket.status === 'confirmed' ? 'bg-success' : 'bg-warning' %>">
+                                        <%= ticket.status === 'confirmed' ? 'Подтвержден' : 'В обработке' %>
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="ticket-qr mt-3 text-center">
+                                <!-- Здесь можно добавить QR-код билета -->
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=<%= `Ticket:${ticket.id}` %>" 
+                                     alt="QR код билета" 
+                                     class="img-fluid">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    <% } else { %>
+        <div class="alert alert-info">
+            <p>У вас пока нет купленных билетов.</p>
+            <a href="/cinema" class="btn btn-primary">Перейти к выбору фильма</a>
+        </div>
+    <% } %>
+</div>
+
+<style>
+.ticket-info p {
+    margin-bottom: 0.5rem;
+}
+
+.ticket-qr img {
+    max-width: 100px;
+    height: auto;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+</style>
+
+<%- include('../../partials/footer') %> 

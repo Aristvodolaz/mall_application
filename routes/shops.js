@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Shop = require('../models/Shop');
-const passport = require('passport');
 
 // Получение списка всех магазинов
-router.get('/', async (req, res) => {
+router.get('/shops', async (req, res) => {
     try {
         const { category, floor, sort } = req.query;
         let where = {};

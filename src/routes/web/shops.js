@@ -3,11 +3,29 @@ const router = express.Router();
 const { Shop, Review, User } = require('../../models');
 const { Op } = require('sequelize');
 
+console.log('Инициализация маршрутизатора магазинов...');
+
+// Тестовый маршрут
+router.get('/test', (req, res) => {
+    console.log('Тестовый маршрут /shops/test');
+    try {
+        res.render('pages/shops/test', {
+            title: 'Тест - ТРЦ \'Кристалл\''
+        });
+        console.log('Рендеринг тестовой страницы успешно завершен');
+    } catch (error) {
+        console.error('Ошибка при рендеринге тестовой страницы:', error);
+        res.status(500).send('Ошибка при рендеринге страницы');
+    }
+});
+
 // Список магазинов
 router.get('/', async (req, res) => {
+    console.log('Получен запрос на страницу магазинов');
     try {
         const { category, floor, search } = req.query;
         const where = {};
+        console.log('Параметры запроса:', { category, floor, search });
 
         if (category) {
             where.category = category;
@@ -24,6 +42,9 @@ router.get('/', async (req, res) => {
             ];
         }
 
+        console.log('Условия поиска:', JSON.stringify(where));
+
+        console.log('Начинаем поиск магазинов...');
         const shops = await Shop.findAll({
             where,
             include: [{
@@ -37,6 +58,11 @@ router.get('/', async (req, res) => {
             }],
             order: [['name', 'ASC']]
         });
+        console.log(`Найдено магазинов: ${shops.length}`);
+
+        if (shops.length > 0) {
+            console.log('Пример первого магазина:', JSON.stringify(shops[0].toJSON(), null, 2));
+        }
 
         // Рассчитываем средний рейтинг для каждого магазина
         const shopsWithRatings = shops.map(shop => {
@@ -52,17 +78,42 @@ router.get('/', async (req, res) => {
             return {
                 ...shopData,
                 averageRating,
-                reviewsCount: reviews.length
+                reviewsCount: reviews.length,
+                rating: averageRating || 0,
+                main_image: shopData.image_url || shopData.logo_url
             };
         });
 
-        res.render('pages/shops', {
+        console.log('Подготовка данных для рендеринга...');
+        console.log('Путь к шаблону:', 'pages/shops/index');
+        console.log('Данные для рендеринга:', {
+            title: 'Магазины - ТРЦ \'Кристалл\'',
+            shopsCount: shopsWithRatings.length,
+            hasUser: !!req.session.user,
+            filters: {
+                category: category || '',
+                floor: floor || '',
+                search: search || ''
+            }
+        });
+
+        res.render('pages/shops/index', {
             title: 'Магазины - ТРЦ \'Кристалл\'',
             shops: shopsWithRatings,
-            user: req.session.user || null
+            user: req.session.user || null,
+            filters: {
+                category: category || '',
+                floor: floor || '',
+                search: search || ''
+            }
         });
+        console.log('Рендеринг успешно завершен');
     } catch (error) {
-        console.error('Ошибка при получении списка магазинов:', error);
+        console.error('Ошибка при получении списка магазинов:');
+        console.error('Тип ошибки:', error.name);
+        console.error('Сообщение:', error.message);
+        console.error('Стек вызовов:', error.stack);
+        
         res.render('pages/error', {
             title: 'Ошибка - ТРЦ \'Кристалл\'',
             message: 'Произошла ошибка при загрузке списка магазинов',
@@ -73,7 +124,7 @@ router.get('/', async (req, res) => {
 });
 
 // Страница деталей магазина
-router.get('/shops/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const shop = await Shop.findByPk(req.params.id, {
             include: [{
@@ -101,7 +152,7 @@ router.get('/shops/:id', async (req, res) => {
             ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1)
             : null;
 
-        res.render('pages/shop-details', {
+        res.render('pages/shops/show', {
             title: `${shop.name} - ТРЦ 'Кристалл'`,
             shop: {
                 ...shop.toJSON(),
