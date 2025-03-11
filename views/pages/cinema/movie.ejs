@@ -1,0 +1,609 @@
+<!-- Страница фильма -->
+<div class="movie-page">
+    <!-- Хлебные крошки -->
+    <nav aria-label="breadcrumb" class="bg-light py-2">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                <li class="breadcrumb-item"><a href="/cinema">Кинотеатр</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><%= movie.title %></li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Информация о фильме -->
+    <section class="movie-info-section">
+        <div class="container">
+            <div class="row">
+                <!-- Постер -->
+                <div class="col-lg-4 mb-4">
+                    <div class="movie-poster">
+                        <img src="<%= movie.poster_url || '/images/movie-placeholder.jpg' %>" alt="<%= movie.title %>" class="img-fluid rounded">
+                        <% if (movie.trailer_url) { %>
+                            <button class="watch-trailer-btn" data-trailer-url="<%= movie.trailer_url %>">
+                                <i class="bi bi-play-circle"></i>
+                                <span>Смотреть трейлер</span>
+                            </button>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- Детали -->
+                <div class="col-lg-8">
+                    <div class="movie-details">
+                        <h1 class="movie-title">
+                            <%= movie.title %>
+                            <% if (movie.original_title) { %>
+                                <small class="movie-original-title">
+                                    <%= movie.original_title %>
+                                </small>
+                            <% } %>
+                        </h1>
+
+                        <div class="movie-meta">
+                            <div class="meta-item">
+                                <i class="bi bi-tag"></i>
+                                <span><%= movie.genre %></span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-clock"></i>
+                                <span><%= movie.duration %> мин.</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-calendar"></i>
+                                <span>с <%= moment(movie.release_date).format('D MMMM YYYY') %></span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-shield-check"></i>
+                                <span><%= movie.age_rating %>+</span>
+                            </div>
+                            <% if (movie.rating) { %>
+                                <div class="meta-item rating">
+                                    <i class="bi bi-star-fill"></i>
+                                    <span><%= movie.rating.toFixed(1) %></span>
+                                </div>
+                            <% } %>
+                        </div>
+
+                        <div class="movie-description">
+                            <%= movie.description %>
+                        </div>
+
+                        <div class="movie-crew">
+                            <div class="crew-item">
+                                <strong>Режиссер:</strong>
+                                <span><%= movie.director %></span>
+                            </div>
+                            <div class="crew-item">
+                                <strong>В ролях:</strong>
+                                <span><%= movie.cast %></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Расписание сеансов -->
+    <section class="screenings-section">
+        <div class="container">
+            <h2 class="section-title">Расписание сеансов</h2>
+            
+            <% if (screenings.length > 0) { %>
+                <div class="screenings-grid">
+                    <% 
+                        // Группируем сеансы по датам
+                        const screeningsByDate = screenings.reduce((acc, screening) => {
+                            const date = moment(screening.date).format('YYYY-MM-DD');
+                            if (!acc[date]) acc[date] = [];
+                            acc[date].push(screening);
+                            return acc;
+                        }, {});
+                    %>
+
+                    <% Object.entries(screeningsByDate).forEach(([date, dateScreenings]) => { %>
+                        <div class="screening-date">
+                            <h3 class="date-title">
+                                <%= moment(date).format('D MMMM, dddd') %>
+                            </h3>
+                            <div class="screening-times">
+                                <% dateScreenings.forEach(screening => { %>
+                                    <div class="screening-card">
+                                        <div class="screening-info">
+                                            <div class="screening-time">
+                                                <%= moment(screening.time, 'HH:mm:ss').format('HH:mm') %>
+                                            </div>
+                                            <div class="screening-features">
+                                                <% if (screening.is_3d) { %>
+                                                    <span class="feature">3D</span>
+                                                <% } %>
+                                                <% if (screening.is_imax) { %>
+                                                    <span class="feature">IMAX</span>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                        <div class="screening-prices">
+                                            <div class="price-item">
+                                                <span class="price-label">Стандарт</span>
+                                                <span class="price-value"><%= screening.base_price %> ₽</span>
+                                            </div>
+                                            <div class="price-item">
+                                                <span class="price-label">VIP</span>
+                                                <span class="price-value"><%= screening.vip_price %> ₽</span>
+                                            </div>
+                                            <div class="price-item">
+                                                <span class="price-label">Студент</span>
+                                                <span class="price-value"><%= screening.student_price %> ₽</span>
+                                            </div>
+                                            <div class="price-item">
+                                                <span class="price-label">Детский</span>
+                                                <span class="price-value"><%= screening.child_price %> ₽</span>
+                                            </div>
+                                        </div>
+                                        <a href="/cinema/screenings/<%= screening.id %>" class="btn btn-primary btn-sm">
+                                            Выбрать места
+                                        </a>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <div class="text-center py-5">
+                    <h3>Сеансы не найдены</h3>
+                    <p>К сожалению, на ближайшие дни сеансы не запланированы</p>
+                </div>
+            <% } %>
+        </div>
+    </section>
+
+    <!-- Отзывы -->
+    <section class="reviews-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Отзывы</h2>
+                <% if (user) { %>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                        <i class="bi bi-plus-lg"></i>
+                        Написать отзыв
+                    </button>
+                <% } %>
+            </div>
+
+            <% if (movie.reviews && movie.reviews.length > 0) { %>
+                <div class="reviews-grid">
+                    <% movie.reviews.forEach(review => { %>
+                        <div class="review-card animate fade-in">
+                            <div class="review-header">
+                                <div class="review-author">
+                                    <i class="bi bi-person-circle"></i>
+                                    <span><%= review.User.name %></span>
+                                </div>
+                                <div class="review-rating">
+                                    <% for (let i = 1; i <= 10; i++) { %>
+                                        <i class="bi bi-star<%= i <= review.rating ? '-fill' : '' %>"></i>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <div class="review-content">
+                                <%= review.comment %>
+                            </div>
+                            <div class="review-footer">
+                                <small class="text-muted">
+                                    <%= moment(review.created_at).format('D MMMM YYYY') %>
+                                </small>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <div class="text-center py-5">
+                    <h3>Отзывов пока нет</h3>
+                    <p>Станьте первым, кто оставит отзыв об этом фильме</p>
+                </div>
+            <% } %>
+        </div>
+    </section>
+</div>
+
+<!-- Модальное окно для трейлера -->
+<div class="modal fade" id="trailerModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Трейлер</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="ratio ratio-16x9">
+                    <iframe src="" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для отзыва -->
+<% if (user) { %>
+    <div class="modal fade" id="reviewModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Написать отзыв</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="reviewForm">
+                        <div class="mb-3">
+                            <label class="form-label">Оценка</label>
+                            <div class="rating-input">
+                                <% for (let i = 1; i <= 10; i++) { %>
+                                    <input type="radio" name="rating" value="<%= i %>" id="rating<%= i %>" required>
+                                    <label for="rating<%= i %>">
+                                        <i class="bi bi-star"></i>
+                                    </label>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="comment" class="form-label">Комментарий</label>
+                            <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Отправить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<% } %>
+
+<style>
+/* Постер */
+.movie-poster {
+    position: relative;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.movie-poster img {
+    width: 100%;
+    height: auto;
+}
+
+.watch-trailer-btn {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.watch-trailer-btn:hover {
+    background: var(--primary);
+}
+
+/* Детали фильма */
+.movie-details {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.movie-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.movie-original-title {
+    display: block;
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    font-weight: normal;
+}
+
+.movie-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.meta-item.rating {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.movie-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.movie-crew {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.crew-item {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.crew-item strong {
+    color: var(--text-primary);
+    min-width: 100px;
+}
+
+/* Расписание */
+.screenings-section {
+    padding: 4rem 0;
+    background: var(--surface);
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+}
+
+.screenings-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.screening-date {
+    background: var(--surface);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+}
+
+.date-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding: 1rem;
+    background: var(--primary);
+    color: var(--text-on-primary);
+}
+
+.screening-times {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.screening-card {
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: all var(--transition);
+}
+
+.screening-card:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow);
+}
+
+.screening-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.screening-time {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.screening-features {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.feature {
+    background: var(--primary);
+    color: var(--text-on-primary);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.screening-prices {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+
+.price-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.price-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.price-value {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Отзывы */
+.reviews-section {
+    padding: 4rem 0;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.review-card {
+    background: var(--surface);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.review-author {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.review-rating {
+    color: var(--warning);
+}
+
+.review-content {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.review-footer {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1rem;
+}
+
+/* Форма отзыва */
+.rating-input {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 0.25rem;
+}
+
+.rating-input input {
+    display: none;
+}
+
+.rating-input label {
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: color var(--transition);
+}
+
+.rating-input label:hover,
+.rating-input label:hover ~ label,
+.rating-input input:checked ~ label {
+    color: var(--warning);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .movie-title {
+        font-size: 2rem;
+    }
+
+    .movie-meta {
+        gap: 1rem;
+    }
+
+    .screening-times {
+        grid-template-columns: 1fr;
+    }
+
+    .reviews-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация модального окна для трейлера
+    const trailerModal = new bootstrap.Modal(document.getElementById('trailerModal'));
+    const trailerIframe = document.querySelector('#trailerModal iframe');
+    
+    document.querySelector('.watch-trailer-btn')?.addEventListener('click', () => {
+        const trailerUrl = event.currentTarget.dataset.trailerUrl;
+        trailerIframe.src = trailerUrl;
+        trailerModal.show();
+    });
+
+    // Очистка src при закрытии модального окна
+    document.getElementById('trailerModal').addEventListener('hidden.bs.modal', () => {
+        trailerIframe.src = '';
+    });
+
+    // Отправка отзыва
+    const reviewForm = document.getElementById('reviewForm');
+    if (reviewForm) {
+        reviewForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(reviewForm);
+            
+            try {
+                const response = await fetch(`/cinema/movies/<%= movie.id %>/reviews`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        rating: parseInt(formData.get('rating')),
+                        comment: formData.get('comment')
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+    }
+});
+</script> 

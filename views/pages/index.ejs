@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ТРЦ "Кристалл" - Главная</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/events.css">
+    <link rel="stylesheet" href="/css/map.css">
+    <link rel="stylesheet" href="/css/loyalty.css">
+    <link rel="stylesheet" href="/css/footer.css">
+
+    <!-- Шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Иконки -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <a href="/" class="logo">
+                <i class="bi bi-building"></i>
+                ТРЦ "Кристалл"
+            </a>
+            
+            <button class="mobile-menu-btn">
+                <i class="bi bi-list"></i>
+            </button>
+            
+            <nav>
+                <ul class="nav-list">
+                    <li><a href="/" class="nav-link <%= path === '/' ? 'active' : '' %>">Главная</a></li>
+                    <li><a href="/cinema" class="nav-link <%= path.startsWith('/cinema') ? 'active' : '' %>">Кинотеатр</a></li>
+                    <li><a href="/map" class="nav-link <%= path === '/map' ? 'active' : '' %>">Карта ТЦ</a></li>
+                    <li><a href="/contacts" class="nav-link <%= path === '/contacts' ? 'active' : '' %>">Контакты</a></li>
+                </ul>
+            </nav>
+            
+            <div class="auth-buttons">
+                <% if (user) { %>
+                    <div class="dropdown">
+                        <button class="btn btn-outline dropdown-toggle">
+                            <i class="bi bi-person-circle"></i>
+                            <%= user.name %>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="/profile" class="dropdown-item">
+                                <i class="bi bi-person"></i>
+                                Профиль
+                            </a>
+                            <% if (user.role === 'admin') { %>
+                                <a href="/admin" class="dropdown-item">
+                                    <i class="bi bi-gear"></i>
+                                    Админ панель
+                                </a>
+                            <% } %>
+                            <a href="/cinema/tickets" class="dropdown-item">
+                                <i class="bi bi-ticket-perforated"></i>
+                                Мои билеты
+                            </a>
+                            <a href="/settings" class="dropdown-item">
+                                <i class="bi bi-gear"></i>
+                                Настройки
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="/logout" class="dropdown-item text-danger">
+                                <i class="bi bi-box-arrow-right"></i>
+                                Выход
+                            </a>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <a href="/login" class="btn btn-outline">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        Вход
+                    </a>
+                    <a href="/register" class="btn btn-primary">
+                        <i class="bi bi-person-plus"></i>
+                        Регистрация
+                    </a>
+                <% } %>
+            </div>
+        </div>
+    </header>
+    
+    <style>
+    .main-header .navbar-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .main-header .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .main-header .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .main-header .material-icons {
+        font-size: 1.25rem;
+    }
+    </style>
+    
+    <!-- Чат с администрацией -->
+    <% if (user) { %>
+        <div class="offcanvas offcanvas-end chat-offcanvas" tabindex="-1" id="chatOffcanvas">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title">Чат с администрацией</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Сообщения будут добавляться динамически -->
+                </div>
+                <form id="chatForm" class="mt-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="messageInput" placeholder="Введите сообщение...">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-send"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="chat-icon" id="chatIcon">
+            <i class="bi bi-chat-dots-fill"></i>
+            <span class="unread-badge" id="unreadMessages" style="display: none;">0</span>
+        </div>
+        
+        <script>
+            const USER_ID = "<%= user.id %>";
+        </script>
+    <% } %> 
+
+    <!-- Главная страница -->
+    <div class="main-page">
+        <!-- Hero секция -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>ТРЦ Кристалл</h1>
+                    <p>Ваш любимый торгово-развлекательный центр в Дятьково</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Главный баннер -->
+        <section class="hero-slider">
+            <div class="slider-container">
+                <div class="slide active" style="background-image: url('/images/banners/banner1.jpg')">
+                    <div class="slide-content">
+                        <h1 class="slide-title">Добро пожаловать в ТРЦ "Кристалл"</h1>
+                        <p class="slide-subtitle">Ваше идеальное место для шопинга и развлечений</p>
+                        <div class="slide-buttons">
+                            <a href="/cinema" class="btn btn-primary">Афиша кино</a>
+                            <a href="/map" class="btn btn-outline">Карта ТЦ</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="slide" style="background-image: url('/images/banners/banner2.jpg')">
+                    <div class="slide-content">
+                        <h1 class="slide-title">Скидки до 70%</h1>
+                        <p class="slide-subtitle">Сезонная распродажа во всех магазинах</p>
+                        <div class="slide-buttons">
+                            <a href="/promotions" class="btn btn-primary">Все акции</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="slide" style="background-image: url('/images/banners/banner3.jpg')">
+                    <div class="slide-content">
+                        <h1 class="slide-title">Новый кинозал IMAX</h1>
+                        <p class="slide-subtitle">Погрузитесь в мир кино с невероятным качеством изображения и звука</p>
+                        <div class="slide-buttons">
+                            <a href="/cinema" class="btn btn-primary">Расписание сеансов</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slider-controls">
+                <button class="slider-arrow prev"><i class="bi bi-chevron-left"></i></button>
+                <div class="slider-dots">
+                    <span class="dot active" data-slide="0"></span>
+                    <span class="dot" data-slide="1"></span>
+                    <span class="dot" data-slide="2"></span>
+                </div>
+                <button class="slider-arrow next"><i class="bi bi-chevron-right"></i></button>
+            </div>
+        </section>
+
+        <!-- Текущие фильмы -->
+        <section class="movies-section section-padding">
+            <div class="container">
+                <h2 class="section-title">Сейчас в кино</h2>
+                <% if (movies && movies.length > 0) { %>
+                    <div class="movies-grid">
+                        <% movies.forEach(movie => { %>
+                            <div class="movie-card">
+                                <div class="movie-poster">
+                                    <img src="<%= movie.poster_url || '/images/movie-placeholder.jpg' %>" alt="<%= movie.title %>">
+                                    <% if (movie.is_featured) { %>
+                                        <div class="movie-badge badge-featured">Премьера</div>
+                                    <% } %>
+                                    <% if (movie.format && movie.format.includes('3D')) { %>
+                                        <div class="movie-badge badge-3d">3D</div>
+                                    <% } %>
+                                    <% if (movie.format && movie.format.includes('IMAX')) { %>
+                                        <div class="movie-badge badge-imax">IMAX</div>
+                                    <% } %>
+                                </div>
+                                <div class="movie-content">
+                                    <h3 class="movie-title"><%= movie.title %></h3>
+                                    <% if (movie.original_title) { %>
+                                        <p class="movie-original-title"><%= movie.original_title %></p>
+                                    <% } %>
+                                    <div class="movie-meta">
+                                        <span class="movie-meta-item">
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <%= movie.rating || '0.0' %>
+                                        </span>
+                                        <span class="movie-meta-item">
+                                            <i class="bi bi-clock"></i>
+                                            <%= movie.duration %> мин
+                                        </span>
+                                        <span class="movie-meta-item">
+                                            <i class="bi bi-tag"></i>
+                                            <%= movie.genre %>
+                                        </span>
+                                    </div>
+                                    <div class="movie-actions">
+                                        <a href="/cinema/movies/<%= movie.id %>" class="btn btn-primary">Подробнее</a>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } else { %>
+                    <div class="empty-state">
+                        <i class="bi bi-film"></i>
+                        <p>В данный момент нет активных фильмов</p>
+                    </div>
+                <% } %>
+                <div class="text-center mt-4">
+                    <a href="/cinema" class="btn btn-outline">Все фильмы</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ближайшие события -->
+        <section class="events-section section-padding bg-light">
+            <div class="container">
+                <h2 class="section-title">Ближайшие события</h2>
+                <% if (events && events.length > 0) { %>
+                    <div class="events-grid">
+                        <% events.forEach(event => { %>
+                            <div class="event-card">
+                                <div class="event-date">
+                                    <span class="event-day"><%= new Date(event.date).getDate() %></span>
+                                    <span class="event-month"><%= new Date(event.date).toLocaleString('ru', { month: 'short' }) %></span>
+                                </div>
+                                <div class="event-content">
+                                    <h3 class="event-title"><%= event.title %></h3>
+                                    <p class="event-description"><%= event.description %></p>
+                                    <div class="event-meta">
+                                        <span class="event-time"><i class="bi bi-clock"></i> <%= event.time %></span>
+                                        <span class="event-location"><i class="bi bi-geo-alt"></i> <%= event.location || 'Главная сцена' %></span>
+                                    </div>
+                                    <a href="/events/<%= event.id %>" class="btn btn-outline">Подробнее</a>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <div class="empty-state">
+                        <i class="bi bi-calendar-x"></i>
+                        <p>В данный момент нет запланированных событий</p>
+                    </div>
+                <% } %>
+                <div class="text-center mt-4">
+                    <a href="/events" class="btn btn-primary">Все события</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Популярные магазины -->
+        <section class="py-5">
+            <div class="container">
+                <h2 class="section-title">Популярные магазины</h2>
+                <div class="shops-grid">
+                    <% if (shops && shops.length > 0) { %>
+                        <% shops.forEach(shop => { %>
+                            <div class="shop-card" data-category="<%= shop.category %>" data-floor="<%= shop.floor %>">
+                                <div class="shop-logo">
+                                    <img src="<%= shop.image_url || '/images/shop-placeholder.jpg' %>" alt="<%= shop.name %>">
+                                    <% if (shop.Promotions && shop.Promotions.length > 0) { %>
+                                        <div class="shop-badge">Акция</div>
+                                    <% } %>
+                                </div>
+                                <div class="shop-content">
+                                    <h3 class="shop-name"><%= shop.name %></h3>
+                                    <div class="shop-meta">
+                                        <span class="shop-category"><i class="bi bi-tag"></i> <%= shop.category || 'Разное' %></span>
+                                        <span class="shop-floor"><i class="bi bi-layers"></i> <%= shop.floor || '1' %> этаж</span>
+                                    </div>
+                                    <div class="shop-actions">
+                                        <a href="/shops/<%= shop.id %>" class="btn btn-primary">Подробнее</a>
+                                        <button class="btn btn-outline favorite-btn" data-shop-id="<%= shop.id %>">
+                                            <i class="bi bi-heart"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <i class="bi bi-shop"></i>
+                            <p>Магазины скоро появятся</p>
+                        </div>
+                    <% } %>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="/shops" class="btn btn-outline">Все магазины</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Интерактивная карта -->
+        <section class="map-section">
+            <div class="container">
+                <h2 class="section-title">Карта ТРЦ</h2>
+                <div class="map-container">
+                    <div id="mall-map" class="mall-map"></div>
+                    <div class="map-overlay">
+                        <div class="map-info">
+                            <h3>Найдите нужный магазин</h3>
+                            <p>Интерактивная 3D-карта поможет вам легко ориентироваться в торговом центре</p>
+                            <a href="/map" class="btn btn-primary">
+                                <i class="bi bi-map"></i>
+                                Открыть интерактивную карту
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Акции и скидки -->
+        <section class="promotions-section section-padding">
+            <div class="container">
+                <h2 class="section-title">Акции и скидки</h2>
+                <% if (promotions && promotions.length > 0) { %>
+                    <div class="promotions-grid">
+                        <% promotions.forEach(promotion => { %>
+                            <div class="promotion-card">
+                                <div class="promotion-image">
+                                    <img src="<%= promotion.image_url || '/images/promotion-placeholder.jpg' %>" alt="<%= promotion.title %>">
+                                    <div class="promotion-badge">
+                                        <% if (promotion.discount_type === 'percentage') { %>
+                                            -<%= promotion.discount_value %>%
+                                        <% } else if (promotion.discount_type === 'fixed') { %>
+                                            -<%= promotion.discount_value %> ₽
+                                        <% } else { %>
+                                            Акция
+                                        <% } %>
+                                    </div>
+                                </div>
+                                <div class="promotion-content">
+                                    <h3 class="promotion-title"><%= promotion.title %></h3>
+                                    <p class="promotion-description"><%= promotion.description %></p>
+                                    <div class="promotion-meta">
+                                        <% if (promotion.start_date && promotion.end_date) { %>
+                                            <span class="promotion-dates">
+                                                <i class="bi bi-calendar-event"></i>
+                                                <%= new Date(promotion.start_date).toLocaleDateString('ru') %> - <%= new Date(promotion.end_date).toLocaleDateString('ru') %>
+                                            </span>
+                                        <% } %>
+                                        <% if (promotion.Shop) { %>
+                                            <span class="promotion-shop">
+                                                <i class="bi bi-shop"></i>
+                                                <%= promotion.Shop.name %>
+                                            </span>
+                                        <% } %>
+                                    </div>
+                                    <div class="promotion-actions">
+                                        <a href="/promotions/<%= promotion.id %>" class="btn btn-primary">Подробнее</a>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } else { %>
+                    <div class="empty-state">
+                        <i class="bi bi-tag"></i>
+                        <p>В данный момент нет активных акций</p>
+                    </div>
+                <% } %>
+                <div class="text-center mt-4">
+                    <a href="/promotions" class="btn btn-outline">Все акции</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Программа лояльности -->
+        <section class="loyalty-section">
+            <div class="container">
+                <div class="loyalty-card">
+                    <div class="loyalty-content">
+                        <h2 class="loyalty-title">Программа лояльности</h2>
+                        <p class="loyalty-description">Получайте бонусные баллы за покупки и посещение мероприятий</p>
+                        <div class="loyalty-features">
+                            <div class="loyalty-feature">
+                                <div class="feature-icon">
+                                    <i class="bi bi-cash-coin"></i>
+                                </div>
+                                <div class="feature-text">
+                                    <h3>Кэшбэк 10%</h3>
+                                    <p>От суммы покупки возвращается баллами</p>
+                                </div>
+                            </div>
+                            <div class="loyalty-feature">
+                                <div class="feature-icon">
+                                    <i class="bi bi-gift"></i>
+                                </div>
+                                <div class="feature-text">
+                                    <h3>Эксклюзивные предложения</h3>
+                                    <p>Специальные акции только для участников</p>
+                                </div>
+                            </div>
+                            <div class="loyalty-feature">
+                                <div class="feature-icon">
+                                    <i class="bi bi-calendar-heart"></i>
+                                </div>
+                                <div class="feature-text">
+                                    <h3>Подарок на день рождения</h3>
+                                    <p>Дополнительные скидки и бонусы</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="loyalty-actions">
+                            <% if (!user) { %>
+                                <a href="/auth/register" class="btn btn-primary">Присоединиться</a>
+                                <a href="/about/loyalty" class="btn btn-outline">Подробнее</a>
+                            <% } else { %>
+                                <a href="/profile/bonuses" class="btn btn-primary">Мои бонусы</a>
+                                <a href="/profile/bonuses/history" class="btn btn-outline">История начислений</a>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="loyalty-image">
+                        <img src="/images/loyalty.jpg" alt="Программа лояльности" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3D модель ТЦ -->
+        <section class="model-section section-padding bg-light">
+            <div class="container">
+                <h2 class="section-title">3D модель торгового центра</h2>
+                <div class="model-container">
+                    <div id="model-viewer"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Как нас найти -->
+        <section class="location-section">
+            <div class="container">
+                <h2 class="section-title">Как нас найти</h2>
+                <div class="location-content">
+                    <div class="location-info">
+                        <div class="info-item">
+                            <i class="bi bi-geo-alt"></i>
+                            <div>
+                                <h3>Адрес</h3>
+                                <p>г. Дятьково, ул. Ленина, д. 184</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="bi bi-clock"></i>
+                            <div>
+                                <h3>Режим работы</h3>
+                                <p>Ежедневно с 10:00 до 22:00</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="bi bi-telephone"></i>
+                            <div>
+                                <h3>Телефон</h3>
+                                <p><a href="tel:+74832777777">+7 (4832) 77-77-77</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <%- include('../partials/map') %>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Подвал -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-section">
+                <h3>О нас</h3>
+                <ul class="footer-links">
+                    <li><a href="/about" class="footer-link">О торговом центре</a></li>
+                    <li><a href="/contacts" class="footer-link">Контакты</a></li>
+                    <li><a href="/map" class="footer-link">Карта ТЦ</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Развлечения</h3>
+                <ul class="footer-links">
+                    <li><a href="/cinema" class="footer-link">Кинотеатр</a></li>
+                    <li><a href="/events" class="footer-link">События</a></li>
+                    <li><a href="/promotions" class="footer-link">Акции</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Информация</h3>
+                <ul class="footer-links">
+                    <li><a href="/privacy" class="footer-link">Политика конфиденциальности</a></li>
+                    <li><a href="/terms" class="footer-link">Условия использования</a></li>
+                    <li><a href="/faq" class="footer-link">Часто задаваемые вопросы</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Контакты</h3>
+                <ul class="footer-links">
+                    <li><a href="tel:+71234567890" class="footer-link">+7 (123) 456-78-90</a></li>
+                    <li><a href="mailto:info@mall.ru" class="footer-link">info@mall.ru</a></li>
+                    <li><span class="footer-text">Адрес: г. Москва, ул. Примерная, д. 1</span></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; <%= new Date().getFullYear() %> ТРЦ "Кристалл". Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Push-уведомления -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div class="toast" role="alert" id="notificationToast">
+            <div class="toast-header">
+                <i class="bi bi-bell-fill me-2"></i>
+                <strong class="me-auto">Уведомление</strong>
+                <small class="text-muted">сейчас</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="notificationBody">
+                <!-- Текст уведомления будет добавляться динамически -->
+            </div>
+        </div>
+    </div> 
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/map.js"></script>
+    <script type="module">
+        import * as THREE from 'https://cdn.skypack.dev/three@0.132.2';
+        import { OrbitControls } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/OrbitControls.js';
+        import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/GLTFLoader.js';
+
+        // Инициализация сцены
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        const container = document.getElementById('model-viewer');
+        
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        // Добавление освещения
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(0, 10, 10);
+        scene.add(directionalLight);
+
+        // Управление камерой
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        // Загрузка модели
+        const loader = new GLTFLoader();
+        loader.load('/models/mall.glb', (gltf) => {
+            scene.add(gltf.scene);
+            camera.position.set(5, 5, 5);
+            controls.target.set(0, 0, 0);
+        });
+
+        // Анимация
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Адаптивность
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+    </script>
+
+    <style>
+    .location-section {
+        padding: 4rem 0;
+        background: var(--surface-alt);
+    }
+
+    .location-content {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 2rem;
+        align-items: start;
+    }
+
+    .location-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem;
+        background: var(--surface-color);
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .info-item i {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+    }
+
+    .info-item h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .info-item p {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+    }
+
+    .info-item a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .info-item a:hover {
+        color: var(--primary-color);
+    }
+
+    @media (max-width: 768px) {
+        .location-content {
+            grid-template-columns: 1fr;
+        }
+    }
+    </style>
+</body>
+</html> 

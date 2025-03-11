@@ -1,0 +1,91 @@
+<!-- Страница 404 -->
+<div class="error-page">
+    <div class="container">
+        <div class="error-content animate fade-in">
+            <div class="error-icon">
+                <i class="bi bi-exclamation-diamond"></i>
+            </div>
+            <h1 class="error-title">404</h1>
+            <p class="error-message">Страница не найдена</p>
+            <p class="error-description">
+                К сожалению, запрашиваемая страница не существует или была перемещена.
+            </p>
+            <div class="error-actions">
+                <a href="/" class="btn btn-primary">
+                    <i class="bi bi-house"></i>
+                    На главную
+                </a>
+                <button onclick="history.back()" class="btn btn-outline">
+                    <i class="bi bi-arrow-left"></i>
+                    Назад
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.error-page {
+    min-height: calc(100vh - var(--header-height) - var(--footer-height));
+    display: flex;
+    align-items: center;
+    padding: 2rem 0;
+    background: var(--background);
+}
+
+.error-content {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.error-icon {
+    font-size: 4rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.error-title {
+    font-size: 6rem;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+.error-message {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.error-description {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.error-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .error-content {
+        padding: 0 1rem;
+    }
+
+    .error-title {
+        font-size: 4rem;
+    }
+
+    .error-message {
+        font-size: 1.25rem;
+    }
+
+    .error-actions {
+        flex-direction: column;
+    }
+}
+</style> 

@@ -1,0 +1,138 @@
+<!-- Страница входа -->
+<div class="auth-page">
+    <div class="container">
+        <div class="auth-card animate fade-in">
+            <h1 class="auth-title">Вход в систему</h1>
+            
+            <form action="/auth/login" method="POST" class="auth-form">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Пароль</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+                
+                <div class="form-check mb-3">
+                    <input type="checkbox" id="remember" name="remember" class="form-check-input">
+                    <label for="remember" class="form-check-label">Запомнить меня</label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-100">
+                    Войти
+                </button>
+            </form>
+            
+            <div class="auth-links">
+                <a href="/auth/register">Регистрация</a>
+                <a href="/auth/forgot-password">Забыли пароль?</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.auth-page {
+    min-height: calc(100vh - var(--header-height) - var(--footer-height));
+    display: flex;
+    align-items: center;
+    padding: 2rem 0;
+    background: var(--background);
+}
+
+.auth-card {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: var(--surface);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.auth-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+}
+
+.auth-form {
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--surface);
+    color: var(--text-primary);
+    transition: all var(--transition);
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary-light);
+    outline: none;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-check-input {
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.form-check-label {
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.auth-links {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+}
+
+.auth-links a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: color var(--transition);
+}
+
+.auth-links a:hover {
+    color: var(--primary-dark);
+}
+
+@media (max-width: 768px) {
+    .auth-card {
+        margin: 0 1rem;
+    }
+}
+</style> 

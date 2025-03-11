@@ -1,0 +1,311 @@
+<div class="shop-page">
+    <!-- Хлебные крошки -->
+    <nav aria-label="breadcrumb" class="bg-light py-2">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                <li class="breadcrumb-item"><a href="/shops">Магазины</a></li>
+                <li class="breadcrumb-item active"><%= shop.name %></li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Информация о магазине -->
+    <div class="shop-info-section py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="shop-gallery">
+                        <img src="<%= shop.main_image || '/images/shop-placeholder.jpg' %>" class="img-fluid rounded" alt="<%= shop.name %>">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="shop-details">
+                        <h1 class="shop-title mb-3"><%= shop.name %></h1>
+                        <div class="shop-meta mb-4">
+                            <span class="badge bg-primary me-2"><%= shop.category %></span>
+                            <span class="text-muted">Этаж <%= shop.floor %></span>
+                            <% if (shop.rating > 0) { %>
+                                <div class="shop-rating ms-3">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <span><%= shop.rating.toFixed(1) %></span>
+                                    <small class="text-muted">(<%= shop.reviews_count %> отзывов)</small>
+                                </div>
+                            <% } %>
+                        </div>
+                        <div class="shop-description mb-4">
+                            <%= shop.full_description || shop.description %>
+                        </div>
+                        <div class="shop-contacts mb-4">
+                            <h4>Контакты</h4>
+                            <ul class="list-unstyled">
+                                <% if (shop.phone) { %>
+                                    <li>
+                                        <i class="bi bi-telephone"></i>
+                                        <a href="tel:<%= shop.phone %>" class="text-decoration-none"><%= shop.phone %></a>
+                                    </li>
+                                <% } %>
+                                <% if (shop.email) { %>
+                                    <li>
+                                        <i class="bi bi-envelope"></i>
+                                        <a href="mailto:<%= shop.email %>" class="text-decoration-none"><%= shop.email %></a>
+                                    </li>
+                                <% } %>
+                            </ul>
+                        </div>
+                        <div class="shop-working-hours mb-4">
+                            <h4>Режим работы</h4>
+                            <% if (shop.working_hours) { %>
+                                <ul class="list-unstyled">
+                                    <% Object.entries(shop.working_hours).forEach(([day, hours]) => { %>
+                                        <li>
+                                            <strong><%= day %>:</strong>
+                                            <%= hours %>
+                                        </li>
+                                    <% }); %>
+                                </ul>
+                            <% } else { %>
+                                <p>10:00 - 22:00, без выходных</p>
+                            <% } %>
+                        </div>
+                        <% if (shop.social_media) { %>
+                            <div class="shop-social">
+                                <h4>Мы в соцсетях</h4>
+                                <div class="social-links">
+                                    <% Object.entries(shop.social_media).forEach(([network, url]) => { %>
+                                        <a href="<%= url %>" class="btn btn-outline-primary me-2" target="_blank">
+                                            <i class="bi bi-<%= network %>"></i>
+                                        </a>
+                                    <% }); %>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Отзывы -->
+    <div class="reviews-section py-5 bg-light">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Отзывы</h2>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                    Оставить отзыв
+                </button>
+            </div>
+            <% if (shop.reviews && shop.reviews.length > 0) { %>
+                <div class="reviews-list">
+                    <% shop.reviews.forEach(review => { %>
+                        <div class="review-card mb-3">
+                            <div class="review-header">
+                                <div class="review-author">
+                                    <img src="<%= review.user.avatar || '/images/default-avatar.png' %>" alt="<%= review.user.name %>" class="review-avatar">
+                                    <div>
+                                        <h5 class="mb-0"><%= review.user.name %></h5>
+                                        <small class="text-muted"><%= moment(review.created_at).format('DD.MM.YYYY') %></small>
+                                    </div>
+                                </div>
+                                <div class="review-rating">
+                                    <% for(let i = 0; i < 5; i++) { %>
+                                        <i class="bi bi-star<%= i < review.rating ? '-fill' : '' %> text-warning"></i>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <div class="review-content">
+                                <p><%= review.comment %></p>
+                                <% if (review.images && review.images.length > 0) { %>
+                                    <div class="review-images">
+                                        <% review.images.forEach(image => { %>
+                                            <img src="<%= image %>" alt="Фото к отзыву" class="img-thumbnail">
+                                        <% }); %>
+                                    </div>
+                                <% } %>
+                            </div>
+                            <% if (review.reply) { %>
+                                <div class="review-reply">
+                                    <h6>Ответ магазина</h6>
+                                    <p><%= review.reply %></p>
+                                    <small class="text-muted"><%= moment(review.reply_date).format('DD.MM.YYYY') %></small>
+                                </div>
+                            <% } %>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <div class="text-center py-5">
+                    <p>Пока нет отзывов</p>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                        Будьте первым!
+                    </button>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно отзыва -->
+<div class="modal fade" id="reviewModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Оставить отзыв</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="reviewForm" action="/api/reviews" method="POST">
+                    <input type="hidden" name="shop_id" value="<%= shop.id %>">
+                    <div class="mb-3">
+                        <label class="form-label">Оценка</label>
+                        <div class="rating-input">
+                            <% for(let i = 5; i >= 1; i--) { %>
+                                <input type="radio" name="rating" value="<%= i %>" id="star<%= i %>" required>
+                                <label for="star<%= i %>"><i class="bi bi-star-fill"></i></label>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reviewComment" class="form-label">Комментарий</label>
+                        <textarea class="form-control" id="reviewComment" name="comment" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reviewImages" class="form-label">Фотографии</label>
+                        <input type="file" class="form-control" id="reviewImages" name="images" multiple accept="image/*">
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.shop-gallery img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+.shop-meta {
+    display: flex;
+    align-items: center;
+}
+
+.shop-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.shop-contacts i,
+.shop-social i {
+    margin-right: 0.5rem;
+}
+
+.review-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.review-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.review-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.review-content {
+    margin-bottom: 1rem;
+}
+
+.review-images {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+}
+
+.review-images img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.review-reply {
+    background: var(--light-color);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.rating-input {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 0.5rem;
+}
+
+.rating-input input {
+    display: none;
+}
+
+.rating-input label {
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #ddd;
+}
+
+.rating-input label:hover,
+.rating-input label:hover ~ label,
+.rating-input input:checked ~ label {
+    color: var(--warning-color);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const reviewForm = document.getElementById('reviewForm');
+    if (reviewForm) {
+        reviewForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            
+            try {
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(Object.fromEntries(formData))
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    throw new Error(data.message || 'Ошибка отправки отзыва');
+                }
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+    }
+});
+</script> 

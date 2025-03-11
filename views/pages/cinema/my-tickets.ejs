@@ -1,0 +1,455 @@
+<!-- Страница с билетами пользователя -->
+<div class="my-tickets-page">
+    <!-- Хлебные крошки -->
+    <nav aria-label="breadcrumb" class="bg-light py-2">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                <li class="breadcrumb-item"><a href="/cinema">Кинотеатр</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Мои билеты</li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Список билетов -->
+    <section class="tickets-section">
+        <div class="container">
+            <div class="section-header">
+                <h1 class="section-title">Мои билеты</h1>
+                <a href="/cinema" class="btn btn-primary">
+                    <i class="bi bi-plus-lg"></i>
+                    Купить новый билет
+                </a>
+            </div>
+
+            <div class="tickets-filter">
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">Все билеты</button>
+                    <button class="filter-tab" data-filter="upcoming">Предстоящие</button>
+                    <button class="filter-tab" data-filter="past">Прошедшие</button>
+                </div>
+                <div class="filter-search">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" class="form-control" id="ticketSearch" placeholder="Поиск по названию фильма">
+                    </div>
+                </div>
+            </div>
+
+            <% if (tickets.length > 0) { %>
+                <div class="tickets-grid" id="ticketsGrid">
+                    <% tickets.forEach(ticket => { 
+                        const seats = JSON.parse(ticket.seats);
+                        const seatDescriptions = seats.map(seat => {
+                            return `Ряд ${seat.row + 1}, Место ${seat.seat + 1}`;
+                        }).join('; ');
+                        
+                        const screeningDate = new Date(ticket.Screening.date);
+                        screeningDate.setHours(
+                            parseInt(ticket.Screening.time.split(':')[0]), 
+                            parseInt(ticket.Screening.time.split(':')[1])
+                        );
+                        
+                        const isPast = screeningDate < new Date();
+                        const filterClass = isPast ? 'past' : 'upcoming';
+                    %>
+                        <div class="ticket-item animate fade-in" data-filter="<%= filterClass %>" data-title="<%= ticket.Screening.Movie.title.toLowerCase() %>">
+                            <div class="ticket-card <%= isPast ? 'past' : '' %>">
+                                <div class="ticket-poster">
+                                    <img src="<%= ticket.Screening.Movie.poster_url || '/images/movie-placeholder.jpg' %>" alt="<%= ticket.Screening.Movie.title %>">
+                                    <div class="ticket-status <%= ticket.payment_status %>">
+                                        <%= ticket.payment_status === 'paid' ? 'Оплачен' : 'Ожидает оплаты' %>
+                                    </div>
+                                </div>
+                                <div class="ticket-content">
+                                    <h3 class="ticket-title"><%= ticket.Screening.Movie.title %></h3>
+                                    <div class="ticket-details">
+                                        <div class="ticket-detail">
+                                            <i class="bi bi-calendar"></i>
+                                            <span><%= moment(ticket.Screening.date).format('D MMMM YYYY') %></span>
+                                        </div>
+                                        <div class="ticket-detail">
+                                            <i class="bi bi-clock"></i>
+                                            <span><%= moment(ticket.Screening.time, 'HH:mm:ss').format('HH:mm') %></span>
+                                        </div>
+                                        <div class="ticket-detail">
+                                            <i class="bi bi-film"></i>
+                                            <span>Зал <%= ticket.Screening.hall %></span>
+                                        </div>
+                                        <div class="ticket-detail">
+                                            <i class="bi bi-person"></i>
+                                            <span><%= seats.length %> <%= seats.length === 1 ? 'место' : seats.length < 5 ? 'места' : 'мест' %></span>
+                                        </div>
+                                    </div>
+                                    <div class="ticket-seats">
+                                        <strong>Места:</strong> <%= seatDescriptions %>
+                                    </div>
+                                    <div class="ticket-actions">
+                                        <% if (ticket.payment_status === 'paid') { %>
+                                            <a href="/cinema/tickets/<%= ticket.id %>" class="btn btn-primary btn-sm">
+                                                <i class="bi bi-ticket-perforated"></i>
+                                                Показать билет
+                                            </a>
+                                            <a href="/cinema/tickets/<%= ticket.id %>/pdf" class="btn btn-outline btn-sm">
+                                                <i class="bi bi-download"></i>
+                                                Скачать PDF
+                                            </a>
+                                        <% } else { %>
+                                            <a href="/cinema/tickets/<%= ticket.id %>/payment" class="btn btn-warning btn-sm">
+                                                <i class="bi bi-credit-card"></i>
+                                                Оплатить
+                                            </a>
+                                            <button class="btn btn-outline btn-sm cancel-ticket" data-ticket-id="<%= ticket.id %>">
+                                                <i class="bi bi-x-lg"></i>
+                                                Отменить
+                                            </button>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+                <div class="no-results" id="noResults" style="display: none;">
+                    <div class="no-results-icon">
+                        <i class="bi bi-search"></i>
+                    </div>
+                    <h3>Билеты не найдены</h3>
+                    <p>Попробуйте изменить параметры поиска</p>
+                </div>
+            <% } else { %>
+                <div class="no-tickets">
+                    <div class="no-tickets-icon">
+                        <i class="bi bi-ticket-perforated"></i>
+                    </div>
+                    <h3>У вас пока нет билетов</h3>
+                    <p>Выберите фильм и купите билет, чтобы он появился здесь</p>
+                    <a href="/cinema" class="btn btn-primary">
+                        Перейти к фильмам
+                    </a>
+                </div>
+            <% } %>
+        </div>
+    </section>
+</div>
+
+<style>
+/* Страница с билетами */
+.my-tickets-page {
+    padding-bottom: 4rem;
+}
+
+.tickets-section {
+    padding: 2rem 0;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.tickets-filter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.filter-tabs {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filter-tab {
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.filter-tab:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.filter-tab.active {
+    background: var(--primary);
+    color: var(--text-on-primary);
+    border-color: var(--primary);
+}
+
+.filter-search {
+    width: 300px;
+}
+
+.input-group {
+    display: flex;
+}
+
+.input-group-text {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    border-right: none;
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+    color: var(--text-secondary);
+}
+
+.tickets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+.ticket-item {
+    transition: all var(--transition);
+}
+
+.ticket-card {
+    background: var(--surface);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.ticket-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.ticket-card.past {
+    opacity: 0.7;
+}
+
+.ticket-poster {
+    position: relative;
+    height: 200px;
+}
+
+.ticket-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ticket-status {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.ticket-status.paid {
+    background: var(--success);
+    color: var(--text-on-primary);
+}
+
+.ticket-status.pending {
+    background: var(--warning);
+    color: var(--text-on-accent);
+}
+
+.ticket-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.ticket-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.ticket-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.ticket-detail {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.ticket-seats {
+    margin-bottom: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.ticket-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: auto;
+}
+
+.no-tickets,
+.no-results {
+    text-align: center;
+    padding: 4rem 0;
+}
+
+.no-tickets-icon,
+.no-results-icon {
+    font-size: 4rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.no-tickets h3,
+.no-results h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.no-tickets p,
+.no-results p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .tickets-filter {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-search {
+        width: 100%;
+    }
+    
+    .tickets-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Фильтрация билетов
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    const ticketItems = document.querySelectorAll('.ticket-item');
+    const noResults = document.getElementById('noResults');
+    const ticketsGrid = document.getElementById('ticketsGrid');
+    const searchInput = document.getElementById('ticketSearch');
+    
+    let currentFilter = 'all';
+    let searchQuery = '';
+    
+    // Функция фильтрации
+    function filterTickets() {
+        let visibleCount = 0;
+        
+        ticketItems.forEach(item => {
+            const filterValue = item.dataset.filter;
+            const title = item.dataset.title;
+            
+            const matchesFilter = currentFilter === 'all' || filterValue === currentFilter;
+            const matchesSearch = title.includes(searchQuery);
+            
+            if (matchesFilter && matchesSearch) {
+                item.style.display = 'block';
+                visibleCount++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        // Показываем сообщение, если нет результатов
+        if (visibleCount === 0) {
+            noResults.style.display = 'block';
+            ticketsGrid.style.display = 'none';
+        } else {
+            noResults.style.display = 'none';
+            ticketsGrid.style.display = 'grid';
+        }
+    }
+    
+    // Обработчики для вкладок фильтра
+    filterTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            filterTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentFilter = tab.dataset.filter;
+            filterTickets();
+        });
+    });
+    
+    // Обработчик для поиска
+    searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value.toLowerCase();
+        filterTickets();
+    });
+    
+    // Обработчики для кнопок отмены билета
+    const cancelButtons = document.querySelectorAll('.cancel-ticket');
+    cancelButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+            if (confirm('Вы уверены, что хотите отменить бронирование?')) {
+                const ticketId = button.dataset.ticketId;
+                
+                try {
+                    const response = await fetch(`/cinema/tickets/${ticketId}/cancel`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        // Перезагружаем страницу после успешной отмены
+                        location.reload();
+                    } else {
+                        throw new Error(data.error);
+                    }
+                } catch (error) {
+                    alert('Ошибка при отмене бронирования: ' + error.message);
+                }
+            }
+        });
+    });
+});
+</script> 

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/shops.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+
+    <div class="shops-page">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Магазины</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                        <li class="breadcrumb-item active">Магазины</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <div class="shops-filters">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="categoryFilter">Категория</label>
+                            <select class="form-select" id="categoryFilter">
+                                <option value="all" selected>Все категории</option>
+                                <option value="clothing">Одежда и обувь</option>
+                                <option value="electronics">Электроника</option>
+                                <option value="food">Еда и напитки</option>
+                                <option value="entertainment">Развлечения</option>
+                                <option value="services">Услуги</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="floorFilter">Этаж</label>
+                            <select class="form-select" id="floorFilter">
+                                <option value="all" selected>Все этажи</option>
+                                <option value="1">1 этаж</option>
+                                <option value="2">2 этаж</option>
+                                <option value="3">3 этаж</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="searchFilter">Поиск</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="searchFilter" placeholder="Название магазина...">
+                                <button class="btn btn-primary" type="button" id="searchButton">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="shops-grid" id="shopsGrid">
+                <% if (shops && shops.length > 0) { %>
+                    <% shops.forEach(shop => { %>
+                        <div class="shop-card" data-category="<%= shop.category || 'all' %>" data-floor="<%= shop.floor || 'all' %>">
+                            <div class="shop-logo">
+                                <img src="<%= shop.logo_url || '/images/shops/default.jpg' %>" alt="<%= shop.name %>">
+                                <div class="shop-overlay">
+                                    <a href="/shops/<%= shop.id %>" class="btn btn-light">Подробнее</a>
+                                </div>
+                                <% if (shop.has_promotions) { %>
+                                    <div class="shop-badge">Акция</div>
+                                <% } %>
+                            </div>
+                            <div class="shop-content">
+                                <h3 class="shop-title"><%= shop.name %></h3>
+                                <div class="shop-meta">
+                                    <span class="shop-category">
+                                        <i class="bi bi-tag"></i>
+                                        <%= shop.category_name || shop.category || 'Общая категория' %>
+                                    </span>
+                                    <span class="shop-floor">
+                                        <i class="bi bi-layers"></i>
+                                        <%= shop.floor ? `${shop.floor} этаж` : 'Этаж не указан' %>
+                                    </span>
+                                </div>
+                                <p class="shop-description"><%= shop.description || 'Описание отсутствует' %></p>
+                                <div class="shop-footer">
+                                    <% if (shop.phone) { %>
+                                        <a href="tel:<%= shop.phone %>" class="phone-link">
+                                            <i class="bi bi-telephone"></i> <%= shop.phone %>
+                                        </a>
+                                    <% } %>
+                                    <a href="/shops/<%= shop.id %>" class="details-link">
+                                        Подробнее <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="no-shops">
+                        <i class="bi bi-exclamation-circle"></i>
+                        <h3>Нет магазинов</h3>
+                        <p>В данный момент нет доступных магазинов. Пожалуйста, загляните позже.</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const shopsGrid = document.getElementById('shopsGrid');
+            const shopCards = document.querySelectorAll('.shop-card');
+            const categoryFilter = document.getElementById('categoryFilter');
+            const floorFilter = document.getElementById('floorFilter');
+            const searchFilter = document.getElementById('searchFilter');
+            const searchButton = document.getElementById('searchButton');
+            
+            // Функция фильтрации магазинов
+            function filterShops() {
+                const category = categoryFilter.value;
+                const floor = floorFilter.value;
+                const searchTerm = searchFilter.value.toLowerCase();
+                
+                shopCards.forEach(card => {
+                    const cardCategory = card.dataset.category;
+                    const cardFloor = card.dataset.floor;
+                    const cardTitle = card.querySelector('.shop-title').textContent.toLowerCase();
+                    const cardDescription = card.querySelector('.shop-description').textContent.toLowerCase();
+                    
+                    const categoryMatch = category === 'all' || cardCategory === category;
+                    const floorMatch = floor === 'all' || cardFloor === floor;
+                    const searchMatch = searchTerm === '' || 
+                                       cardTitle.includes(searchTerm) || 
+                                       cardDescription.includes(searchTerm);
+                    
+                    if (categoryMatch && floorMatch && searchMatch) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Проверяем, есть ли видимые карточки
+                const visibleCards = document.querySelectorAll('.shop-card[style="display: flex;"]');
+                if (visibleCards.length === 0) {
+                    let noResults = document.querySelector('.no-results');
+                    if (!noResults) {
+                        noResults = document.createElement('div');
+                        noResults.className = 'no-results';
+                        noResults.innerHTML = `
+                            <i class="bi bi-search"></i>
+                            <h3>Ничего не найдено</h3>
+                            <p>По вашему запросу не найдено магазинов. Попробуйте изменить параметры поиска.</p>
+                        `;
+                        shopsGrid.appendChild(noResults);
+                    }
+                } else {
+                    const noResults = document.querySelector('.no-results');
+                    if (noResults) {
+                        noResults.remove();
+                    }
+                }
+            }
+            
+            // Обработчики событий
+            categoryFilter.addEventListener('change', filterShops);
+            floorFilter.addEventListener('change', filterShops);
+            searchButton.addEventListener('click', filterShops);
+            searchFilter.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    filterShops();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

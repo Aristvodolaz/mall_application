@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карта ТЦ - ТРЦ "Кристалл"</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/model.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+
+    <div class="mall-map-page">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Карта ТЦ</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                        <li class="breadcrumb-item active">Карта ТЦ</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="model-container" id="mallModel">
+                        <div class="model-loading" id="modelLoading">
+                            <div class="model-loading-spinner"></div>
+                            <div class="model-loading-text">Загрузка 3D модели...</div>
+                        </div>
+                        <div class="model-info">
+                            <h3>ТРЦ "Кристалл"</h3>
+                            <p>Интерактивная 3D модель торгового центра</p>
+                            <ul class="model-info-list">
+                                <li><i class="bi bi-building"></i> Общая площадь: 35 000 м²</li>
+                                <li><i class="bi bi-layers"></i> Количество этажей: 3</li>
+                                <li><i class="bi bi-shop"></i> Магазинов: 120+</li>
+                                <li><i class="bi bi-car-front"></i> Парковочных мест: 500</li>
+                            </ul>
+                        </div>
+                        <div class="model-floor-info">
+                            <i class="bi bi-info-circle"></i> Используйте мышь для вращения модели, колесико для масштабирования
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="mall-map-controls">
+                        <div class="control-card">
+                            <h3>Управление</h3>
+                            <div class="control-item">
+                                <i class="bi bi-mouse"></i>
+                                <div>
+                                    <h4>Вращение</h4>
+                                    <p>Зажмите левую кнопку мыши и перемещайте курсор</p>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <i class="bi bi-zoom-in"></i>
+                                <div>
+                                    <h4>Масштабирование</h4>
+                                    <p>Используйте колесико мыши для приближения/отдаления</p>
+                                </div>
+                            </div>
+                            <div class="control-item">
+                                <i class="bi bi-arrows-move"></i>
+                                <div>
+                                    <h4>Перемещение</h4>
+                                    <p>Зажмите правую кнопку мыши и перемещайте курсор</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="control-card">
+                            <h3>Информация о ТЦ</h3>
+                            <div class="info-item">
+                                <i class="bi bi-geo-alt"></i>
+                                <div>
+                                    <h4>Адрес</h4>
+                                    <p>г. Дятьково, ул. Ленина, д. 184</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="bi bi-clock"></i>
+                                <div>
+                                    <h4>Режим работы</h4>
+                                    <p>Ежедневно с 10:00 до 22:00</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="bi bi-building"></i>
+                                <div>
+                                    <h4>Этажи</h4>
+                                    <p>1 этаж: Продуктовый гипермаркет, бутики</p>
+                                    <p>2 этаж: Одежда, обувь, аксессуары</p>
+                                    <p>3 этаж: Фудкорт, кинотеатр, развлечения</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="/js/mall-model.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Скрываем загрузчик после инициализации модели
+            setTimeout(() => {
+                const loadingElement = document.getElementById('modelLoading');
+                if (loadingElement) {
+                    loadingElement.style.display = 'none';
+                }
+                
+                // Инициализируем 3D модель
+                initMallModel('mallModel');
+            }, 1000);
+        });
+    </script>
+
+    <style>
+        .mall-map-page {
+            padding: 2rem 0 4rem;
+        }
+        
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .breadcrumb {
+            margin-bottom: 0;
+        }
+        
+        .breadcrumb-item a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .mall-map-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .control-card {
+            background-color: var(--surface-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .control-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1.25rem;
+        }
+        
+        .control-item, .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+        
+        .control-item:last-child, .info-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .control-item i, .info-item i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .control-item h4, .info-item h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .control-item p, .info-item p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+        
+        @media (max-width: 992px) {
+            .mall-map-controls {
+                margin-top: 2rem;
+            }
+        }
+    </style>
+</body>
+</html> 

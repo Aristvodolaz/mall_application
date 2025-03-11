@@ -1,0 +1,200 @@
+<!-- Детальная страница события -->
+<div class="event-details">
+    <div class="container py-4">
+        <!-- Хлебные крошки -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                <li class="breadcrumb-item"><a href="/events">События</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><%= event.title %></li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <!-- Изображение события -->
+            <div class="col-md-6 mb-4">
+                <div class="event-image">
+                    <img src="<%= event.image || '/images/event-placeholder.jpg' %>" alt="<%= event.title %>" class="img-fluid rounded">
+                    <div class="event-badges">
+                        <div class="event-date">
+                            <%= moment(event.date).format('D MMMM YYYY') %>
+                        </div>
+                        <div class="event-time">
+                            <%= moment(event.time, 'HH:mm:ss').format('HH:mm') %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Информация о событии -->
+            <div class="col-md-6">
+                <h1 class="event-title mb-3"><%= event.title %></h1>
+                
+                <!-- Основная информация -->
+                <div class="event-info mb-4">
+                    <div class="info-item">
+                        <i class="bi bi-geo-alt"></i>
+                        <span><%= event.location %></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="bi bi-tag"></i>
+                        <span><%= event.category %></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="bi bi-ticket-perforated"></i>
+                        <span>
+                            <% if (event.price > 0) { %>
+                                <%= event.price %> ₽
+                            <% } else { %>
+                                Бесплатно
+                            <% } %>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Описание события -->
+                <div class="event-description mb-4">
+                    <%= event.description %>
+                </div>
+
+                <!-- Форма бронирования билетов -->
+                <div class="booking-form">
+                    <% if (event.available_tickets > event.ticketsSold) { %>
+                        <form action="/api/tickets" method="POST" class="mb-3">
+                            <input type="hidden" name="event_id" value="<%= event.id %>">
+                            <div class="row g-3 align-items-end">
+                                <div class="col">
+                                    <label for="quantity" class="form-label">Количество билетов</label>
+                                    <input type="number" class="form-control" id="quantity" name="quantity" min="1" max="<%= event.available_tickets - event.ticketsSold %>" value="1">
+                                </div>
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-primary">
+                                        Забронировать
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <small class="text-muted">
+                            Осталось билетов: <%= event.available_tickets - event.ticketsSold %>
+                        </small>
+                    <% } else { %>
+                        <div class="alert alert-warning">
+                            К сожалению, все билеты проданы
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- Кнопка "Поделиться" -->
+                <button class="btn btn-outline-primary share-btn mt-3" data-event-id="<%= event.id %>">
+                    <i class="bi bi-share"></i> Поделиться
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.event-details {
+    background-color: var(--light);
+}
+
+.event-image {
+    position: relative;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.event-badges {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.event-date,
+.event-time {
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+}
+
+.event-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.event-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--secondary-color);
+}
+
+.info-item i {
+    font-size: 1.25rem;
+}
+
+.event-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--secondary-color);
+}
+
+.booking-form {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.share-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const shareButtons = document.querySelectorAll('.share-btn');
+    
+    shareButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+            const eventId = button.dataset.eventId;
+            const url = window.location.href;
+            
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: document.title,
+                        url: url
+                    });
+                } catch (err) {
+                    console.error('Ошибка при попытке поделиться:', err);
+                }
+            } else {
+                // Fallback: копируем ссылку в буфер обмена
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('Ссылка скопирована в буфер обмена');
+                }).catch(err => {
+                    console.error('Ошибка при копировании ссылки:', err);
+                });
+            }
+        });
+    });
+});
+</script> 

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/cinema.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+
+    <div class="seat-selection-page">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Выбор мест</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                        <li class="breadcrumb-item"><a href="/cinema">Кинотеатр</a></li>
+                        <li class="breadcrumb-item"><a href="/cinema/movies/<%= screening.movie.id %>"><%= screening.movie.title %></a></li>
+                        <li class="breadcrumb-item active">Выбор мест</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <div class="screening-info-panel">
+                <div class="movie-info">
+                    <div class="movie-poster">
+                        <img src="<%= screening.movie.poster_url || '/images/movies/default.jpg' %>" alt="<%= screening.movie.title %>">
+                    </div>
+                    <div class="movie-details">
+                        <h2 class="movie-title"><%= screening.movie.title %></h2>
+                        <div class="screening-details">
+                            <div class="screening-date">
+                                <i class="bi bi-calendar-event"></i>
+                                <%= new Date(screening.date).toLocaleDateString('ru-RU') %>
+                            </div>
+                            <div class="screening-time">
+                                <i class="bi bi-clock"></i>
+                                <%= screening.time %>
+                            </div>
+                            <div class="screening-hall">
+                                <i class="bi bi-door-open"></i>
+                                Зал <%= screening.hall %>
+                            </div>
+                            <div class="screening-format">
+                                <i class="bi bi-badge-hd"></i>
+                                <%= screening.format %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="seat-selection-container">
+                <div class="screen-container">
+                    <div class="screen">ЭКРАН</div>
+                </div>
+                
+                <div class="seats-legend">
+                    <div class="legend-item">
+                        <div class="seat available"></div>
+                        <span>Доступно</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="seat selected"></div>
+                        <span>Выбрано</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="seat occupied"></div>
+                        <span>Занято</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="seat vip"></div>
+                        <span>VIP</span>
+                    </div>
+                </div>
+                
+                <div class="seats-container">
+                    <% for (let row = 1; row <= screening.rows; row++) { %>
+                        <div class="seats-row">
+                            <div class="row-number"><%= row %></div>
+                            <div class="seats">
+                                <% for (let seat = 1; seat <= screening.seats_per_row; seat++) { %>
+                                    <% 
+                                        const isOccupied = occupiedSeats.some(s => s.row === row && s.seat === seat);
+                                        const isVip = (row >= 7 && row <= 8) || (seat >= 5 && seat <= 10 && row >= 5);
+                                        const seatPrice = isVip ? screening.base_price * 1.5 : screening.base_price;
+                                    %>
+                                    <div class="seat-wrapper" data-row="<%= row %>" data-seat="<%= seat %>" data-price="<%= seatPrice %>">
+                                        <div class="seat <%= isOccupied ? 'occupied' : (isVip ? 'vip' : 'available') %>" 
+                                             <%= isOccupied ? 'disabled' : '' %>>
+                                            <%= seat %>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            </div>
+                            <div class="row-number"><%= row %></div>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            
+            <div class="booking-summary">
+                <div class="summary-container">
+                    <h3>Ваш заказ</h3>
+                    <div class="selected-seats-info">
+                        <p>Выбрано мест: <span id="seatsCount">0</span></p>
+                        <div id="selectedSeatsList" class="selected-seats-list"></div>
+                    </div>
+                    <div class="total-price">
+                        <p>Итого к оплате: <span id="totalPrice">0</span> ₽</p>
+                    </div>
+                    <div class="booking-actions">
+                        <button id="bookButton" class="btn btn-primary btn-lg" disabled>
+                            Забронировать
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно подтверждения бронирования -->
+    <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookingModalLabel">Подтверждение бронирования</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="booking-details">
+                        <h4><%= screening.movie.title %></h4>
+                        <p>
+                            <strong>Дата:</strong> <%= new Date(screening.date).toLocaleDateString('ru-RU') %><br>
+                            <strong>Время:</strong> <%= screening.time %><br>
+                            <strong>Зал:</strong> <%= screening.hall %><br>
+                            <strong>Формат:</strong> <%= screening.format %>
+                        </p>
+                        <div class="selected-seats-summary">
+                            <p><strong>Выбранные места:</strong></p>
+                            <div id="modalSeatsList"></div>
+                        </div>
+                        <div class="booking-total">
+                            <p><strong>Итого к оплате:</strong> <span id="modalTotalPrice">0</span> ₽</p>
+                        </div>
+                    </div>
+                    <% if (!user) { %>
+                        <div class="login-warning">
+                            <p>Для бронирования необходимо <a href="/login">войти</a> или <a href="/register">зарегистрироваться</a>.</p>
+                        </div>
+                    <% } else { %>
+                        <form id="bookingForm">
+                            <input type="hidden" name="screening_id" value="<%= screening.id %>">
+                            <input type="hidden" id="selectedSeats" name="selected_seats" value="">
+                            <div class="form-group">
+                                <label for="paymentMethod">Способ оплаты</label>
+                                <select class="form-select" id="paymentMethod" name="payment_method" required>
+                                    <option value="" selected disabled>Выберите способ оплаты</option>
+                                    <option value="card">Банковская карта</option>
+                                    <option value="cash">Наличные при получении</option>
+                                </select>
+                            </div>
+                        </form>
+                    <% } %>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <% if (user) { %>
+                        <button type="button" class="btn btn-primary" id="confirmBooking">Подтвердить бронирование</button>
+                    <% } else { %>
+                        <a href="/login" class="btn btn-primary">Войти для бронирования</a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const seatWrappers = document.querySelectorAll('.seat-wrapper');
+            const seatsCountElement = document.getElementById('seatsCount');
+            const totalPriceElement = document.getElementById('totalPrice');
+            const selectedSeatsListElement = document.getElementById('selectedSeatsList');
+            const bookButton = document.getElementById('bookButton');
+            const modalSeatsListElement = document.getElementById('modalSeatsList');
+            const modalTotalPriceElement = document.getElementById('modalTotalPrice');
+            const selectedSeatsInput = document.getElementById('selectedSeats');
+            const bookingModal = new bootstrap.Modal(document.getElementById('bookingModal'));
+            const confirmBookingButton = document.getElementById('confirmBooking');
+            const bookingForm = document.getElementById('bookingForm');
+            
+            let selectedSeats = [];
+            
+            // Обработчик клика по месту
+            seatWrappers.forEach(wrapper => {
+                const seat = wrapper.querySelector('.seat');
+                if (!seat.hasAttribute('disabled')) {
+                    wrapper.addEventListener('click', function() {
+                        const row = this.dataset.row;
+                        const seatNum = this.dataset.seat;
+                        const price = parseFloat(this.dataset.price);
+                        const seatId = `${row}-${seatNum}`;
+                        
+                        if (seat.classList.contains('selected')) {
+                            // Снимаем выбор
+                            seat.classList.remove('selected');
+                            seat.classList.add(seat.classList.contains('vip') ? 'vip' : 'available');
+                            
+                            // Удаляем из массива выбранных мест
+                            selectedSeats = selectedSeats.filter(s => s.id !== seatId);
+                        } else {
+                            // Выбираем место
+                            seat.classList.remove('available', 'vip');
+                            seat.classList.add('selected');
+                            
+                            // Добавляем в массив выбранных мест
+                            selectedSeats.push({
+                                id: seatId,
+                                row: row,
+                                seat: seatNum,
+                                price: price
+                            });
+                        }
+                        
+                        updateBookingSummary();
+                    });
+                }
+            });
+            
+            // Обновление информации о бронировании
+            function updateBookingSummary() {
+                // Обновляем количество выбранных мест
+                seatsCountElement.textContent = selectedSeats.length;
+                
+                // Обновляем список выбранных мест
+                selectedSeatsListElement.innerHTML = '';
+                let totalPrice = 0;
+                
+                selectedSeats.forEach(seat => {
+                    const seatItem = document.createElement('div');
+                    seatItem.className = 'selected-seat-item';
+                    seatItem.innerHTML = `
+                        <span>Ряд ${seat.row}, Место ${seat.seat}</span>
+                        <span>${seat.price} ₽</span>
+                    `;
+                    selectedSeatsListElement.appendChild(seatItem);
+                    
+                    totalPrice += seat.price;
+                });
+                
+                // Обновляем общую стоимость
+                totalPriceElement.textContent = totalPrice;
+                
+                // Активируем/деактивируем кнопку бронирования
+                bookButton.disabled = selectedSeats.length === 0;
+            }
+            
+            // Обработчик клика по кнопке "Забронировать"
+            bookButton.addEventListener('click', function() {
+                // Заполняем модальное окно данными
+                modalSeatsListElement.innerHTML = '';
+                let totalPrice = 0;
+                
+                selectedSeats.forEach(seat => {
+                    const seatItem = document.createElement('div');
+                    seatItem.className = 'modal-seat-item';
+                    seatItem.innerHTML = `
+                        <span>Ряд ${seat.row}, Место ${seat.seat}</span>
+                        <span>${seat.price} ₽</span>
+                    `;
+                    modalSeatsListElement.appendChild(seatItem);
+                    
+                    totalPrice += seat.price;
+                });
+                
+                modalTotalPriceElement.textContent = totalPrice;
+                
+                // Заполняем скрытое поле с выбранными местами
+                if (selectedSeatsInput) {
+                    selectedSeatsInput.value = JSON.stringify(selectedSeats);
+                }
+                
+                // Открываем модальное окно
+                bookingModal.show();
+            });
+            
+            // Обработчик подтверждения бронирования
+            if (confirmBookingButton && bookingForm) {
+                confirmBookingButton.addEventListener('click', async function() {
+                    const paymentMethod = document.getElementById('paymentMethod').value;
+                    
+                    if (!paymentMethod) {
+                        alert('Пожалуйста, выберите способ оплаты');
+                        return;
+                    }
+                    
+                    const formData = new FormData(bookingForm);
+                    const data = {
+                        screening_id: formData.get('screening_id'),
+                        selected_seats: JSON.parse(formData.get('selected_seats')),
+                        payment_method: formData.get('payment_method')
+                    };
+                    
+                    try {
+                        const response = await fetch('/api/bookings', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(data)
+                        });
+                        
+                        if (response.ok) {
+                            const result = await response.json();
+                            window.location.href = `/cinema/bookings/${result.booking_id}`;
+                        } else {
+                            const error = await response.json();
+                            alert(`Ошибка: ${error.message || 'Не удалось забронировать билеты'}`);
+                        }
+                    } catch (error) {
+                        console.error('Ошибка при бронировании:', error);
+                        alert('Произошла ошибка при бронировании билетов');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

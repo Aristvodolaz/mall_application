@@ -1,0 +1,190 @@
+<!-- Детальная страница акции -->
+<div class="promotion-details">
+    <div class="container py-4">
+        <!-- Хлебные крошки -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                <li class="breadcrumb-item"><a href="/promotions">Акции</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><%= promotion.title %></li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <!-- Изображение акции -->
+            <div class="col-md-6 mb-4">
+                <div class="promotion-image">
+                    <img src="<%= promotion.image_url || '/images/promotion-placeholder.jpg' %>" alt="<%= promotion.title %>" class="img-fluid rounded">
+                    <div class="promotion-badges">
+                        <% if (promotion.promo_code) { %>
+                            <div class="promotion-code">
+                                Промокод: <strong><%= promotion.promo_code %></strong>
+                            </div>
+                        <% } %>
+                        <div class="promotion-date">
+                            До <%= moment(promotion.end_date).format('D MMMM YYYY') %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Информация об акции -->
+            <div class="col-md-6">
+                <h1 class="promotion-title mb-3"><%= promotion.title %></h1>
+                
+                <!-- Информация о магазине -->
+                <div class="shop-info mb-4">
+                    <a href="/shops/<%= promotion.Shop.id %>" class="shop-link">
+                        <img src="<%= promotion.Shop.logo_url || '/images/shop-placeholder.jpg' %>" alt="<%= promotion.Shop.name %>" class="shop-logo">
+                        <span class="shop-name"><%= promotion.Shop.name %></span>
+                    </a>
+                </div>
+
+                <!-- Описание акции -->
+                <div class="promotion-description mb-4">
+                    <%= promotion.description %>
+                </div>
+
+                <!-- Условия акции -->
+                <% if (promotion.terms_conditions) { %>
+                    <div class="promotion-terms mb-4">
+                        <h4>Условия акции:</h4>
+                        <p><%= promotion.terms_conditions %></p>
+                    </div>
+                <% } %>
+
+                <!-- Кнопки действий -->
+                <div class="promotion-actions">
+                    <a href="/shops/<%= promotion.Shop.id %>" class="btn btn-primary">
+                        Перейти в магазин
+                    </a>
+                    <button class="btn btn-outline-primary share-btn" data-promotion-id="<%= promotion.id %>">
+                        <i class="bi bi-share"></i> Поделиться
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.promotion-details {
+    background-color: var(--light);
+}
+
+.promotion-image {
+    position: relative;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.promotion-badges {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.promotion-code,
+.promotion-date {
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+}
+
+.promotion-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.shop-info {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+}
+
+.shop-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: inherit;
+}
+
+.shop-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.shop-name {
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+.promotion-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--secondary-color);
+}
+
+.promotion-terms {
+    background: var(--light);
+    padding: 1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+}
+
+.promotion-terms h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.promotion-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.share-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const shareButtons = document.querySelectorAll('.share-btn');
+    
+    shareButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+            const promotionId = button.dataset.promotionId;
+            const url = window.location.href;
+            
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: document.title,
+                        url: url
+                    });
+                } catch (err) {
+                    console.error('Ошибка при попытке поделиться:', err);
+                }
+            } else {
+                // Fallback: копируем ссылку в буфер обмена
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('Ссылка скопирована в буфер обмена');
+                }).catch(err => {
+                    console.error('Ошибка при копировании ссылки:', err);
+                });
+            }
+        });
+    });
+});
+</script> 

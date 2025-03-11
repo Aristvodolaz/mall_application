@@ -1,0 +1,25 @@
+<% if (typeof messages !== 'undefined' && messages.length > 0) { %>
+    <div class="messages">
+        <% messages.forEach(message => { %>
+            <div class="alert alert-<%= message.type %> alert-dismissible fade show" role="alert">
+                <%= message.text %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <% }); %>
+    </div>
+<% } %>
+
+<style>
+.messages {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1050;
+    max-width: 350px;
+}
+
+.messages .alert {
+    margin-bottom: 0.5rem;
+    box-shadow: var(--shadow);
+}
+</style> 

@@ -1,0 +1,803 @@
+<!-- Страница выбора мест -->
+<div class="screening-page">
+    <!-- Хлебные крошки -->
+    <nav aria-label="breadcrumb" class="bg-light py-2">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                <li class="breadcrumb-item"><a href="/cinema">Кинотеатр</a></li>
+                <li class="breadcrumb-item"><a href="/cinema/movies/<%= movie.id %>"><%= movie.title %></a></li>
+                <li class="breadcrumb-item active" aria-current="page">Выбор мест</li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Информация о сеансе -->
+    <section class="screening-info-section">
+        <div class="container">
+            <div class="screening-header">
+                <div class="movie-info">
+                    <h1 class="movie-title"><%= movie.title %></h1>
+                    <div class="screening-meta">
+                        <div class="meta-item">
+                            <i class="bi bi-calendar"></i>
+                            <span><%= moment(screening.date).format('D MMMM YYYY') %></span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="bi bi-clock"></i>
+                            <span><%= moment(screening.time, 'HH:mm:ss').format('HH:mm') %></span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="bi bi-film"></i>
+                            <span>Зал <%= screening.hall %></span>
+                        </div>
+                        <% if (screening.is_3d) { %>
+                            <div class="meta-item feature">
+                                <span>3D</span>
+                            </div>
+                        <% } %>
+                        <% if (screening.is_imax) { %>
+                            <div class="meta-item feature">
+                                <span>IMAX</span>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="booking-timer" id="bookingTimer">
+                    <div class="timer-icon">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                    <div class="timer-content">
+                        <div class="timer-label">Бронирование истекает через</div>
+                        <div class="timer-value">15:00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Схема зала -->
+    <section class="hall-section">
+        <div class="container">
+            <div class="hall-container">
+                <div class="screen-container">
+                    <div class="screen">
+                        <span>Экран</span>
+                    </div>
+                </div>
+                
+                <div class="seats-container" id="seatsContainer">
+                    <!-- Схема зала будет загружена динамически -->
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="seat-example available"></div>
+                        <span>Доступно</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="seat-example selected"></div>
+                        <span>Выбрано</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="seat-example booked"></div>
+                        <span>Занято</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="seat-example vip"></div>
+                        <span>VIP</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Выбор билетов -->
+    <section class="tickets-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="selected-seats" id="selectedSeats">
+                        <h3 class="section-title">Выбранные места</h3>
+                        <div class="no-seats-message" id="noSeatsMessage">
+                            <p>Выберите места на схеме зала</p>
+                        </div>
+                        <div class="seats-list" id="seatsList">
+                            <!-- Список выбранных мест будет добавлен динамически -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="order-summary">
+                        <h3 class="section-title">Ваш заказ</h3>
+                        <div class="summary-content">
+                            <div class="summary-item">
+                                <span class="item-label">Фильм:</span>
+                                <span class="item-value"><%= movie.title %></span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="item-label">Дата:</span>
+                                <span class="item-value"><%= moment(screening.date).format('D MMMM YYYY') %></span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="item-label">Время:</span>
+                                <span class="item-value"><%= moment(screening.time, 'HH:mm:ss').format('HH:mm') %></span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="item-label">Зал:</span>
+                                <span class="item-value"><%= screening.hall %></span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="item-label">Места:</span>
+                                <span class="item-value" id="summarySeats">-</span>
+                            </div>
+                            <div class="summary-divider"></div>
+                            <div class="summary-item total">
+                                <span class="item-label">Итого:</span>
+                                <span class="item-value" id="summaryTotal">0 ₽</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-lg w-100" id="bookButton" disabled>
+                            Перейти к оплате
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+/* Информация о сеансе */
+.screening-info-section {
+    padding: 2rem 0;
+    background: var(--surface);
+}
+
+.screening-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.movie-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.screening-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.meta-item.feature {
+    background: var(--primary);
+    color: var(--text-on-primary);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+}
+
+.booking-timer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--warning-light);
+    border-radius: var(--border-radius);
+}
+
+.timer-icon {
+    font-size: 1.5rem;
+    color: var(--warning);
+}
+
+.timer-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.timer-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--warning);
+}
+
+/* Схема зала */
+.hall-section {
+    padding: 3rem 0;
+    background: var(--surface-variant);
+}
+
+.hall-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.screen-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.screen {
+    width: 80%;
+    height: 50px;
+    background: linear-gradient(to bottom, var(--primary-light), transparent);
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 10px;
+    color: var(--text-primary);
+    font-weight: 500;
+    box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.3);
+}
+
+.seats-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.seat-row {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.row-label {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.seat {
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.75rem;
+    color: var(--text-on-primary);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.seat.available {
+    background: var(--primary-light);
+    color: var(--text-primary);
+}
+
+.seat.available:hover {
+    background: var(--primary);
+    color: var(--text-on-primary);
+    transform: scale(1.1);
+}
+
+.seat.selected {
+    background: var(--primary);
+    color: var(--text-on-primary);
+    transform: scale(1.1);
+}
+
+.seat.booked {
+    background: var(--danger-light);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+}
+
+.seat.vip {
+    background: var(--warning-light);
+    color: var(--text-primary);
+    border: 1px solid var(--warning);
+}
+
+.seat.vip.selected {
+    background: var(--warning);
+    color: var(--text-on-primary);
+}
+
+.seat.empty {
+    visibility: hidden;
+}
+
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.seat-example {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+}
+
+.seat-example.available {
+    background: var(--primary-light);
+}
+
+.seat-example.selected {
+    background: var(--primary);
+}
+
+.seat-example.booked {
+    background: var(--danger-light);
+}
+
+.seat-example.vip {
+    background: var(--warning-light);
+    border: 1px solid var(--warning);
+}
+
+/* Выбор билетов */
+.tickets-section {
+    padding: 3rem 0;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+}
+
+.selected-seats {
+    background: var(--surface);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    height: 100%;
+}
+
+.no-seats-message {
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.seats-list {
+    display: none;
+}
+
+.seat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.seat-item:last-child {
+    border-bottom: none;
+}
+
+.seat-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.seat-location {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.seat-type {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.seat-price {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.seat-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.seat-type-select {
+    min-width: 120px;
+}
+
+.remove-seat {
+    color: var(--danger);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.remove-seat:hover {
+    transform: scale(1.1);
+}
+
+.order-summary {
+    background: var(--surface);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.summary-content {
+    margin-bottom: 1.5rem;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.item-label {
+    color: var(--text-secondary);
+}
+
+.item-value {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.summary-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 1rem 0;
+}
+
+.summary-item.total {
+    font-size: 1.25rem;
+}
+
+.summary-item.total .item-value {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .screening-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .booking-timer {
+        width: 100%;
+    }
+
+    .legend {
+        gap: 1rem;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Данные о схеме зала и ценах
+    const seatsLayout = JSON.parse('<%= JSON.stringify(screening.seats_layout) %>');
+    const bookedSeats = JSON.parse('<%= JSON.stringify(screening.booked_seats) %>');
+    const basePrice = <%= screening.base_price %>;
+    const vipPrice = <%= screening.vip_price %>;
+    const studentPrice = <%= screening.student_price %>;
+    const childPrice = <%= screening.child_price %>;
+    
+    // Элементы DOM
+    const seatsContainer = document.getElementById('seatsContainer');
+    const seatsList = document.getElementById('seatsList');
+    const noSeatsMessage = document.getElementById('noSeatsMessage');
+    const summarySeats = document.getElementById('summarySeats');
+    const summaryTotal = document.getElementById('summaryTotal');
+    const bookButton = document.getElementById('bookButton');
+    
+    // Выбранные места
+    const selectedSeats = [];
+    
+    // Отрисовка схемы зала
+    function renderSeatsLayout() {
+        seatsContainer.innerHTML = '';
+        
+        seatsLayout.forEach((row, rowIndex) => {
+            const rowElement = document.createElement('div');
+            rowElement.className = 'seat-row';
+            
+            // Добавляем номер ряда
+            const rowLabel = document.createElement('div');
+            rowLabel.className = 'row-label';
+            rowLabel.textContent = rowIndex + 1;
+            rowElement.appendChild(rowLabel);
+            
+            row.forEach((seat, seatIndex) => {
+                const seatElement = document.createElement('div');
+                seatElement.className = 'seat';
+                
+                if (seat === 0) {
+                    // Пустое место
+                    seatElement.classList.add('empty');
+                } else if (seat === 1) {
+                    // Обычное место
+                    seatElement.classList.add('available');
+                    seatElement.textContent = seatIndex + 1;
+                    
+                    // Проверяем, забронировано ли место
+                    const isBooked = bookedSeats.some(
+                        bookedSeat => bookedSeat.row === rowIndex && bookedSeat.seat === seatIndex
+                    );
+                    
+                    if (isBooked) {
+                        seatElement.classList.remove('available');
+                        seatElement.classList.add('booked');
+                    } else {
+                        // Добавляем обработчик клика
+                        seatElement.addEventListener('click', () => toggleSeat(rowIndex, seatIndex, 'standard'));
+                    }
+                } else if (seat === 2) {
+                    // VIP место
+                    seatElement.classList.add('available', 'vip');
+                    seatElement.textContent = seatIndex + 1;
+                    
+                    // Проверяем, забронировано ли место
+                    const isBooked = bookedSeats.some(
+                        bookedSeat => bookedSeat.row === rowIndex && bookedSeat.seat === seatIndex
+                    );
+                    
+                    if (isBooked) {
+                        seatElement.classList.remove('available');
+                        seatElement.classList.add('booked');
+                    } else {
+                        // Добавляем обработчик клика
+                        seatElement.addEventListener('click', () => toggleSeat(rowIndex, seatIndex, 'vip'));
+                    }
+                }
+                
+                rowElement.appendChild(seatElement);
+            });
+            
+            seatsContainer.appendChild(rowElement);
+        });
+    }
+    
+    // Выбор/отмена выбора места
+    function toggleSeat(row, seat, type) {
+        const seatIndex = selectedSeats.findIndex(s => s.row === row && s.seat === seat);
+        
+        if (seatIndex === -1) {
+            // Добавляем место
+            selectedSeats.push({
+                row,
+                seat,
+                type,
+                price: type === 'vip' ? vipPrice : basePrice
+            });
+            
+            // Обновляем визуальное отображение
+            const seatElement = getSeatElement(row, seat);
+            seatElement.classList.add('selected');
+        } else {
+            // Удаляем место
+            selectedSeats.splice(seatIndex, 1);
+            
+            // Обновляем визуальное отображение
+            const seatElement = getSeatElement(row, seat);
+            seatElement.classList.remove('selected');
+        }
+        
+        updateSelectedSeats();
+    }
+    
+    // Получение элемента места по координатам
+    function getSeatElement(row, seat) {
+        const rowElement = seatsContainer.children[row];
+        // +1 потому что первый элемент - это метка ряда
+        return rowElement.children[seat + 1];
+    }
+    
+    // Обновление списка выбранных мест
+    function updateSelectedSeats() {
+        if (selectedSeats.length === 0) {
+            noSeatsMessage.style.display = 'block';
+            seatsList.style.display = 'none';
+            summarySeats.textContent = '-';
+            summaryTotal.textContent = '0 ₽';
+            bookButton.disabled = true;
+            return;
+        }
+        
+        noSeatsMessage.style.display = 'none';
+        seatsList.style.display = 'block';
+        seatsList.innerHTML = '';
+        
+        let totalPrice = 0;
+        const seatDescriptions = [];
+        
+        selectedSeats.forEach(seat => {
+            const seatItem = document.createElement('div');
+            seatItem.className = 'seat-item';
+            
+            const seatInfo = document.createElement('div');
+            seatInfo.className = 'seat-info';
+            
+            const seatLocation = document.createElement('div');
+            seatLocation.className = 'seat-location';
+            seatLocation.textContent = `Ряд ${seat.row + 1}, Место ${seat.seat + 1}`;
+            
+            const seatType = document.createElement('div');
+            seatType.className = 'seat-type';
+            seatType.textContent = seat.type === 'vip' ? 'VIP' : 'Стандарт';
+            
+            seatInfo.appendChild(seatLocation);
+            seatInfo.appendChild(seatType);
+            
+            const seatActions = document.createElement('div');
+            seatActions.className = 'seat-actions';
+            
+            const typeSelect = document.createElement('select');
+            typeSelect.className = 'form-select form-select-sm seat-type-select';
+            
+            const standardOption = document.createElement('option');
+            standardOption.value = 'standard';
+            standardOption.textContent = `Стандарт (${basePrice} ₽)`;
+            standardOption.selected = seat.type === 'standard';
+            
+            const vipOption = document.createElement('option');
+            vipOption.value = 'vip';
+            vipOption.textContent = `VIP (${vipPrice} ₽)`;
+            vipOption.selected = seat.type === 'vip';
+            
+            const studentOption = document.createElement('option');
+            studentOption.value = 'student';
+            studentOption.textContent = `Студент (${studentPrice} ₽)`;
+            studentOption.selected = seat.type === 'student';
+            
+            const childOption = document.createElement('option');
+            childOption.value = 'child';
+            childOption.textContent = `Детский (${childPrice} ₽)`;
+            childOption.selected = seat.type === 'child';
+            
+            typeSelect.appendChild(standardOption);
+            typeSelect.appendChild(vipOption);
+            typeSelect.appendChild(studentOption);
+            typeSelect.appendChild(childOption);
+            
+            typeSelect.addEventListener('change', (e) => {
+                const newType = e.target.value;
+                let newPrice;
+                
+                switch (newType) {
+                    case 'vip':
+                        newPrice = vipPrice;
+                        break;
+                    case 'student':
+                        newPrice = studentPrice;
+                        break;
+                    case 'child':
+                        newPrice = childPrice;
+                        break;
+                    default:
+                        newPrice = basePrice;
+                }
+                
+                // Обновляем тип и цену места
+                seat.type = newType;
+                seat.price = newPrice;
+                
+                // Обновляем отображение
+                updateSelectedSeats();
+            });
+            
+            const removeButton = document.createElement('button');
+            removeButton.className = 'remove-seat';
+            removeButton.innerHTML = '<i class="bi bi-x-lg"></i>';
+            removeButton.addEventListener('click', () => {
+                toggleSeat(seat.row, seat.seat);
+            });
+            
+            seatActions.appendChild(typeSelect);
+            seatActions.appendChild(removeButton);
+            
+            const seatPrice = document.createElement('div');
+            seatPrice.className = 'seat-price';
+            seatPrice.textContent = `${seat.price} ₽`;
+            
+            seatItem.appendChild(seatInfo);
+            seatItem.appendChild(seatActions);
+            seatItem.appendChild(seatPrice);
+            
+            seatsList.appendChild(seatItem);
+            
+            totalPrice += seat.price;
+            seatDescriptions.push(`Ряд ${seat.row + 1}, Место ${seat.seat + 1}`);
+        });
+        
+        summarySeats.textContent = seatDescriptions.join('; ');
+        summaryTotal.textContent = `${totalPrice} ₽`;
+        bookButton.disabled = false;
+    }
+    
+    // Таймер бронирования
+    function startBookingTimer() {
+        const timerElement = document.querySelector('.timer-value');
+        let minutes = 15;
+        let seconds = 0;
+        
+        const timer = setInterval(() => {
+            if (minutes === 0 && seconds === 0) {
+                clearInterval(timer);
+                alert('Время бронирования истекло. Страница будет перезагружена.');
+                location.reload();
+                return;
+            }
+            
+            if (seconds === 0) {
+                minutes--;
+                seconds = 59;
+            } else {
+                seconds--;
+            }
+            
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }, 1000);
+    }
+    
+    // Обработчик кнопки бронирования
+    bookButton.addEventListener('click', async () => {
+        if (selectedSeats.length === 0) return;
+        
+        try {
+            const response = await fetch('/cinema/tickets', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    screening_id: <%= screening.id %>,
+                    seats: selectedSeats
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                // Перенаправляем на страницу оплаты
+                window.location.href = `/cinema/tickets/${data.ticket.id}/payment`;
+            } else {
+                throw new Error(data.error);
+            }
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+    
+    // Инициализация
+    renderSeatsLayout();
+    startBookingTimer();
+});
+</script> 

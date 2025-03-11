@@ -1,0 +1,500 @@
+<!-- Страница оплаты билетов -->
+<div class="payment-page">
+    <!-- Хлебные крошки -->
+    <nav aria-label="breadcrumb" class="bg-light py-2">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                <li class="breadcrumb-item"><a href="/cinema">Кинотеатр</a></li>
+                <li class="breadcrumb-item"><a href="/cinema/movies/<%= ticket.Screening.Movie.id %>"><%= ticket.Screening.Movie.title %></a></li>
+                <li class="breadcrumb-item active" aria-current="page">Оплата</li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Информация о заказе -->
+    <section class="payment-info-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="payment-card">
+                        <div class="payment-header">
+                            <h1 class="payment-title">Оплата заказа</h1>
+                            <div class="payment-timer" id="paymentTimer">
+                                <i class="bi bi-hourglass-split"></i>
+                                <span id="timerValue">15:00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-body">
+                            <div class="order-details">
+                                <h2 class="section-title">Информация о заказе</h2>
+                                <div class="order-info">
+                                    <div class="order-info-item">
+                                        <span class="info-label">Фильм:</span>
+                                        <span class="info-value"><%= ticket.Screening.Movie.title %></span>
+                                    </div>
+                                    <div class="order-info-item">
+                                        <span class="info-label">Дата:</span>
+                                        <span class="info-value"><%= moment(ticket.Screening.date).format('D MMMM YYYY') %></span>
+                                    </div>
+                                    <div class="order-info-item">
+                                        <span class="info-label">Время:</span>
+                                        <span class="info-value"><%= moment(ticket.Screening.time, 'HH:mm:ss').format('HH:mm') %></span>
+                                    </div>
+                                    <div class="order-info-item">
+                                        <span class="info-label">Зал:</span>
+                                        <span class="info-value"><%= ticket.Screening.hall %></span>
+                                    </div>
+                                    <div class="order-info-item">
+                                        <span class="info-label">Места:</span>
+                                        <span class="info-value">
+                                            <% 
+                                                const seats = JSON.parse(ticket.seats);
+                                                const seatDescriptions = seats.map(seat => {
+                                                    return `Ряд ${seat.row + 1}, Место ${seat.seat + 1} (${seat.type === 'vip' ? 'VIP' : seat.type === 'student' ? 'Студент' : seat.type === 'child' ? 'Детский' : 'Стандарт'})`;
+                                                });
+                                            %>
+                                            <%= seatDescriptions.join('; ') %>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="payment-methods">
+                                <h2 class="section-title">Способ оплаты</h2>
+                                <div class="methods-grid">
+                                    <div class="payment-method-card active" data-method="card">
+                                        <div class="method-icon">
+                                            <i class="bi bi-credit-card"></i>
+                                        </div>
+                                        <div class="method-name">Банковская карта</div>
+                                    </div>
+                                    <div class="payment-method-card" data-method="applepay">
+                                        <div class="method-icon">
+                                            <i class="bi bi-apple"></i>
+                                        </div>
+                                        <div class="method-name">Apple Pay</div>
+                                    </div>
+                                    <div class="payment-method-card" data-method="googlepay">
+                                        <div class="method-icon">
+                                            <i class="bi bi-google"></i>
+                                        </div>
+                                        <div class="method-name">Google Pay</div>
+                                    </div>
+                                    <div class="payment-method-card" data-method="qr">
+                                        <div class="method-icon">
+                                            <i class="bi bi-qr-code"></i>
+                                        </div>
+                                        <div class="method-name">Оплата по QR</div>
+                                    </div>
+                                </div>
+
+                                <div class="payment-form" id="cardPaymentForm">
+                                    <div class="form-group">
+                                        <label for="cardNumber" class="form-label">Номер карты</label>
+                                        <input type="text" id="cardNumber" class="form-control" placeholder="0000 0000 0000 0000" maxlength="19">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="expiryDate" class="form-label">Срок действия</label>
+                                                <input type="text" id="expiryDate" class="form-control" placeholder="ММ/ГГ" maxlength="5">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="cvv" class="form-label">CVV</label>
+                                                <input type="password" id="cvv" class="form-control" placeholder="***" maxlength="3">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cardHolder" class="form-label">Имя держателя карты</label>
+                                        <input type="text" id="cardHolder" class="form-control" placeholder="IVAN IVANOV">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="order-summary">
+                        <h2 class="summary-title">Ваш заказ</h2>
+                        <div class="summary-content">
+                            <div class="summary-items">
+                                <% 
+                                    seats.forEach(seat => {
+                                        let typeName;
+                                        switch(seat.type) {
+                                            case 'vip':
+                                                typeName = 'VIP';
+                                                break;
+                                            case 'student':
+                                                typeName = 'Студенческий';
+                                                break;
+                                            case 'child':
+                                                typeName = 'Детский';
+                                                break;
+                                            default:
+                                                typeName = 'Стандартный';
+                                        }
+                                %>
+                                    <div class="summary-item">
+                                        <span class="item-name">Билет <%= typeName %> (Ряд <%= seat.row + 1 %>, Место <%= seat.seat + 1 %>)</span>
+                                        <span class="item-price"><%= seat.price %> ₽</span>
+                                    </div>
+                                <% }); %>
+                            </div>
+                            <div class="summary-divider"></div>
+                            <div class="summary-total">
+                                <span class="total-label">Итого:</span>
+                                <span class="total-price"><%= ticket.total_price %> ₽</span>
+                            </div>
+                        </div>
+                        <button id="payButton" class="btn btn-primary btn-lg w-100">
+                            Оплатить <%= ticket.total_price %> ₽
+                        </button>
+                        <div class="payment-security">
+                            <i class="bi bi-shield-lock"></i>
+                            <span>Безопасная оплата с шифрованием</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+/* Страница оплаты */
+.payment-page {
+    padding-bottom: 3rem;
+}
+
+.payment-info-section {
+    padding: 2rem 0;
+}
+
+.payment-card {
+    background: var(--surface);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.payment-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.payment-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.payment-timer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--warning);
+    font-weight: 500;
+    font-size: 1.25rem;
+}
+
+.payment-body {
+    padding: 1.5rem;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+}
+
+.order-details {
+    margin-bottom: 2rem;
+}
+
+.order-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.order-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.info-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.info-value {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.payment-methods {
+    margin-bottom: 2rem;
+}
+
+.methods-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.payment-method-card {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.payment-method-card:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow);
+}
+
+.payment-method-card.active {
+    border-color: var(--primary);
+    background-color: var(--primary-light);
+}
+
+.method-icon {
+    font-size: 2rem;
+    color: var(--primary);
+}
+
+.method-name {
+    font-weight: 500;
+    text-align: center;
+}
+
+.payment-form {
+    margin-top: 1.5rem;
+}
+
+.order-summary {
+    background: var(--surface);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    position: sticky;
+    top: calc(var(--header-height) + 1rem);
+}
+
+.summary-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+}
+
+.summary-content {
+    margin-bottom: 1.5rem;
+}
+
+.summary-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-secondary);
+}
+
+.item-price {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.summary-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 1rem 0;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.25rem;
+}
+
+.total-label {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.total-price {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.payment-security {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .payment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .order-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .methods-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Таймер оплаты
+    const timerElement = document.getElementById('timerValue');
+    let minutes = 15;
+    let seconds = 0;
+    
+    const timer = setInterval(() => {
+        if (minutes === 0 && seconds === 0) {
+            clearInterval(timer);
+            alert('Время на оплату истекло. Вы будете перенаправлены на страницу кинотеатра.');
+            window.location.href = '/cinema';
+            return;
+        }
+        
+        if (seconds === 0) {
+            minutes--;
+            seconds = 59;
+        } else {
+            seconds--;
+        }
+        
+        timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }, 1000);
+    
+    // Выбор способа оплаты
+    const paymentMethods = document.querySelectorAll('.payment-method-card');
+    const cardForm = document.getElementById('cardPaymentForm');
+    
+    paymentMethods.forEach(method => {
+        method.addEventListener('click', () => {
+            // Удаляем активный класс у всех методов
+            paymentMethods.forEach(m => m.classList.remove('active'));
+            // Добавляем активный класс выбранному методу
+            method.classList.add('active');
+            
+            // Показываем/скрываем форму оплаты картой
+            if (method.dataset.method === 'card') {
+                cardForm.style.display = 'block';
+            } else {
+                cardForm.style.display = 'none';
+            }
+        });
+    });
+    
+    // Форматирование номера карты
+    const cardNumberInput = document.getElementById('cardNumber');
+    cardNumberInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        let formattedValue = '';
+        
+        for (let i = 0; i < value.length; i++) {
+            if (i > 0 && i % 4 === 0) {
+                formattedValue += ' ';
+            }
+            formattedValue += value[i];
+        }
+        
+        e.target.value = formattedValue;
+    });
+    
+    // Форматирование срока действия
+    const expiryDateInput = document.getElementById('expiryDate');
+    expiryDateInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        let formattedValue = '';
+        
+        if (value.length > 0) {
+            formattedValue = value.substring(0, 2);
+            if (value.length > 2) {
+                formattedValue += '/' + value.substring(2, 4);
+            }
+        }
+        
+        e.target.value = formattedValue;
+    });
+    
+    // Обработка оплаты
+    const payButton = document.getElementById('payButton');
+    payButton.addEventListener('click', async () => {
+        const activeMethod = document.querySelector('.payment-method-card.active');
+        const paymentMethod = activeMethod.dataset.method;
+        
+        // Имитация процесса оплаты
+        payButton.disabled = true;
+        payButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Обработка...';
+        
+        try {
+            // В реальном приложении здесь был бы запрос к платежному API
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Отправляем запрос на обновление статуса билета
+            const response = await fetch(`/cinema/tickets/<%= ticket.id %>/complete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    payment_method: paymentMethod
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                // Перенаправляем на страницу успешной оплаты
+                window.location.href = `/cinema/tickets/${data.ticket.id}/success`;
+            } else {
+                throw new Error(data.error);
+            }
+        } catch (error) {
+            alert('Произошла ошибка при оплате: ' + error.message);
+            payButton.disabled = false;
+            payButton.textContent = 'Оплатить <%= ticket.total_price %> ₽';
+        }
+    });
+});
+</script> 

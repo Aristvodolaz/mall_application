@@ -1,0 +1,256 @@
+/* Стили для форм */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: var(--font-medium);
+    color: var(--text-primary);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: var(--font-base);
+    line-height: 1.5;
+    color: var(--text-primary);
+    background-color: var(--background-alt);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius);
+    transition: all var(--transition);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(74, 107, 255, 0.1);
+}
+
+.form-control::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+.form-control:disabled,
+.form-control[readonly] {
+    background-color: var(--gray-100);
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Размеры полей ввода */
+.form-control-sm {
+    padding: 0.5rem 0.75rem;
+    font-size: var(--font-sm);
+}
+
+.form-control-lg {
+    padding: 1rem 1.25rem;
+    font-size: var(--font-lg);
+}
+
+/* Состояния валидации */
+.form-control.is-valid {
+    border-color: var(--success);
+    padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.25rem;
+}
+
+.form-control.is-invalid {
+    border-color: var(--danger);
+    padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.25rem;
+}
+
+.form-text {
+    margin-top: 0.25rem;
+    font-size: var(--font-sm);
+    color: var(--text-secondary);
+}
+
+.form-text.error {
+    color: var(--danger);
+}
+
+/* Чекбоксы и радиокнопки */
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+}
+
+.form-check-input {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    cursor: pointer;
+}
+
+.form-check-label {
+    margin-bottom: 0;
+    cursor: pointer;
+}
+
+/* Переключатели */
+.form-switch {
+    padding-left: 3rem;
+    position: relative;
+}
+
+.form-switch .form-check-input {
+    width: 2.5rem;
+    height: 1.5rem;
+    position: absolute;
+    left: 0;
+    margin: 0;
+    background-color: var(--gray-300);
+    border: none;
+    border-radius: 1rem;
+    transition: all var(--transition);
+    appearance: none;
+    cursor: pointer;
+}
+
+.form-switch .form-check-input::before {
+    content: '';
+    position: absolute;
+    top: 0.25rem;
+    left: 0.25rem;
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--white);
+    border-radius: 50%;
+    transition: all var(--transition);
+}
+
+.form-switch .form-check-input:checked {
+    background-color: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+    transform: translateX(1rem);
+}
+
+/* Группы форм */
+.form-group-inline {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.form-group-inline .form-label {
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.input-group {
+    display: flex;
+    position: relative;
+}
+
+.input-group .form-control {
+    position: relative;
+    flex: 1 1 auto;
+}
+
+.input-group .form-control:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-group .form-control:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.input-group-text {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    font-size: var(--font-base);
+    color: var(--text-secondary);
+    background-color: var(--gray-100);
+    border: 1px solid var(--gray-300);
+}
+
+.input-group-text:first-child {
+    border-top-left-radius: var(--radius);
+    border-bottom-left-radius: var(--radius);
+}
+
+.input-group-text:last-child {
+    border-top-right-radius: var(--radius);
+    border-bottom-right-radius: var(--radius);
+}
+
+/* Поле поиска */
+.search-form {
+    position: relative;
+}
+
+.search-form .form-control {
+    padding-left: 2.5rem;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    pointer-events: none;
+}
+
+/* Темная тема */
+[data-theme="dark"] .form-control {
+    background-color: var(--background);
+    border-color: var(--gray-700);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(92, 124, 255, 0.2);
+}
+
+[data-theme="dark"] .form-control:disabled,
+[data-theme="dark"] .form-control[readonly] {
+    background-color: var(--gray-800);
+}
+
+[data-theme="dark"] .input-group-text {
+    background-color: var(--gray-800);
+    border-color: var(--gray-700);
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .form-switch .form-check-input {
+    background-color: var(--gray-700);
+}
+
+[data-theme="dark"] .form-switch .form-check-input:checked {
+    background-color: var(--primary);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .form-group-inline {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .form-group-inline .form-label {
+        margin-bottom: 0.5rem;
+    }
+} 

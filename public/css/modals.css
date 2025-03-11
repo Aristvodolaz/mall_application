@@ -1,0 +1,276 @@
+/* Стили для модальных окон */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition);
+    backdrop-filter: blur(5px);
+}
+
+.modal-backdrop.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal {
+    background-color: var(--background-alt);
+    border-radius: var(--radius-lg);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl);
+    transform: translateY(20px) scale(0.95);
+    transition: all var(--transition);
+    position: relative;
+}
+
+.modal-backdrop.active .modal {
+    transform: translateY(0) scale(1);
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background-color: var(--background-alt);
+    z-index: 1;
+}
+
+.modal-title {
+    font-size: var(--font-xl);
+    font-weight: var(--font-bold);
+    color: var(--cinema-primary);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: var(--font-xl);
+    color: var(--text-secondary);
+    cursor: pointer;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+}
+
+.modal-close:hover {
+    background-color: var(--gray-200);
+    color: var(--text-primary);
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    padding: 1.5rem;
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    position: sticky;
+    bottom: 0;
+    background-color: var(--background-alt);
+    z-index: 1;
+}
+
+/* Варианты модальных окон */
+.modal-sm {
+    max-width: 400px;
+}
+
+.modal-lg {
+    max-width: 800px;
+}
+
+.modal-xl {
+    max-width: 1000px;
+}
+
+.modal-fullscreen {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    border-radius: 0;
+}
+
+/* Анимации для модальных окон */
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes modalOut {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+}
+
+.modal-enter {
+    animation: modalIn 0.3s ease forwards;
+}
+
+.modal-leave {
+    animation: modalOut 0.3s ease forwards;
+}
+
+/* Стили для модального окна трейлера */
+.trailer-modal .modal {
+    max-width: 900px;
+    background-color: var(--black);
+}
+
+.trailer-modal .modal-body {
+    padding: 0;
+}
+
+.trailer-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 */
+}
+
+.trailer-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.trailer-modal .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: var(--white);
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2;
+}
+
+.trailer-modal .modal-close:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Стили для модального окна подтверждения */
+.confirm-modal .modal {
+    max-width: 400px;
+}
+
+.confirm-modal .modal-body {
+    text-align: center;
+    padding: 2rem;
+}
+
+.confirm-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.confirm-icon.warning {
+    color: var(--warning);
+}
+
+.confirm-icon.danger {
+    color: var(--danger);
+}
+
+.confirm-title {
+    font-size: var(--font-xl);
+    font-weight: var(--font-bold);
+    margin-bottom: 0.5rem;
+}
+
+.confirm-message {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+/* Стили для модального окна загрузки */
+.loading-modal .modal {
+    max-width: 300px;
+    text-align: center;
+    padding: 2rem;
+}
+
+.loading-spinner {
+    margin-bottom: 1rem;
+}
+
+.loading-message {
+    color: var(--text-secondary);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .modal {
+        width: 95%;
+        margin: 1rem;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+    }
+
+    .modal-footer .btn {
+        width: 100%;
+    }
+}
+
+/* Темная тема */
+[data-theme="dark"] .modal {
+    background-color: var(--background-card);
+}
+
+[data-theme="dark"] .modal-header,
+[data-theme="dark"] .modal-footer {
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .modal-close:hover {
+    background-color: var(--gray-700);
+}
+
+[data-theme="dark"] .trailer-modal .modal {
+    background-color: var(--black);
+}
+
+[data-theme="dark"] .trailer-modal .modal-close {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .trailer-modal .modal-close:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+} 

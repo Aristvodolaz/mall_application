@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Торговый центр</title>
+    
+    <!-- Стили -->
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/animations.css">
+    <link rel="stylesheet" href="/css/modals.css">
+    <link rel="stylesheet" href="/css/notifications.css">
+    <link rel="stylesheet" href="/css/cinema.css">
+    <link rel="stylesheet" href="/css/tickets.css">
+    <link rel="stylesheet" href="/css/dark-theme.css">
+    
+    <!-- Шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Иконки -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body>
+
+
+    <!-- Основной контент -->
+    <main class="main">
+        <%- include('../partials/notifications') %>
+        <%- body %>
+    </main>
+
+
+
+    <!-- Скрипты -->
+    <script src="/js/main.js"></script>
+    <script src="/js/notifications.js"></script>
+    <% if (typeof scripts !== 'undefined') { %>
+        <% scripts.forEach(function(script) { %>
+            <script src="<%= script %>"></script>
+        <% }); %>
+    <% } %>
+</body>
+</html> 

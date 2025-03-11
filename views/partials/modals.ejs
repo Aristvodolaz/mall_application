@@ -1,0 +1,148 @@
+<!-- Модальное окно авторизации -->
+<div class="modal fade" id="loginModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Вход в систему</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/api/auth/login" method="POST" id="loginForm">
+                    <div class="mb-3">
+                        <label for="loginEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="loginEmail" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="loginPassword" class="form-label">Пароль</label>
+                        <input type="password" class="form-control" id="loginPassword" name="password" required>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe" name="remember">
+                        <label class="form-check-label" for="rememberMe">Запомнить меня</label>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Войти</button>
+                    </div>
+                </form>
+                <hr>
+                <div class="text-center">
+                    <p class="mb-0">Еще нет аккаунта? <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Зарегистрироваться</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно регистрации -->
+<div class="modal fade" id="registerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Регистрация</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/api/auth/register" method="POST" id="registerForm">
+                    <div class="mb-3">
+                        <label for="registerName" class="form-label">Имя</label>
+                        <input type="text" class="form-control" id="registerName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="registerEmail" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerPassword" class="form-label">Пароль</label>
+                        <input type="password" class="form-control" id="registerPassword" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerPasswordConfirm" class="form-label">Подтверждение пароля</label>
+                        <input type="password" class="form-control" id="registerPasswordConfirm" name="passwordConfirm" required>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="agreeTerms" name="agree" required>
+                        <label class="form-check-label" for="agreeTerms">
+                            Я согласен с <a href="/terms" target="_blank">условиями использования</a>
+                        </label>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                    </div>
+                </form>
+                <hr>
+                <div class="text-center">
+                    <p class="mb-0">Уже есть аккаунт? <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Войти</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Обработка формы входа
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            try {
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: this.email.value,
+                        password: this.password.value,
+                        remember: this.remember.checked
+                    })
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    throw new Error(data.message || 'Ошибка входа');
+                }
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+    }
+
+    // Обработка формы регистрации
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (this.password.value !== this.passwordConfirm.value) {
+                alert('Пароли не совпадают');
+                return;
+            }
+            
+            try {
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: this.name.value,
+                        email: this.email.value,
+                        password: this.password.value
+                    })
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    throw new Error(data.message || 'Ошибка регистрации');
+                }
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+    }
+});
+</script> 

@@ -1,0 +1,90 @@
+/* Стили для секции программы лояльности */
+.loyalty-section {
+  padding: 4rem 0;
+  background-color: var(--background);
+}
+
+.loyalty-card {
+  display: flex;
+  background: var(--background-card);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.loyalty-content {
+  flex: 1;
+  padding: 3rem;
+}
+
+.loyalty-title {
+  font-size: var(--font-2xl);
+  font-weight: var(--font-bold);
+  margin-bottom: 1rem;
+  color: var(--primary);
+}
+
+.loyalty-description {
+  font-size: var(--font-lg);
+  margin-bottom: 2rem;
+  color: var(--text-secondary);
+}
+
+.loyalty-features {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.loyalty-feature {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.feature-icon {
+  width: 50px;
+  height: 50px;
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.feature-text h3 {
+  font-size: var(--font-md);
+  font-weight: var(--font-semibold);
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.feature-text p {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.loyalty-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.loyalty-image {
+  flex: 1;
+  min-height: 400px;
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.loyalty-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+} 

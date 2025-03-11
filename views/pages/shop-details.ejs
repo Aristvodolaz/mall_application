@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/shops.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+
+    <div class="shop-details-page">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title"><%= shop.name %></h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                        <li class="breadcrumb-item"><a href="/shops">Магазины</a></li>
+                        <li class="breadcrumb-item active"><%= shop.name %></li>
+                    </ol>
+                </nav>
+            </div>
+
+            <div class="shop-details-content">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="shop-main">
+                            <div class="shop-header">
+                                <div class="shop-logo">
+                                    <img src="<%= shop.logo_url || '/images/shops/default.jpg' %>" alt="<%= shop.name %>">
+                                </div>
+                                <div class="shop-info">
+                                    <h2 class="shop-name"><%= shop.name %></h2>
+                                    <div class="shop-meta">
+                                        <span class="shop-category">
+                                            <i class="bi bi-tag"></i>
+                                            <%= shop.category_name || shop.category || 'Общая категория' %>
+                                        </span>
+                                        <span class="shop-floor">
+                                            <i class="bi bi-layers"></i>
+                                            <%= shop.floor ? `${shop.floor} этаж` : 'Этаж не указан' %>
+                                        </span>
+                                        <% if (shop.opening_hours) { %>
+                                            <span class="shop-hours">
+                                                <i class="bi bi-clock"></i>
+                                                <%= shop.opening_hours %>
+                                            </span>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="shop-description">
+                                <h3>О магазине</h3>
+                                <p><%= shop.description || 'Описание отсутствует' %></p>
+                            </div>
+                            
+                            <% if (shop.features && shop.features.length > 0) { %>
+                            <div class="shop-features">
+                                <h3>Особенности</h3>
+                                <ul class="features-list">
+                                    <% shop.features.forEach(feature => { %>
+                                        <li><i class="bi bi-check-circle"></i> <%= feature %></li>
+                                    <% }); %>
+                                </ul>
+                            </div>
+                            <% } %>
+                            
+                            <% if (promotions && promotions.length > 0) { %>
+                            <div class="shop-promotions">
+                                <h3>Акции и скидки</h3>
+                                <div class="promotions-list">
+                                    <% promotions.forEach(promotion => { %>
+                                        <div class="promotion-item">
+                                            <div class="promotion-image">
+                                                <img src="<%= promotion.image_url || '/images/promotions/default.jpg' %>" alt="<%= promotion.title %>">
+                                            </div>
+                                            <div class="promotion-content">
+                                                <h4><%= promotion.title %></h4>
+                                                <div class="promotion-dates">
+                                                    <i class="bi bi-calendar-event"></i>
+                                                    <% if (promotion.start_date && promotion.end_date) { %>
+                                                        <%= new Date(promotion.start_date).toLocaleDateString('ru-RU') %> - <%= new Date(promotion.end_date).toLocaleDateString('ru-RU') %>
+                                                    <% } else if (promotion.start_date) { %>
+                                                        С <%= new Date(promotion.start_date).toLocaleDateString('ru-RU') %>
+                                                    <% } else { %>
+                                                        Бессрочная акция
+                                                    <% } %>
+                                                </div>
+                                                <p><%= promotion.description %></p>
+                                                <a href="/promotions/<%= promotion.id %>" class="btn btn-outline-primary btn-sm">Подробнее</a>
+                                            </div>
+                                        </div>
+                                    <% }); %>
+                                </div>
+                            </div>
+                            <% } %>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                        <div class="shop-sidebar">
+                            <div class="sidebar-card">
+                                <h3>Контактная информация</h3>
+                                <ul class="contact-list">
+                                    <% if (shop.phone) { %>
+                                    <li>
+                                        <i class="bi bi-telephone"></i>
+                                        <div>
+                                            <h4>Телефон</h4>
+                                            <p><a href="tel:<%= shop.phone %>"><%= shop.phone %></a></p>
+                                        </div>
+                                    </li>
+                                    <% } %>
+                                    <% if (shop.email) { %>
+                                    <li>
+                                        <i class="bi bi-envelope"></i>
+                                        <div>
+                                            <h4>Email</h4>
+                                            <p><a href="mailto:<%= shop.email %>"><%= shop.email %></a></p>
+                                        </div>
+                                    </li>
+                                    <% } %>
+                                    <% if (shop.website) { %>
+                                    <li>
+                                        <i class="bi bi-globe"></i>
+                                        <div>
+                                            <h4>Веб-сайт</h4>
+                                            <p><a href="<%= shop.website %>" target="_blank"><%= shop.website.replace(/^https?:\/\//, '') %></a></p>
+                                        </div>
+                                    </li>
+                                    <% } %>
+                                    <li>
+                                        <i class="bi bi-geo-alt"></i>
+                                        <div>
+                                            <h4>Расположение</h4>
+                                            <p><%= shop.floor ? `${shop.floor} этаж` : 'Этаж не указан' %>, <%= shop.location || 'Расположение не указано' %></p>
+                                        </div>
+                                    </li>
+                                    <% if (shop.opening_hours) { %>
+                                    <li>
+                                        <i class="bi bi-clock"></i>
+                                        <div>
+                                            <h4>Режим работы</h4>
+                                            <p><%= shop.opening_hours %></p>
+                                        </div>
+                                    </li>
+                                    <% } %>
+                                </ul>
+                            </div>
+                            
+                            <% if (shop.social_media && Object.keys(shop.social_media).length > 0) { %>
+                            <div class="sidebar-card">
+                                <h3>Социальные сети</h3>
+                                <div class="social-links">
+                                    <% if (shop.social_media.vk) { %>
+                                        <a href="<%= shop.social_media.vk %>" target="_blank" class="social-link vk">
+                                            <i class="bi bi-vk"></i>
+                                        </a>
+                                    <% } %>
+                                    <% if (shop.social_media.instagram) { %>
+                                        <a href="<%= shop.social_media.instagram %>" target="_blank" class="social-link instagram">
+                                            <i class="bi bi-instagram"></i>
+                                        </a>
+                                    <% } %>
+                                    <% if (shop.social_media.facebook) { %>
+                                        <a href="<%= shop.social_media.facebook %>" target="_blank" class="social-link facebook">
+                                            <i class="bi bi-facebook"></i>
+                                        </a>
+                                    <% } %>
+                                    <% if (shop.social_media.telegram) { %>
+                                        <a href="<%= shop.social_media.telegram %>" target="_blank" class="social-link telegram">
+                                            <i class="bi bi-telegram"></i>
+                                        </a>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <% } %>
+                            
+                            <% if (relatedShops && relatedShops.length > 0) { %>
+                            <div class="sidebar-card">
+                                <h3>Похожие магазины</h3>
+                                <div class="related-shops">
+                                    <% relatedShops.forEach(relatedShop => { %>
+                                    <a href="/shops/<%= relatedShop.id %>" class="related-shop-item">
+                                        <div class="related-shop-logo">
+                                            <img src="<%= relatedShop.logo_url || '/images/shops/default.jpg' %>" alt="<%= relatedShop.name %>">
+                                        </div>
+                                        <div class="related-shop-info">
+                                            <h4><%= relatedShop.name %></h4>
+                                            <p><%= relatedShop.floor ? `${relatedShop.floor} этаж` : 'Этаж не указан' %></p>
+                                        </div>
+                                    </a>
+                                    <% }); %>
+                                </div>
+                            </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

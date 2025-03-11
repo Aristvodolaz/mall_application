@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/cinema.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+
+    <div class="cinema-page">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Кинотеатр</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                        <li class="breadcrumb-item active">Кинотеатр</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <div class="cinema-filters">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="genreFilter">Жанр</label>
+                            <select class="form-select" id="genreFilter">
+                                <option value="all" selected>Все жанры</option>
+                                <option value="action">Боевик</option>
+                                <option value="comedy">Комедия</option>
+                                <option value="drama">Драма</option>
+                                <option value="horror">Ужасы</option>
+                                <option value="fantasy">Фэнтези</option>
+                                <option value="thriller">Триллер</option>
+                                <option value="animation">Мультфильм</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="sortFilter">Сортировка</label>
+                            <select class="form-select" id="sortFilter">
+                                <option value="newest" selected>Сначала новые</option>
+                                <option value="rating">По рейтингу</option>
+                                <option value="title">По названию</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="searchFilter">Поиск</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="searchFilter" placeholder="Название фильма...">
+                                <button class="btn btn-primary" type="button" id="searchButton">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="movies-grid" id="moviesGrid">
+                <% if (movies && movies.length > 0) { %>
+                    <% movies.forEach(movie => { %>
+                        <div class="movie-card" data-genre="<%= movie.genre || 'all' %>">
+                            <div class="movie-poster">
+                                <img src="<%= movie.poster_url || '/images/movies/default.jpg' %>" alt="<%= movie.title %>">
+                                <div class="movie-overlay">
+                                    <a href="/cinema/movies/<%= movie.id %>" class="btn btn-light">Подробнее</a>
+                                </div>
+                                <% if (movie.is_new) { %>
+                                    <div class="movie-badge new">Новинка</div>
+                                <% } %>
+                                <% if (movie.coming_soon) { %>
+                                    <div class="movie-badge coming-soon">Скоро</div>
+                                <% } %>
+                                <% if (movie.averageRating) { %>
+                                    <div class="movie-badge rating">
+                                        <i class="bi bi-star-fill"></i> <%= movie.averageRating %>
+                                    </div>
+                                <% } %>
+                                <% if (movie.age_restriction) { %>
+                                    <div class="movie-badge age"><%= movie.age_restriction %>+</div>
+                                <% } %>
+                            </div>
+                            <div class="movie-content">
+                                <h3 class="movie-title">
+                                    <%= movie.title %>
+                                    <% if (movie.original_title) { %>
+                                        <span class="movie-original-title"><%= movie.original_title %></span>
+                                    <% } %>
+                                </h3>
+                                <div class="movie-meta">
+                                    <% if (movie.duration) { %>
+                                        <span class="movie-duration">
+                                            <i class="bi bi-clock"></i> <%= movie.duration %> мин.
+                                        </span>
+                                    <% } %>
+                                    <% if (movie.genre) { %>
+                                        <span class="movie-genre">
+                                            <i class="bi bi-tag"></i> <%= movie.genre %>
+                                        </span>
+                                    <% } %>
+                                    <% if (movie.release_date) { %>
+                                        <span class="movie-release">
+                                            <i class="bi bi-calendar"></i> <%= new Date(movie.release_date).toLocaleDateString('ru-RU') %>
+                                        </span>
+                                    <% } %>
+                                </div>
+                                <p class="movie-description"><%= movie.description %></p>
+                                <div class="movie-actions">
+                                    <a href="/cinema/movies/<%= movie.id %>" class="btn btn-primary">
+                                        <i class="bi bi-info-circle"></i> Подробнее
+                                    </a>
+                                    <a href="/cinema/movies/<%= movie.id %>#screenings" class="btn btn-outline-primary">
+                                        <i class="bi bi-ticket-perforated"></i> Сеансы
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="no-movies">
+                        <i class="bi bi-exclamation-circle"></i>
+                        <h3>Нет фильмов</h3>
+                        <p>В данный момент нет доступных фильмов. Пожалуйста, загляните позже.</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const moviesGrid = document.getElementById('moviesGrid');
+            const movieCards = document.querySelectorAll('.movie-card');
+            const genreFilter = document.getElementById('genreFilter');
+            const sortFilter = document.getElementById('sortFilter');
+            const searchFilter = document.getElementById('searchFilter');
+            const searchButton = document.getElementById('searchButton');
+            
+            // Функция фильтрации фильмов
+            function filterMovies() {
+                const genre = genreFilter.value;
+                const searchTerm = searchFilter.value.toLowerCase();
+                
+                movieCards.forEach(card => {
+                    const cardGenre = card.dataset.genre;
+                    const cardTitle = card.querySelector('.movie-title').textContent.toLowerCase();
+                    const cardDescription = card.querySelector('.movie-description').textContent.toLowerCase();
+                    
+                    const genreMatch = genre === 'all' || cardGenre === genre;
+                    const searchMatch = searchTerm === '' || 
+                                       cardTitle.includes(searchTerm) || 
+                                       cardDescription.includes(searchTerm);
+                    
+                    if (genreMatch && searchMatch) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Проверяем, есть ли видимые карточки
+                const visibleCards = document.querySelectorAll('.movie-card[style="display: flex;"]');
+                if (visibleCards.length === 0) {
+                    let noResults = document.querySelector('.no-results');
+                    if (!noResults) {
+                        noResults = document.createElement('div');
+                        noResults.className = 'no-results';
+                        noResults.innerHTML = `
+                            <i class="bi bi-search"></i>
+                            <h3>Ничего не найдено</h3>
+                            <p>По вашему запросу не найдено фильмов. Попробуйте изменить параметры поиска.</p>
+                        `;
+                        moviesGrid.appendChild(noResults);
+                    }
+                } else {
+                    const noResults = document.querySelector('.no-results');
+                    if (noResults) {
+                        noResults.remove();
+                    }
+                }
+            }
+            
+            // Функция сортировки фильмов
+            function sortMovies() {
+                const sortBy = sortFilter.value;
+                const cards = Array.from(movieCards);
+                
+                cards.sort((a, b) => {
+                    if (sortBy === 'newest') {
+                        // Сортировка по дате выхода (сначала новые)
+                        const dateA = a.querySelector('.movie-release') ? 
+                            a.querySelector('.movie-release').textContent.replace(/[^\d.]/g, '') : '';
+                        const dateB = b.querySelector('.movie-release') ? 
+                            b.querySelector('.movie-release').textContent.replace(/[^\d.]/g, '') : '';
+                        return dateB.localeCompare(dateA);
+                    } else if (sortBy === 'rating') {
+                        // Сортировка по рейтингу
+                        const ratingA = a.querySelector('.movie-badge.rating') ? 
+                            parseFloat(a.querySelector('.movie-badge.rating').textContent.replace(/[^\d.]/g, '')) || 0 : 0;
+                        const ratingB = b.querySelector('.movie-badge.rating') ? 
+                            parseFloat(b.querySelector('.movie-badge.rating').textContent.replace(/[^\d.]/g, '')) || 0 : 0;
+                        return ratingB - ratingA;
+                    } else if (sortBy === 'title') {
+                        // Сортировка по названию
+                        const titleA = a.querySelector('.movie-title').textContent.toLowerCase();
+                        const titleB = b.querySelector('.movie-title').textContent.toLowerCase();
+                        return titleA.localeCompare(titleB);
+                    }
+                    return 0;
+                });
+                
+                // Перестраиваем DOM
+                cards.forEach(card => {
+                    moviesGrid.appendChild(card);
+                });
+            }
+            
+            // Обработчики событий
+            genreFilter.addEventListener('change', filterMovies);
+            sortFilter.addEventListener('change', sortMovies);
+            searchButton.addEventListener('click', filterMovies);
+            searchFilter.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    filterMovies();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

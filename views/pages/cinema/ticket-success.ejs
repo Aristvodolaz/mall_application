@@ -1,0 +1,357 @@
+<!-- Страница успешной оплаты билета -->
+<div class="success-page">
+    <!-- Хлебные крошки -->
+    <nav aria-label="breadcrumb" class="bg-light py-2">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                <li class="breadcrumb-item"><a href="/cinema">Кинотеатр</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Билет оплачен</li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Информация об успешной оплате -->
+    <section class="success-section">
+        <div class="container">
+            <div class="success-header animate fade-in">
+                <div class="success-icon">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <h1 class="success-title">Оплата прошла успешно!</h1>
+                <p class="success-message">Ваш билет готов. Вы можете распечатать его или показать QR-код при входе в кинозал.</p>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="ticket-card animate fade-in">
+                        <div class="ticket-header">
+                            <h2 class="ticket-title"><%= ticket.Screening.Movie.title %></h2>
+                            <div class="ticket-status paid">Оплачен</div>
+                        </div>
+                        <div class="ticket-body">
+                            <div class="ticket-info">
+                                <div class="ticket-info-item">
+                                    <div class="ticket-info-label">Дата</div>
+                                    <div class="ticket-info-value"><%= moment(ticket.Screening.date).format('D MMMM YYYY') %></div>
+                                </div>
+                                <div class="ticket-info-item">
+                                    <div class="ticket-info-label">Время</div>
+                                    <div class="ticket-info-value"><%= moment(ticket.Screening.time, 'HH:mm:ss').format('HH:mm') %></div>
+                                </div>
+                                <div class="ticket-info-item">
+                                    <div class="ticket-info-label">Зал</div>
+                                    <div class="ticket-info-value"><%= ticket.Screening.hall %></div>
+                                </div>
+                                <div class="ticket-info-item">
+                                    <div class="ticket-info-label">Места</div>
+                                    <div class="ticket-info-value">
+                                        <% 
+                                            const seats = JSON.parse(ticket.seats);
+                                            const seatDescriptions = seats.map(seat => {
+                                                return `Ряд ${seat.row + 1}, Место ${seat.seat + 1}`;
+                                            });
+                                        %>
+                                        <%= seatDescriptions.join('; ') %>
+                                    </div>
+                                </div>
+                                <div class="ticket-info-item">
+                                    <div class="ticket-info-label">Код билета</div>
+                                    <div class="ticket-info-value"><%= ticket.code %></div>
+                                </div>
+                            </div>
+
+                            <div class="ticket-qr">
+                                <img src="<%= ticket.qr_code %>" alt="QR-код билета">
+                            </div>
+
+                            <div class="ticket-note">
+                                <p>Пожалуйста, приходите за 15 минут до начала сеанса. Билет действителен только на указанный сеанс.</p>
+                            </div>
+
+                            <div class="ticket-actions">
+                                <a href="/cinema/tickets/<%= ticket.id %>/pdf" class="btn btn-primary">
+                                    <i class="bi bi-download"></i>
+                                    Скачать PDF
+                                </a>
+                                <button class="btn btn-outline" onclick="window.print()">
+                                    <i class="bi bi-printer"></i>
+                                    Распечатать
+                                </button>
+                                <a href="/cinema" class="btn btn-outline">
+                                    <i class="bi bi-film"></i>
+                                    К фильмам
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="additional-info animate fade-in">
+                <h3>Что дальше?</h3>
+                <div class="info-cards">
+                    <div class="info-card">
+                        <div class="info-card-icon">
+                            <i class="bi bi-envelope"></i>
+                        </div>
+                        <div class="info-card-content">
+                            <h4>Проверьте почту</h4>
+                            <p>Мы отправили копию билета на вашу электронную почту.</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-icon">
+                            <i class="bi bi-phone"></i>
+                        </div>
+                        <div class="info-card-content">
+                            <h4>Сохраните билет</h4>
+                            <p>Сохраните QR-код на телефоне или распечатайте билет.</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-icon">
+                            <i class="bi bi-clock"></i>
+                        </div>
+                        <div class="info-card-content">
+                            <h4>Приходите вовремя</h4>
+                            <p>Рекомендуем прийти за 15 минут до начала сеанса.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+/* Страница успешной оплаты */
+.success-page {
+    padding-bottom: 4rem;
+}
+
+.success-section {
+    padding: 2rem 0;
+}
+
+.success-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: var(--success);
+    margin-bottom: 1rem;
+}
+
+.success-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.success-message {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Билет */
+.ticket-card {
+    background: var(--surface);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-bottom: 3rem;
+}
+
+.ticket-header {
+    background: var(--primary);
+    color: var(--text-on-primary);
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ticket-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.ticket-status {
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--border-radius-sm);
+}
+
+.ticket-status.paid {
+    background: var(--success);
+}
+
+.ticket-body {
+    padding: 2rem;
+}
+
+.ticket-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.ticket-info-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.ticket-info-value {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.ticket-qr {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
+}
+
+.ticket-qr img {
+    max-width: 200px;
+    height: auto;
+    padding: 1rem;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+.ticket-note {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: 2rem;
+}
+
+.ticket-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Дополнительная информация */
+.additional-info {
+    margin-top: 3rem;
+}
+
+.additional-info h3 {
+    text-align: center;
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+.info-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-card {
+    background: var(--surface);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    gap: 1rem;
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.info-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.info-card-icon {
+    font-size: 2rem;
+    color: var(--primary);
+}
+
+.info-card-content h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.info-card-content p {
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Анимации */
+.animate {
+    animation-duration: 0.6s;
+    animation-fill-mode: both;
+}
+
+.fade-in {
+    animation-name: fadeIn;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .ticket-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .ticket-actions {
+        flex-direction: column;
+    }
+    
+    .info-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Стили для печати */
+@media print {
+    .breadcrumb,
+    .success-header,
+    .additional-info,
+    .ticket-actions {
+        display: none;
+    }
+    
+    .ticket-card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .ticket-header {
+        background: #f0f0f0;
+        color: #000;
+    }
+    
+    .ticket-status {
+        background: #f0f0f0;
+        color: #000;
+    }
+}
+</style> 

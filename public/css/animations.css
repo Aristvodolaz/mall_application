@@ -1,0 +1,471 @@
+/* Базовые анимации */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes slideInUp {
+    from {
+        transform: translate3d(0, 20px, 0);
+        opacity: 0;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        transform: translate3d(0, -20px, 0);
+        opacity: 0;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translate3d(-20px, 0, 0);
+        opacity: 0;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translate3d(20px, 0, 0);
+        opacity: 0;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes rotateIn {
+    from {
+        transform: rotate(-180deg) scale(0.5);
+        opacity: 0;
+    }
+    to {
+        transform: rotate(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Анимации */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideLeft {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideRight {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-5px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(5px);
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Классы анимаций */
+.animate {
+    animation-duration: var(--transition);
+    animation-fill-mode: both;
+}
+
+.animate-slow {
+    animation-duration: var(--transition-slow);
+}
+
+.animate-fast {
+    animation-duration: var(--transition-fast);
+}
+
+.animate-delay-100 { animation-delay: 100ms; }
+.animate-delay-200 { animation-delay: 200ms; }
+.animate-delay-300 { animation-delay: 300ms; }
+.animate-delay-400 { animation-delay: 400ms; }
+.animate-delay-500 { animation-delay: 500ms; }
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.5s ease forwards;
+}
+
+.animate-slide-down {
+    animation: slideDown 0.5s ease forwards;
+}
+
+.animate-slide-left {
+    animation: slideLeft 0.5s ease forwards;
+}
+
+.animate-slide-right {
+    animation: slideRight 0.5s ease forwards;
+}
+
+.animate-scale {
+    animation: scale 0.5s ease forwards;
+}
+
+.animate-pulse {
+    animation: pulse 1s ease infinite;
+}
+
+.animate-shake {
+    animation: shake 0.5s ease;
+}
+
+.animate-rotate {
+    animation: rotate 1s linear infinite;
+}
+
+.animate-duration-300 {
+    animation-duration: 300ms;
+}
+
+.animate-duration-500 {
+    animation-duration: 500ms;
+}
+
+.animate-duration-700 {
+    animation-duration: 700ms;
+}
+
+.animate-duration-1000 {
+    animation-duration: 1000ms;
+}
+
+.animate-ease-in {
+    animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+}
+
+.animate-ease-out {
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
+.animate-ease-in-out {
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fade-in { animation-name: fadeIn; }
+.fade-out { animation-name: fadeOut; }
+.slide-in-up { animation-name: slideInUp; }
+.slide-in-down { animation-name: slideInDown; }
+.slide-in-left { animation-name: slideInLeft; }
+.slide-in-right { animation-name: slideInRight; }
+.scale-in { animation-name: scaleIn; }
+.rotate-in { animation-name: rotateIn; }
+
+/* Анимации при наведении */
+.hover-scale {
+    transition: transform var(--transition);
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+.hover-lift {
+    transition: transform var(--transition);
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+}
+
+.hover-glow {
+    transition: box-shadow var(--transition);
+}
+
+.hover-glow:hover {
+    box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.4);
+}
+
+/* Анимации для карточек */
+.card {
+    transition: transform var(--transition),
+                box-shadow var(--transition);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Анимации для кнопок */
+.btn {
+    transition: transform var(--transition-fast),
+                box-shadow var(--transition-fast),
+                background-color var(--transition-fast),
+                color var(--transition-fast);
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+/* Анимации для форм */
+.form-control {
+    transition: border-color var(--transition),
+                box-shadow var(--transition);
+}
+
+.form-control:focus {
+    transform: translateY(-1px);
+}
+
+/* Анимации для навигации */
+.nav-link {
+    position: relative;
+    transition: color var(--transition);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--primary);
+    transform: scaleX(0);
+    transition: transform var(--transition);
+}
+
+.nav-link:hover::after {
+    transform: scaleX(1);
+}
+
+/* Анимации для модальных окон */
+.modal {
+    animation: fadeIn var(--transition);
+}
+
+.modal-content {
+    animation: slideInUp var(--transition);
+}
+
+/* Анимации для уведомлений */
+.toast {
+    animation: slideInRight var(--transition-fast);
+}
+
+/* Анимации для загрузки */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading {
+    animation: spin 1s linear infinite;
+}
+
+/* Анимации для прогресс-баров */
+@keyframes progressBar {
+    from { width: 0; }
+}
+
+.progress-bar {
+    animation: progressBar var(--transition-slow) ease-out;
+}
+
+/* Анимации для кинотеатра */
+@keyframes ticketRip {
+    from {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+    to {
+        clip-path: polygon(0 0, 75% 0, 75% 100%, 0 100%);
+    }
+}
+
+@keyframes seatPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: var(--shadow-sm);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: var(--shadow-md);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: var(--shadow-sm);
+    }
+}
+
+@keyframes screenGlow {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+.animate-ticket-rip {
+    animation: ticketRip 0.5s ease forwards;
+}
+
+.animate-seat-pulse {
+    animation: seatPulse 0.5s ease;
+}
+
+.animate-screen-glow {
+    animation: screenGlow 2s ease infinite;
+}
+
+/* Анимации для загрузки */
+@keyframes loading {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loading {
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid var(--primary);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: loading 0.6s linear infinite;
+}
+
+/* Анимации для уведомлений */
+@keyframes notification {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    10% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    90% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.animate-notification {
+    animation: notification 3s ease forwards;
+} 

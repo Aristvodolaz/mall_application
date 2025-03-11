@@ -1,0 +1,22 @@
+<!-- Flash сообщения -->
+<% if (success_msg && success_msg.length > 0) { %>
+    <div class="notification notification-success show">
+        <div class="notification-icon">
+            <i class="bi bi-check-circle"></i>
+        </div>
+        <div class="notification-content">
+            <div class="notification-message"><%= success_msg %></div>
+        </div>
+    </div>
+<% } %>
+
+<% if (error_msg && error_msg.length > 0) { %>
+    <div class="notification notification-error show">
+        <div class="notification-icon">
+            <i class="bi bi-exclamation-circle"></i>
+        </div>
+        <div class="notification-content">
+            <div class="notification-message"><%= error_msg %></div>
+        </div>
+    </div>
+<% } %> 

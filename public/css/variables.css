@@ -1,0 +1,138 @@
+:root {
+    /* Основная цветовая палитра */
+    --primary: #4a6bff;
+    --primary-light: #7a93ff;
+    --primary-dark: #3451d1;
+    --secondary: #6c757d;
+    --secondary-light: #868e96;
+    --secondary-dark: #495057;
+    
+    /* Акцентные цвета */
+    --accent: #ff6b6b;
+    --accent-light: #ff8e8e;
+    --accent-dark: #e64545;
+    
+    /* Функциональные цвета */
+    --success: #28a745;
+    --success-light: #48c76a;
+    --success-dark: #1e7e34;
+    --danger: #dc3545;
+    --danger-light: #e25663;
+    --danger-dark: #bd2130;
+    --warning: #ffc107;
+    --warning-light: #ffcd39;
+    --warning-dark: #d39e00;
+    --info: #17a2b8;
+    --info-light: #3ab7cc;
+    --info-dark: #117a8b;
+    
+    /* Нейтральные цвета */
+    --white: #ffffff;
+    --gray-100: #f8f9fa;
+    --gray-200: #e9ecef;
+    --gray-300: #dee2e6;
+    --gray-400: #ced4da;
+    --gray-500: #adb5bd;
+    --gray-600: #6c757d;
+    --gray-700: #495057;
+    --gray-800: #343a40;
+    --gray-900: #212529;
+    --black: #000000;
+    
+    /* Цвета фона и текста */
+    --background: #f8f9fa;
+    --background-alt: #ffffff;
+    --background-card: #ffffff;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-muted: #adb5bd;
+    --text-light: #f8f9fa;
+    
+    /* Цвета для кинотеатра */
+    --cinema-primary: #5e35b1;
+    --cinema-primary-light: #7e57c2;
+    --cinema-primary-dark: #4527a0;
+    --cinema-accent: #ff5722;
+    --cinema-accent-light: #ff7043;
+    --cinema-accent-dark: #e64a19;
+    --cinema-background: #f5f5f5;
+    --cinema-card: #ffffff;
+    --cinema-text: #212121;
+    --cinema-text-light: #757575;
+    
+    /* Тени */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 6px 10px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 15px 20px rgba(0, 0, 0, 0.12);
+    
+    /* Скругления */
+    --radius-sm: 0.25rem;
+    --radius: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-full: 9999px;
+    
+    /* Переходы */
+    --transition-fast: 150ms ease;
+    --transition: 250ms ease;
+    --transition-slow: 350ms ease;
+    
+    /* Размеры шрифтов */
+    --font-xs: 0.75rem;
+    --font-sm: 0.875rem;
+    --font-base: 1rem;
+    --font-md: 1.125rem;
+    --font-lg: 1.25rem;
+    --font-xl: 1.5rem;
+    --font-2xl: 1.875rem;
+    --font-3xl: 2.25rem;
+    --font-4xl: 3rem;
+    
+    /* Толщина шрифта */
+    --font-light: 300;
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+}
+
+/* Темная тема */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #121212;
+        --background-alt: #1e1e1e;
+        --background-card: #2d2d2d;
+        --text-primary: #f8f9fa;
+        --text-secondary: #adb5bd;
+        --text-muted: #6c757d;
+        --text-light: #e9ecef;
+        
+        --primary: #5c7cff;
+        --primary-light: #8ca4ff;
+        --primary-dark: #4a63cc;
+        
+        --secondary: #6c757d;
+        --secondary-light: #868e96;
+        --secondary-dark: #495057;
+        
+        --cinema-primary: #7e57c2;
+        --cinema-primary-light: #9575cd;
+        --cinema-primary-dark: #5e35b1;
+        --cinema-accent: #ff7043;
+        --cinema-accent-light: #ff8a65;
+        --cinema-accent-dark: #f4511e;
+        --cinema-background: #1e1e1e;
+        --cinema-card: #2d2d2d;
+        --cinema-text: #f5f5f5;
+        --cinema-text-light: #bdbdbd;
+        
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
+        --shadow-md: 0 6px 10px rgba(0, 0, 0, 0.3);
+        --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.35);
+        --shadow-xl: 0 15px 20px rgba(0, 0, 0, 0.4);
+    }
+} 

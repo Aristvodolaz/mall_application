@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ТРЦ "Кристалл" - Главная</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+
+    <!-- Главный баннер -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="row align-items-center min-vh-75">
+                <div class="col-md-6">
+                    <h1 class="display-4 fw-bold">Добро пожаловать в ТРЦ "Кристалл"</h1>
+                    <p class="lead">Ваше место для шопинга, развлечений и отдыха</p>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                        <a href="/shops" class="btn btn-primary btn-lg px-4 me-md-2">Магазины</a>
+                        <a href="/events" class="btn btn-outline-primary btn-lg px-4">События</a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <img src="/images/mall.jpg" alt="ТРЦ Кристалл" class="img-fluid rounded shadow">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ближайшие события -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-4">Ближайшие события</h2>
+            <div class="row">
+                <% events.forEach(event => { %>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <img src="<%= event.image %>" class="card-img-top" alt="<%= event.title %>">
+                            <div class="card-body">
+                                <h5 class="card-title"><%= event.title %></h5>
+                                <p class="card-text"><%= event.description %></p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar"></i> <%= new Date(event.date).toLocaleDateString() %>
+                                    </small>
+                                </p>
+                                <a href="/events/<%= event.id %>" class="btn btn-primary">Подробнее</a>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+            <div class="text-center mt-4">
+                <a href="/events" class="btn btn-outline-primary">Все события</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Популярные магазины -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Популярные магазины</h2>
+            <div class="row">
+                <% shops.forEach(shop => { %>
+                    <div class="col-md-3 mb-4">
+                        <div class="card h-100">
+                            <img src="<%= shop.logo %>" class="card-img-top" alt="<%= shop.name %>">
+                            <div class="card-body">
+                                <h5 class="card-title"><%= shop.name %></h5>
+                                <p class="card-text"><small class="text-muted"><%= shop.category %></small></p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="rating">
+                                        <% for(let i = 0; i < Math.floor(shop.rating); i++) { %>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        <% } %>
+                                        <% if(shop.rating % 1 !== 0) { %>
+                                            <i class="bi bi-star-half text-warning"></i>
+                                        <% } %>
+                                    </div>
+                                    <a href="/shops/<%= shop.id %>" class="btn btn-sm btn-outline-primary">Подробнее</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+            <div class="text-center mt-4">
+                <a href="/shops" class="btn btn-outline-primary">Все магазины</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Интерактивная карта -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-4">Карта ТРЦ</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-10">
+                    <div class="mall-map">
+                        <!-- Здесь будет интерактивная карта -->
+                        <div id="mall-map"></div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <a href="/map" class="btn btn-primary">Открыть интерактивную карту</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Программа лояльности -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h2>Программа лояльности</h2>
+                    <p class="lead">Получайте бонусные баллы за покупки и посещение мероприятий</p>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-check-circle-fill text-success"></i> 10% от суммы покупки возвращается баллами</li>
+                        <li><i class="bi bi-check-circle-fill text-success"></i> Специальные предложения для участников</li>
+                        <li><i class="bi bi-check-circle-fill text-success"></i> Дополнительные скидки в день рождения</li>
+                    </ul>
+                    <% if (!user) { %>
+                        <a href="/auth/register" class="btn btn-primary">Присоединиться</a>
+                    <% } else { %>
+                        <a href="/profile/bonuses" class="btn btn-primary">Мои бонусы</a>
+                    <% } %>
+                </div>
+                <div class="col-md-6">
+                    <img src="/images/loyalty.jpg" alt="Программа лояльности" class="img-fluid rounded shadow">
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/map.js"></script>
+</body>
+</html> 

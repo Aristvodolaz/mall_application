@@ -1,0 +1,637 @@
+/* Общие стили для страниц акций */
+.promotions-page,
+.promotion-details-page {
+    padding: 2rem 0 4rem;
+}
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.breadcrumb {
+    margin-bottom: 0;
+}
+
+.breadcrumb-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+/* Стили для страницы списка акций */
+.promotions-filters {
+    background-color: var(--surface-color);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.promotions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.promotion-card {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--surface-color);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.promotion-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.promotion-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.promotion-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.promotion-card:hover .promotion-image img {
+    transform: scale(1.05);
+}
+
+.promotion-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.promotion-card:hover .promotion-overlay {
+    opacity: 1;
+}
+
+.promotion-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.promotion-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.promotion-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text-color);
+}
+
+.promotion-dates {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.promotion-description {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.promotion-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+}
+
+.shop-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: color 0.2s ease;
+}
+
+.shop-link:hover {
+    color: var(--primary-color);
+}
+
+.details-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: transform 0.2s ease;
+}
+
+.details-link:hover {
+    transform: translateX(3px);
+}
+
+.no-promotions,
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    background-color: var(--surface-color);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.no-promotions i,
+.no-results i {
+    font-size: 3rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.no-promotions h3,
+.no-results h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.no-promotions p,
+.no-results p {
+    color: var(--text-secondary);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Стили для страницы деталей акции */
+.promotion-details-content {
+    margin-top: 2rem;
+}
+
+.promotion-main {
+    background-color: var(--surface-color);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.promotion-main .promotion-image {
+    height: 300px;
+    position: relative;
+}
+
+.promotion-main .promotion-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.promotion-main .promotion-dates {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.promotion-main .promotion-content {
+    padding: 2rem;
+}
+
+.promotion-discount {
+    margin-bottom: 1.5rem;
+}
+
+.discount-badge {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 1.25rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.discount-badge.small {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.75rem;
+}
+
+.promotion-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    color: var(--text-color);
+}
+
+.promotion-terms {
+    background-color: var(--surface-alt);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.promotion-terms h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.promotion-terms p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0;
+}
+
+.promotion-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.promotion-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.sidebar-card {
+    background-color: var(--surface-color);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--text-color);
+}
+
+.info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.info-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.info-list i {
+    font-size: 1.25rem;
+    color: var(--primary-color);
+}
+
+.info-list h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--text-color);
+}
+
+.info-list p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0;
+}
+
+.info-list a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.other-promotions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.other-promotion-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.other-promotion-item:hover {
+    background-color: var(--surface-alt);
+}
+
+.other-promotion-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.other-promotion-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.other-promotion-info {
+    flex-grow: 1;
+}
+
+.other-promotion-info h4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--text-color);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+@media (max-width: 992px) {
+    .promotion-sidebar {
+        margin-top: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .promotions-filters .row > div {
+        margin-bottom: 1rem;
+    }
+    
+    .promotions-filters .row > div:last-child {
+        margin-bottom: 0;
+    }
+    
+    .promotion-actions {
+        flex-direction: column;
+    }
+}
+
+/* Стили для карточек акций */
+.promotions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
+.promotion-card {
+    position: relative;
+    background: var(--surface-color);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.promotion-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.promotion-image {
+    position: relative;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+}
+
+.promotion-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.promotion-card:hover .promotion-image img {
+    transform: scale(1.05);
+}
+
+.promotion-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.8));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.promotion-card:hover .promotion-overlay {
+    opacity: 1;
+}
+
+.promotion-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background: var(--primary-color);
+    color: white;
+    z-index: 1;
+}
+
+.promotion-content {
+    padding: 1.5rem;
+}
+
+.promotion-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.promotion-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.promotion-info span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.promotion-description {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.promotion-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    background: var(--surface-secondary);
+    border-top: 1px solid var(--border-color);
+}
+
+.promotion-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.promotion-dates span {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.promotion-dates strong {
+    font-size: 0.875rem;
+    color: var(--text-color);
+}
+
+.promotion-discount {
+    padding: 0.5rem 1rem;
+    background: var(--success-color);
+    color: white;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.promotion-card {
+    animation: fadeIn 0.6s ease backwards;
+}
+
+.promotion-card:nth-child(2n) {
+    animation-delay: 0.2s;
+}
+
+.promotion-card:nth-child(3n) {
+    animation-delay: 0.4s;
+}
+
+/* Skeleton loading */
+.promotion-card.skeleton {
+    pointer-events: none;
+}
+
+.promotion-card.skeleton .promotion-image {
+    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+    background-size: 200% 100%;
+    animation: shine 1.5s linear infinite;
+}
+
+.promotion-card.skeleton .promotion-title,
+.promotion-card.skeleton .promotion-info,
+.promotion-card.skeleton .promotion-description {
+    background: #ececec;
+    border-radius: 4px;
+    height: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.promotion-card.skeleton .promotion-title {
+    height: 1.5rem;
+    width: 80%;
+}
+
+.promotion-card.skeleton .promotion-info {
+    width: 60%;
+}
+
+.promotion-card.skeleton .promotion-description {
+    height: 3rem;
+}
+
+@keyframes shine {
+    to {
+        background-position-x: -200%;
+    }
+} 

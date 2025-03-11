@@ -1,0 +1,301 @@
+<!-- Страница кинотеатра -->
+<div class="cinema-page">
+    <!-- Фильтры -->
+    <div class="filters-section bg-light py-4 mb-4">
+        <div class="container">
+            <form class="row g-3" method="GET">
+                <div class="col-md-4">
+                    <label for="genre" class="form-label">Жанр</label>
+                    <select class="form-select" id="genre" name="genre">
+                        <option value="">Все жанры</option>
+                        <option value="action" <%= filters?.genre === 'action' ? 'selected' : '' %>>Боевик</option>
+                        <option value="comedy" <%= filters?.genre === 'comedy' ? 'selected' : '' %>>Комедия</option>
+                        <option value="drama" <%= filters?.genre === 'drama' ? 'selected' : '' %>>Драма</option>
+                        <option value="horror" <%= filters?.genre === 'horror' ? 'selected' : '' %>>Ужасы</option>
+                        <option value="animation" <%= filters?.genre === 'animation' ? 'selected' : '' %>>Мультфильм</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="date" class="form-label">Дата</label>
+                    <select class="form-select" id="date" name="date">
+                        <option value="">Все даты</option>
+                        <% if (screeningDates && screeningDates.length > 0) { %>
+                            <% screeningDates.forEach(screening => { %>
+                                <option value="<%= screening.date %>" <%= filters?.date === screening.date ? 'selected' : '' %>>
+                                    <%= new Date(screening.date).toLocaleDateString('ru', { day: 'numeric', month: 'long' }) %>
+                                </option>
+                            <% }); %>
+                        <% } %>
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        Применить фильтры
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Список фильмов -->
+    <div class="movies-section">
+        <div class="container">
+            <% if (movies.length > 0) { %>
+                <div class="movies-grid">
+                    <% movies.forEach(movie => { %>
+                        <div class="movie-card animate fade-in">
+                            <div class="movie-poster">
+                                <img src="<%= movie.poster_url || '/images/movie-placeholder.jpg' %>" alt="<%= movie.title %>">
+                                <div class="movie-overlay">
+                                    <% if (movie.is_featured) { %>
+                                        <span class="movie-badge featured">
+                                            <i class="bi bi-star-fill"></i>
+                                            Премьера
+                                        </span>
+                                    <% } %>
+                                    <% if (movie.rating) { %>
+                                        <span class="movie-badge rating">
+                                            <i class="bi bi-star-fill"></i>
+                                            <%= movie.rating %>
+                                        </span>
+                                    <% } %>
+                                    <span class="movie-badge age">
+                                        <%= movie.age_rating %>+
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="movie-content">
+                                <h3 class="movie-title">
+                                    <%= movie.title %>
+                                    <% if (movie.original_title) { %>
+                                        <small class="movie-original-title">
+                                            <%= movie.original_title %>
+                                        </small>
+                                    <% } %>
+                                </h3>
+                                <div class="movie-meta">
+                                    <span class="movie-genre">
+                                        <i class="bi bi-tag"></i>
+                                        <%= movie.genre %>
+                                    </span>
+                                    <span class="movie-duration">
+                                        <i class="bi bi-clock"></i>
+                                        <%= movie.duration %> мин.
+                                    </span>
+                                </div>
+                                <p class="movie-description">
+                                    <%= movie.description %>
+                                </p>
+                                <div class="movie-actions">
+                                    <a href="/cinema/movies/<%= movie.id %>" class="btn btn-primary">
+                                        Купить билет
+                                    </a>
+                                    <% if (movie.trailer_url) { %>
+                                        <button class="btn btn-outline watch-trailer" data-trailer-url="<%= movie.trailer_url %>">
+                                            <i class="bi bi-play-circle"></i>
+                                            Трейлер
+                                        </button>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <div class="text-center py-5">
+                    <h3>Фильмы не найдены</h3>
+                    <p>Попробуйте изменить параметры поиска</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для трейлера -->
+<div class="modal fade" id="trailerModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Трейлер</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="ratio ratio-16x9">
+                    <iframe src="" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Фильтры */
+.filters-section {
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+/* Сетка фильмов */
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+/* Карточка фильма */
+.movie-card {
+    background: var(--surface);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.movie-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.movie-poster {
+    position: relative;
+    height: 400px;
+}
+
+.movie-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.movie-overlay {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.movie-badge {
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.movie-badge.featured {
+    background: var(--warning);
+    color: var(--text-on-primary);
+}
+
+.movie-badge.rating {
+    background: var(--primary);
+    color: var(--text-on-primary);
+}
+
+.movie-badge.age {
+    background: var(--danger);
+    color: var(--text-on-primary);
+}
+
+.movie-content {
+    padding: 1.5rem;
+}
+
+.movie-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.movie-original-title {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: normal;
+}
+
+.movie-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.movie-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.movie-description {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.movie-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Модальное окно трейлера */
+.modal-content {
+    background: var(--surface);
+    border: none;
+    border-radius: var(--border-radius-lg);
+}
+
+.modal-header {
+    border-bottom-color: var(--border-color);
+}
+
+.modal-title {
+    color: var(--text-primary);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .movies-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .movie-poster {
+        height: 300px;
+    }
+
+    .movie-actions {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация модального окна для трейлера
+    const trailerModal = new bootstrap.Modal(document.getElementById('trailerModal'));
+    const trailerIframe = document.querySelector('#trailerModal iframe');
+    
+    document.querySelectorAll('.watch-trailer').forEach(button => {
+        button.addEventListener('click', () => {
+            const trailerUrl = button.dataset.trailerUrl;
+            trailerIframe.src = trailerUrl;
+            trailerModal.show();
+        });
+    });
+
+    // Очистка src при закрытии модального окна
+    document.getElementById('trailerModal').addEventListener('hidden.bs.modal', () => {
+        trailerIframe.src = '';
+    });
+});
+</script> 

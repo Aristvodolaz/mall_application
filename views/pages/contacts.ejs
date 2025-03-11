@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контакты - ТРЦ "Кристалл"</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/contacts.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+
+    <div class="contacts-page">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Контакты</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                        <li class="breadcrumb-item active">Контакты</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <div class="contacts-grid">
+                <div class="contact-info">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>Адрес</h3>
+                            <p>г. Дятьково, ул. Ленина, д. 184</p>
+                            <a href="https://yandex.ru/maps/-/CCUZRMuKkD" target="_blank" class="btn btn-outline btn-sm">
+                                <i class="bi bi-map"></i>
+                                Построить маршрут
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="bi bi-clock"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>Режим работы</h3>
+                            <p>Ежедневно с 10:00 до 22:00</p>
+                            <p class="text-muted">Кинотеатр: с 10:00 до последнего сеанса</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="bi bi-telephone"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>Телефоны</h3>
+                            <p><a href="tel:+74832777777">+7 (4832) 77-77-77</a> - Администрация</p>
+                            <p><a href="tel:+74832777778">+7 (4832) 77-77-78</a> - Кинотеатр</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="bi bi-envelope"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>Email</h3>
+                            <p><a href="mailto:info@crystal-mall.ru">info@crystal-mall.ru</a></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form-section">
+                    <div class="form-card">
+                        <h3>Напишите нам</h3>
+                        <form id="contactForm" class="contact-form">
+                            <div class="form-group">
+                                <label for="name">Ваше имя</label>
+                                <input type="text" id="name" name="name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="subject">Тема</label>
+                                <input type="text" id="subject" name="subject" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Сообщение</label>
+                                <textarea id="message" name="message" class="form-control" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send"></i>
+                                Отправить
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="map-section">
+                <h3>Как добраться</h3>
+                <div class="transport-options">
+                    <div class="transport-card">
+                        <i class="bi bi-bus-front"></i>
+                        <h4>Общественный транспорт</h4>
+                        <p>Автобусы: 1, 2, 3</p>
+                        <p>Маршрутки: 10, 15, 20</p>
+                    </div>
+                    <div class="transport-card">
+                        <i class="bi bi-car-front"></i>
+                        <h4>На автомобиле</h4>
+                        <p>Бесплатная парковка на 500 мест</p>
+                        <p>Подземный паркинг</p>
+                    </div>
+                </div>
+
+                <%- include('../partials/map') %>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Contact form handling
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    showNotification('success', 'Сообщение успешно отправлено');
+                    e.target.reset();
+                } else {
+                    showNotification('error', 'Ошибка при отправке сообщения');
+                }
+            } catch (error) {
+                showNotification('error', 'Ошибка при отправке сообщения');
+            }
+        });
+
+        function showNotification(type, message) {
+            const toast = document.getElementById('notificationToast');
+            const toastBody = document.getElementById('notificationBody');
+            
+            toastBody.textContent = message;
+            toast.classList.add(`bg-${type === 'success' ? 'success' : 'danger'}`);
+            
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+            
+            setTimeout(() => {
+                toast.classList.remove('bg-success', 'bg-danger');
+            }, 5000);
+        }
+    </script>
+
+    <%- include('../partials/footer') %>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

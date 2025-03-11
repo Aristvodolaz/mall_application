@@ -1,0 +1,93 @@
+<!-- Подвал -->
+<footer class="footer">
+    <div class="container footer-content">
+        <div class="footer-section">
+            <h3>О нас</h3>
+            <ul class="footer-links">
+                <li><a href="/about" class="footer-link">О торговом центре</a></li>
+                <li><a href="/contacts" class="footer-link">Контакты</a></li>
+                <li><a href="/map" class="footer-link">Карта ТЦ</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Развлечения</h3>
+            <ul class="footer-links">
+                <li><a href="/cinema" class="footer-link">Кинотеатр</a></li>
+                <li><a href="/events" class="footer-link">События</a></li>
+                <li><a href="/promotions" class="footer-link">Акции</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Информация</h3>
+            <ul class="footer-links">
+                <li><a href="/privacy" class="footer-link">Политика конфиденциальности</a></li>
+                <li><a href="/terms" class="footer-link">Условия использования</a></li>
+                <li><a href="/faq" class="footer-link">Часто задаваемые вопросы</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Контакты</h3>
+            <ul class="footer-links">
+                <li><a href="tel:+74832777777" class="footer-link">+7 (4832) 77-77-77</a></li>
+                <li><a href="mailto:info@crystal-mall.ru" class="footer-link">info@crystal-mall.ru</a></li>
+                <li><span class="footer-text">Адрес: г. Дятьково, ул. Ленина, д. 184</span></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="footer-bottom">
+            <p>&copy; <%= new Date().getFullYear() %> ТРЦ "Кристалл". Все права защищены.</p>
+        </div>
+    </div>
+</footer>
+
+<style>
+.main-footer {
+    margin-top: auto;
+}
+
+.main-footer h5 {
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.main-footer ul li {
+    margin-bottom: 0.5rem;
+}
+
+.main-footer .social-links {
+    margin-top: 1.5rem;
+}
+
+.main-footer .social-links a {
+    font-size: 1.25rem;
+    transition: opacity 0.2s;
+}
+
+.main-footer .social-links a:hover {
+    opacity: 0.8;
+}
+
+.main-footer .bi {
+    margin-right: 0.5rem;
+}
+</style>
+
+<!-- Push-уведомления -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div class="toast" role="alert" id="notificationToast">
+        <div class="toast-header">
+            <i class="bi bi-bell-fill me-2"></i>
+            <strong class="me-auto">Уведомление</strong>
+            <small class="text-muted">сейчас</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body" id="notificationBody">
+            <!-- Текст уведомления будет добавляться динамически -->
+        </div>
+    </div>
+</div> 

@@ -1,0 +1,358 @@
+/* Hero section */
+.hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/mall-hero.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    padding: 120px 0;
+    margin-bottom: 60px;
+}
+
+.hero-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    animation: fadeInDown 1s ease-out;
+}
+
+.hero-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+    animation: fadeInUp 1s ease-out 0.3s;
+    animation-fill-mode: both;
+}
+
+.hero-buttons {
+    animation: fadeIn 1s ease-out 0.6s;
+    animation-fill-mode: both;
+}
+
+.hero-buttons .btn {
+    margin: 0 10px;
+    min-width: 160px;
+}
+
+/* Features section */
+.features {
+    padding: 60px 0;
+    background-color: var(--bg-light);
+}
+
+.feature-card {
+    text-align: center;
+    padding: 30px;
+    margin-bottom: 30px;
+    background: var(--bg-white);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-card i {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+.feature-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: var(--text-dark);
+}
+
+.feature-card p {
+    color: var(--text-muted);
+    margin-bottom: 0;
+}
+
+/* Movies section */
+.movies-section {
+    padding: 60px 0;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2.5rem;
+    color: var(--text-dark);
+}
+
+.movie-card {
+    margin-bottom: 30px;
+    background: var(--bg-white);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+}
+
+.movie-poster {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+.movie-content {
+    padding: 20px;
+}
+
+.movie-title {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+    color: var(--text-dark);
+}
+
+.movie-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.movie-meta-item {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.movie-meta-item i {
+    margin-right: 5px;
+}
+
+/* Events section */
+.events-section {
+    padding: 60px 0;
+    background-color: var(--bg-light);
+}
+
+.event-card {
+    display: flex;
+    background: var(--bg-white);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.event-date {
+    background: var(--primary);
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    min-width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.event-day {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.event-month {
+    font-size: 1rem;
+    text-transform: uppercase;
+}
+
+.event-content {
+    padding: 20px;
+    flex: 1;
+}
+
+.event-title {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+    color: var(--text-dark);
+}
+
+.event-description {
+    color: var(--text-muted);
+    margin-bottom: 15px;
+}
+
+/* Promotions section */
+.promotions-section {
+    padding: 60px 0;
+}
+
+.promo-card {
+    background: var(--bg-white);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.promo-card:hover {
+    transform: translateY(-5px);
+}
+
+.promo-image {
+    position: relative;
+}
+
+.promo-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.promo-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--accent);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.promo-content {
+    padding: 20px;
+}
+
+.promo-title {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+    color: var(--text-dark);
+}
+
+.promo-description {
+    color: var(--text-muted);
+    margin-bottom: 15px;
+}
+
+.promo-period {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.promo-period i {
+    margin-right: 5px;
+}
+
+/* Contact section */
+.contact-section {
+    padding: 60px 0;
+    background-color: var(--bg-light);
+}
+
+.contact-info {
+    margin-bottom: 30px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.contact-item i {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin-right: 15px;
+    margin-top: 5px;
+}
+
+.contact-item h4 {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+    color: var(--text-dark);
+}
+
+.contact-item p {
+    color: var(--text-muted);
+    margin-bottom: 0;
+}
+
+.contact-item a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.contact-item a:hover {
+    color: var(--primary);
+}
+
+.map-container {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .hero {
+        padding: 80px 0;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .hero-buttons .btn {
+        display: block;
+        margin: 10px auto;
+        width: 100%;
+        max-width: 200px;
+    }
+
+    .feature-card {
+        margin-bottom: 20px;
+    }
+
+    .event-card {
+        flex-direction: column;
+    }
+
+    .event-date {
+        padding: 10px;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .event-day {
+        margin-right: 5px;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.75rem;
+    }
+
+    .movie-poster {
+        height: 300px;
+    }
+} 

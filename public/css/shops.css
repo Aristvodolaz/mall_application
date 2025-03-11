@@ -1,0 +1,543 @@
+/* Общие стили для страниц магазинов */
+.shops-page,
+.shop-details-page {
+    padding: 2rem 0 4rem;
+}
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.breadcrumb {
+    margin-bottom: 0;
+}
+
+.breadcrumb-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+/* Стили для страницы списка магазинов */
+.shops-filters {
+    background-color: var(--surface-color);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.shops-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.shop-card {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--surface-color);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.shop-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.shop-logo {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    background-color: var(--surface-alt);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shop-logo img {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+    transition: transform 0.5s ease;
+}
+
+.shop-card:hover .shop-logo img {
+    transform: scale(1.05);
+}
+
+.shop-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.shop-card:hover .shop-overlay {
+    opacity: 1;
+}
+
+.shop-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.shop-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.shop-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text-color);
+}
+
+.shop-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.shop-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.shop-description {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.shop-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+}
+
+.phone-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: color 0.2s ease;
+}
+
+.phone-link:hover {
+    color: var(--primary-color);
+}
+
+.details-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: transform 0.2s ease;
+}
+
+.details-link:hover {
+    transform: translateX(3px);
+}
+
+.no-shops,
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    background-color: var(--surface-color);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.no-shops i,
+.no-results i {
+    font-size: 3rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.no-shops h3,
+.no-results h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.no-shops p,
+.no-results p {
+    color: var(--text-secondary);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Стили для страницы деталей магазина */
+.shop-details-content {
+    margin-top: 2rem;
+}
+
+.shop-main {
+    background-color: var(--surface-color);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+}
+
+.shop-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.shop-header .shop-logo {
+    width: 150px;
+    height: 150px;
+    border-radius: 1rem;
+    flex-shrink: 0;
+}
+
+.shop-header .shop-info {
+    flex-grow: 1;
+}
+
+.shop-name {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.shop-description h3,
+.shop-features h3,
+.shop-promotions h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.shop-description p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.features-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.features-list li i {
+    color: var(--primary-color);
+}
+
+.promotions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.promotion-item {
+    display: flex;
+    gap: 1.5rem;
+    background-color: var(--surface-alt);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+}
+
+.promotion-item .promotion-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.promotion-item .promotion-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.promotion-item .promotion-content {
+    flex-grow: 1;
+}
+
+.promotion-item h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.promotion-item .promotion-dates {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+}
+
+.promotion-item p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.shop-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.sidebar-card {
+    background-color: var(--surface-color);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--text-color);
+}
+
+.contact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.contact-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.contact-list i {
+    font-size: 1.25rem;
+    color: var(--primary-color);
+}
+
+.contact-list h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--text-color);
+}
+
+.contact-list p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0;
+}
+
+.contact-list a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.social-link {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.social-link:hover {
+    transform: scale(1.1);
+    opacity: 0.9;
+}
+
+.social-link.vk {
+    background-color: #4C75A3;
+}
+
+.social-link.instagram {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+.social-link.facebook {
+    background-color: #3B5998;
+}
+
+.social-link.telegram {
+    background-color: #0088cc;
+}
+
+.related-shops {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.related-shop-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.related-shop-item:hover {
+    background-color: var(--surface-alt);
+}
+
+.related-shop-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    flex-shrink: 0;
+    background-color: var(--surface-alt);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.related-shop-logo img {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+}
+
+.related-shop-info {
+    flex-grow: 1;
+}
+
+.related-shop-info h4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--text-color);
+}
+
+.related-shop-info p {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 0;
+}
+
+@media (max-width: 992px) {
+    .shop-sidebar {
+        margin-top: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .shops-filters .row > div {
+        margin-bottom: 1rem;
+    }
+    
+    .shops-filters .row > div:last-child {
+        margin-bottom: 0;
+    }
+    
+    .shop-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .shop-header .shop-logo {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .promotion-item {
+        flex-direction: column;
+    }
+    
+    .promotion-item .promotion-image {
+        width: 100%;
+        height: 180px;
+    }
+} 

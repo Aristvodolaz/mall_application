@@ -1,0 +1,253 @@
+<div class="how-to-get-page">
+    <!-- Хлебные крошки -->
+    <nav aria-label="breadcrumb" class="bg-light py-2">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                <li class="breadcrumb-item active">Как добраться</li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Карта и информация -->
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-8 mb-4 mb-lg-0">
+                <div class="map-container rounded-4 shadow-sm overflow-hidden">
+                    <div id="map" style="height: 600px;"></div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="info-card">
+                    <h2 class="mb-4">Как добраться</h2>
+                    
+                    <div class="transport-section mb-4">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="transport-icon">
+                                <i class="bi bi-train-front"></i>
+                            </div>
+                            <h4 class="mb-0">На метро</h4>
+                        </div>
+                        <ul class="list-unstyled">
+                            <li>
+                                <span class="metro-line blue">•</span>
+                                Станция "Примерная" - выход №3
+                            </li>
+                            <li>
+                                <i class="bi bi-clock text-muted me-2"></i>
+                                5 минут пешком от метро
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="transport-section mb-4">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="transport-icon">
+                                <i class="bi bi-bus-front"></i>
+                            </div>
+                            <h4 class="mb-0">На автобусе</h4>
+                        </div>
+                        <ul class="list-unstyled">
+                            <li>
+                                <i class="bi bi-sign-turn-right text-muted me-2"></i>
+                                Автобусы: 123, 456, 789
+                            </li>
+                            <li>
+                                <i class="bi bi-geo-alt text-muted me-2"></i>
+                                Остановка "Торговый центр"
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="transport-section mb-4">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="transport-icon">
+                                <i class="bi bi-car-front"></i>
+                            </div>
+                            <h4 class="mb-0">На автомобиле</h4>
+                        </div>
+                        <ul class="list-unstyled">
+                            <li>
+                                <i class="bi bi-signpost-2 text-muted me-2"></i>
+                                Удобный подъезд с Примерного шоссе
+                            </li>
+                            <li>
+                                <i class="bi bi-p-circle text-muted me-2"></i>
+                                Бесплатная парковка на 1000 мест
+                            </li>
+                            <li>
+                                <i class="bi bi-arrow-down-circle text-muted me-2"></i>
+                                Подземный паркинг
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="address-section">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="transport-icon">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
+                            <h4 class="mb-0">Адрес</h4>
+                        </div>
+                        <p class="lead mb-4">г. Дятьково, ул. Ленина, д. 184</p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary d-flex align-items-center justify-content-center gap-2" onclick="copyAddress()">
+                                <i class="bi bi-clipboard"></i>
+                                Скопировать адрес
+                            </button>
+                            <a href="https://yandex.ru/maps/?rtext=~53.599983,34.335245" class="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2" target="_blank">
+                                <i class="bi bi-sign-turn-right"></i>
+                                Построить маршрут
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.info-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+}
+
+.transport-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--light-color);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.transport-icon i {
+    font-size: 24px;
+    color: var(--primary-color);
+}
+
+.transport-section h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.transport-section ul li {
+    margin-bottom: 0.75rem;
+    padding-left: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.metro-line {
+    font-size: 24px;
+    line-height: 1;
+    margin-right: 0.5rem;
+}
+
+.metro-line.blue {
+    color: #0078D7;
+}
+
+.address-section {
+    padding-top: 2rem;
+    border-top: 1px solid var(--light-color);
+}
+
+.lead {
+    font-size: 1.125rem;
+    color: var(--dark-color);
+}
+
+#map {
+    background: var(--light-color);
+}
+
+.leaflet-popup-content {
+    margin: 0.5rem;
+}
+
+.map-popup {
+    text-align: center;
+}
+
+.map-popup h5 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.map-popup p {
+    margin: 0.25rem 0 0;
+    font-size: 0.875rem;
+    color: var(--secondary-color);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация карты
+    const map = L.map('map').setView([53.599983, 34.335245], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Создание кастомной иконки
+    const mallIcon = L.icon({
+        iconUrl: '/images/map-marker.svg',
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+        popupAnchor: [0, -40]
+    });
+
+    // Добавление маркера
+    const mallMarker = L.marker([53.599983, 34.335245], { icon: mallIcon }).addTo(map);
+    
+    // Добавление попапа
+    const popupContent = `
+        <div class="map-popup">
+            <h5>ТРЦ Кристалл</h5>
+            <p>Дятьково, ул. Ленина, д. 184</p>
+        </div>
+    `;
+    mallMarker.bindPopup(popupContent).openPopup();
+
+    // Добавление маршрутов транспорта
+    const busStops = [
+        [53.600983, 34.336245, 'Остановка "Торговый центр"'],
+        [53.598983, 34.334245, 'Остановка "Ленина"']
+    ];
+
+    busStops.forEach(stop => {
+        L.marker([stop[0], stop[1]])
+            .bindPopup(`<div class="map-popup"><p>${stop[2]}</p></div>`)
+            .addTo(map);
+    });
+});
+
+function copyAddress() {
+    navigator.clipboard.writeText('г. Дятьково, ул. Ленина, д. 184')
+        .then(() => {
+            showNotification('Адрес скопирован в буфер обмена', 'success');
+        })
+        .catch(err => {
+            console.error('Ошибка при копировании:', err);
+            showNotification('Не удалось скопировать адрес', 'error');
+        });
+}
+
+function showNotification(message, type) {
+    const toast = document.getElementById('notificationToast');
+    const toastBody = document.getElementById('notificationBody');
+    
+    if (toast && toastBody) {
+        toastBody.textContent = message;
+        const bsToast = new bootstrap.Toast(toast);
+        bsToast.show();
+    }
+}
+</script> 

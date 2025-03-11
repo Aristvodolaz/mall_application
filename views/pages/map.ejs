@@ -1,0 +1,109 @@
+<!-- Страница карты ТЦ -->
+<div class="map-page">
+    <div class="container">
+        <h1 class="page-title">Карта ТЦ</h1>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="map-sidebar">
+                    <div class="map-info">
+                        <h3>Как добраться</h3>
+                        <div class="map-info-item">
+                            <i class="bi bi-geo-alt"></i>
+                            <div>
+                                <h4>Адрес</h4>
+                                <p>г. Москва, ул. Примерная, д. 1</p>
+                            </div>
+                        </div>
+                        <div class="map-info-item">
+                            <i class="bi bi-clock"></i>
+                            <div>
+                                <h4>Режим работы</h4>
+                                <p>Ежедневно с 10:00 до 22:00</p>
+                            </div>
+                        </div>
+                        <div class="map-info-item">
+                            <i class="bi bi-telephone"></i>
+                            <div>
+                                <h4>Телефон</h4>
+                                <p><a href="tel:+71234567890">+7 (123) 456-78-90</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="map-floors">
+                        <h3>Этажи</h3>
+                        <div class="floor-buttons">
+                            <button class="floor-btn active" data-floor="1">1 этаж</button>
+                            <button class="floor-btn" data-floor="2">2 этаж</button>
+                            <button class="floor-btn" data-floor="3">3 этаж</button>
+                        </div>
+                    </div>
+                    
+                    <div class="map-categories">
+                        <h3>Категории</h3>
+                        <div class="category-list">
+                            <div class="category-item">
+                                <span class="category-color" style="background-color: #FF5252;"></span>
+                                <span class="category-name">Одежда и обувь</span>
+                            </div>
+                            <div class="category-item">
+                                <span class="category-color" style="background-color: #4CAF50;"></span>
+                                <span class="category-name">Еда и напитки</span>
+                            </div>
+                            <div class="category-item">
+                                <span class="category-color" style="background-color: #2196F3;"></span>
+                                <span class="category-name">Электроника</span>
+                            </div>
+                            <div class="category-item">
+                                <span class="category-color" style="background-color: #FFC107;"></span>
+                                <span class="category-name">Развлечения</span>
+                            </div>
+                            <div class="category-item">
+                                <span class="category-color" style="background-color: #9C27B0;"></span>
+                                <span class="category-name">Услуги</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <div class="map-container">
+                    <div id="map"></div>
+                    <div class="map-controls">
+                        <button id="locate-me" class="custom-map-control">
+                            <i class="bi bi-geo"></i>
+                            Моё местоположение
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Стили для страницы карты -->
+<link rel="stylesheet" href="/css/map.css">
+
+<!-- Скрипты -->
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= process.env.GOOGLE_MAPS_API_KEY %>&callback=initMap" async defer></script>
+<script src="/js/map.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Переключение этажей
+    const floorButtons = document.querySelectorAll('.floor-btn');
+    
+    floorButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            floorButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            const floor = this.getAttribute('data-floor');
+            console.log(`Переключение на ${floor} этаж`);
+            // Здесь можно добавить логику для отображения соответствующего этажа
+        });
+    });
+});
+</script> 

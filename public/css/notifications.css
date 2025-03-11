@@ -1,0 +1,230 @@
+/* Стили для уведомлений */
+.notifications-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1100;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 400px;
+    width: calc(100% - 2rem);
+}
+
+.notification {
+    background-color: var(--background-alt);
+    border-radius: var(--radius);
+    padding: 1rem;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transform: translateX(120%);
+    opacity: 0;
+    transition: all var(--transition);
+}
+
+.notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.notification-icon {
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    font-size: var(--font-lg);
+}
+
+.notification-content {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.notification-title {
+    font-weight: var(--font-medium);
+    margin-bottom: 0.25rem;
+}
+
+.notification-message {
+    font-size: var(--font-sm);
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.notification-close {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.25rem;
+    margin: -0.25rem;
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+}
+
+.notification-close:hover {
+    color: var(--text-primary);
+    background-color: var(--gray-200);
+}
+
+.notification-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background-color: currentColor;
+    opacity: 0.2;
+    transition: width var(--transition);
+}
+
+/* Варианты уведомлений */
+.notification-success {
+    border-left: 4px solid var(--success);
+}
+
+.notification-success .notification-icon {
+    color: var(--success);
+}
+
+.notification-warning {
+    border-left: 4px solid var(--warning);
+}
+
+.notification-warning .notification-icon {
+    color: var(--warning);
+}
+
+.notification-error {
+    border-left: 4px solid var(--danger);
+}
+
+.notification-error .notification-icon {
+    color: var(--danger);
+}
+
+.notification-info {
+    border-left: 4px solid var(--info);
+}
+
+.notification-info .notification-icon {
+    color: var(--info);
+}
+
+/* Анимации */
+@keyframes notificationIn {
+    from {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes notificationOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+}
+
+.notification-enter {
+    animation: notificationIn 0.3s ease forwards;
+}
+
+.notification-leave {
+    animation: notificationOut 0.3s ease forwards;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .notifications-container {
+        top: auto;
+        bottom: 1rem;
+        left: 1rem;
+        right: 1rem;
+    }
+
+    .notification {
+        width: 100%;
+    }
+}
+
+/* Темная тема */
+[data-theme="dark"] .notification {
+    background-color: var(--background-card);
+}
+
+[data-theme="dark"] .notification-close:hover {
+    background-color: var(--gray-700);
+}
+
+/* Дополнительные стили для анимированных иконок */
+.notification-icon.animate-success {
+    animation: checkmark 0.3s ease-in-out forwards;
+}
+
+.notification-icon.animate-error {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes checkmark {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+/* Стили для мобильных уведомлений */
+@media (max-width: 480px) {
+    .notification {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+        padding: 0.75rem;
+    }
+
+    .notification-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .notification-title-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .notification-message {
+        margin-left: 2.25rem;
+    }
+} 
