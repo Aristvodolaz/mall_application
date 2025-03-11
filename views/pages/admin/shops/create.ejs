@@ -1,0 +1,121 @@
+<%- include('../../../partials/header') %>
+
+<main class="main">
+    <div class="container">
+        <h1 class="page-title">Добавить магазин</h1>
+
+        <form action="/admin/shops/create" method="POST" class="form">
+            <div class="form-group">
+                <label for="name">Название магазина</label>
+                <input type="text" id="name" name="name" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Категория</label>
+                <input type="text" id="category" name="category" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="floor">Этаж</label>
+                <input type="number" id="floor" name="floor" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Описание</label>
+                <textarea id="description" name="description" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="working_hours">Часы работы</label>
+                <input type="text" id="working_hours" name="working_hours" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Телефон</label>
+                <input type="tel" id="phone" name="phone" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="image_url">URL изображения</label>
+                <input type="url" id="image_url" name="image_url" class="form-control">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Создать</button>
+                <a href="/admin" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<style>
+.form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-alt);
+    color: var(--text-primary);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary-transparent);
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.btn-secondary {
+    background: var(--surface-alt);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+    background: var(--surface-hover);
+}
+</style>
+
+<%- include('../../../partials/footer') %> 

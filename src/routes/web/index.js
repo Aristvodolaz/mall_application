@@ -627,14 +627,161 @@ router.get('/admin', async (req, res) => {
                 shops: latestShops,
                 events: latestEvents,
                 promotions: latestPromotions
-            },
-            moment
+            }
         });
     } catch (error) {
         console.error('Ошибка при загрузке административной панели:', error);
         res.render('pages/error', {
             title: 'Ошибка - ТРЦ \'Кристалл\'',
             message: 'Произошла ошибка при загрузке административной панели',
+            error: process.env.NODE_ENV === 'development' ? error : {},
+            user: req.session.user || null
+        });
+    }
+});
+
+// Создание нового магазина
+router.get('/admin/shops/create', async (req, res) => {
+    try {
+        res.render('pages/admin/shops/create', {
+            title: 'Добавить магазин - ТРЦ \'Кристалл\'',
+            user: req.session.user || null,
+            path: '/admin/shops/create'
+        });
+    } catch (error) {
+        console.error('Ошибка при загрузке формы создания магазина:', error);
+        res.render('pages/error', {
+            title: 'Ошибка - ТРЦ \'Кристалл\'',
+            message: 'Произошла ошибка при загрузке формы создания магазина',
+            error: process.env.NODE_ENV === 'development' ? error : {},
+            user: req.session.user || null
+        });
+    }
+});
+
+// Создание нового события
+router.get('/admin/events/create', async (req, res) => {
+    try {
+        res.render('pages/admin/events/create', {
+            title: 'Добавить событие - ТРЦ \'Кристалл\'',
+            user: req.session.user || null,
+            path: '/admin/events/create'
+        });
+    } catch (error) {
+        console.error('Ошибка при загрузке формы создания события:', error);
+        res.render('pages/error', {
+            title: 'Ошибка - ТРЦ \'Кристалл\'',
+            message: 'Произошла ошибка при загрузке формы создания события',
+            error: process.env.NODE_ENV === 'development' ? error : {},
+            user: req.session.user || null
+        });
+    }
+});
+
+// Создание новой акции
+router.get('/admin/promotions/create', async (req, res) => {
+    try {
+        const shops = await Shop.findAll({
+            attributes: ['id', 'name'],
+            order: [['name', 'ASC']]
+        });
+
+        res.render('pages/admin/promotions/create', {
+            title: 'Добавить акцию - ТРЦ \'Кристалл\'',
+            user: req.session.user || null,
+            path: '/admin/promotions/create',
+            shops
+        });
+    } catch (error) {
+        console.error('Ошибка при загрузке формы создания акции:', error);
+        res.render('pages/error', {
+            title: 'Ошибка - ТРЦ \'Кристалл\'',
+            message: 'Произошла ошибка при загрузке формы создания акции',
+            error: process.env.NODE_ENV === 'development' ? error : {},
+            user: req.session.user || null
+        });
+    }
+});
+
+// Создание нового фильма
+router.get('/admin/movies/create', async (req, res) => {
+    try {
+        res.render('pages/admin/movies/create', {
+            title: 'Добавить фильм - ТРЦ \'Кристалл\'',
+            user: req.session.user || null,
+            path: '/admin/movies/create'
+        });
+    } catch (error) {
+        console.error('Ошибка при загрузке формы создания фильма:', error);
+        res.render('pages/error', {
+            title: 'Ошибка - ТРЦ \'Кристалл\'',
+            message: 'Произошла ошибка при загрузке формы создания фильма',
+            error: process.env.NODE_ENV === 'development' ? error : {},
+            user: req.session.user || null
+        });
+    }
+});
+
+// Обработка POST-запросов для создания записей
+
+// Создание магазина
+router.post('/admin/shops/create', async (req, res) => {
+    try {
+        const shop = await Shop.create(req.body);
+        res.redirect('/admin/shops');
+    } catch (error) {
+        console.error('Ошибка при создании магазина:', error);
+        res.render('pages/error', {
+            title: 'Ошибка - ТРЦ \'Кристалл\'',
+            message: 'Произошла ошибка при создании магазина',
+            error: process.env.NODE_ENV === 'development' ? error : {},
+            user: req.session.user || null
+        });
+    }
+});
+
+// Создание события
+router.post('/admin/events/create', async (req, res) => {
+    try {
+        const event = await Event.create(req.body);
+        res.redirect('/admin/events');
+    } catch (error) {
+        console.error('Ошибка при создании события:', error);
+        res.render('pages/error', {
+            title: 'Ошибка - ТРЦ \'Кристалл\'',
+            message: 'Произошла ошибка при создании события',
+            error: process.env.NODE_ENV === 'development' ? error : {},
+            user: req.session.user || null
+        });
+    }
+});
+
+// Создание акции
+router.post('/admin/promotions/create', async (req, res) => {
+    try {
+        const promotion = await Promotion.create(req.body);
+        res.redirect('/admin/promotions');
+    } catch (error) {
+        console.error('Ошибка при создании акции:', error);
+        res.render('pages/error', {
+            title: 'Ошибка - ТРЦ \'Кристалл\'',
+            message: 'Произошла ошибка при создании акции',
+            error: process.env.NODE_ENV === 'development' ? error : {},
+            user: req.session.user || null
+        });
+    }
+});
+
+// Создание фильма
+router.post('/admin/movies/create', async (req, res) => {
+    try {
+        const movie = await Movie.create(req.body);
+        res.redirect('/admin/movies');
+    } catch (error) {
+        console.error('Ошибка при создании фильма:', error);
+        res.render('pages/error', {
+            title: 'Ошибка - ТРЦ \'Кристалл\'',
+            message: 'Произошла ошибка при создании фильма',
             error: process.env.NODE_ENV === 'development' ? error : {},
             user: req.session.user || null
         });
