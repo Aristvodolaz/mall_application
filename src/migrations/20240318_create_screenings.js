@@ -19,6 +19,16 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
+      cinema_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'cinemas',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
       date: {
         type: Sequelize.DATE,
         allowNull: false
@@ -54,6 +64,7 @@ module.exports = {
 
     // Добавляем индексы
     await queryInterface.addIndex('screenings', ['movie_id']);
+    await queryInterface.addIndex('screenings', ['cinema_id']);
     await queryInterface.addIndex('screenings', ['date']);
   },
 
