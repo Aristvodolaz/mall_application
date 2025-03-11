@@ -1,73 +1,50 @@
 'use strict';
 
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    // Получаем ID магазинов
-    const shops = await queryInterface.sequelize.query(
-      'SELECT id FROM shops;',
-      { type: queryInterface.sequelize.QueryTypes.SELECT }
-    );
+  up: async (queryInterface, Sequelize) => {
+    const promotions = [
+      {
+        title: 'Скидка 50% на всю летнюю коллекцию',
+        description: 'Грандиозная распродажа летней коллекции в Zara. Скидки до 50% на все товары.',
+        shop_id: 1,
+        start_date: new Date(),
+        end_date: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+        discount_percent: 50,
+        image_url: '/images/promotions/summer-sale.jpg',
+        is_active: true,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        title: 'Рассрочка 0% на 24 месяца',
+        description: 'Купите любую технику в М.Видео в рассрочку на 24 месяца без переплат',
+        shop_id: 2,
+        start_date: new Date(),
+        end_date: new Date(new Date().setMonth(new Date().getMonth() + 2)),
+        discount_percent: null,
+        image_url: '/images/promotions/mvideo-credit.jpg',
+        is_active: true,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        title: '2=3 на все кроссовки',
+        description: 'Купите две пары кроссовок и получите третью в подарок в Спортмастере',
+        shop_id: 3,
+        start_date: new Date(),
+        end_date: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+        discount_percent: 33,
+        image_url: '/images/promotions/sportmaster-shoes.jpg',
+        is_active: true,
+        created_at: new Date(),
+        updated_at: new Date()
+      }
+    ];
 
-    if (shops.length === 0) {
-      console.log('Нет магазинов для создания акций');
-      return;
-    }
-
-    const promotions = [];
-    const now = new Date();
-    const oneMonthLater = new Date(now);
-    oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
-
-    // Акция для первого магазина (ZARA)
-    promotions.push({
-      title: 'Скидки до 50% на весеннюю коллекцию',
-      description: 'Только до конца месяца скидки на всю весеннюю коллекцию одежды и аксессуаров.',
-      start_date: now,
-      end_date: oneMonthLater,
-      discount_type: 'percentage',
-      discount_value: 50,
-      shop_id: shops[0].id,
-      image_url: '/images/promotions/zara-sale.jpg',
-      created_at: now,
-      updated_at: now
-    });
-
-    // Акция для второго магазина (Nike)
-    if (shops.length > 1) {
-      promotions.push({
-        title: 'Скидка 30% на вторую пару обуви',
-        description: 'При покупке любой пары обуви вторая пара со скидкой 30%.',
-        start_date: now,
-        end_date: new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000), // 2 недели
-        discount_type: 'percentage',
-        discount_value: 30,
-        shop_id: shops[1].id,
-        image_url: '/images/promotions/nike-sale.jpg',
-        created_at: now,
-        updated_at: now
-      });
-    }
-
-    // Акция для третьего магазина (Starbucks)
-    if (shops.length > 2) {
-      promotions.push({
-        title: 'Второй напиток в подарок',
-        description: 'При покупке любого напитка второй такой же в подарок с 15:00 до 18:00.',
-        start_date: now,
-        end_date: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000), // 1 неделя
-        discount_type: 'bogo',
-        discount_value: 100,
-        shop_id: shops[2].id,
-        image_url: '/images/promotions/starbucks-sale.jpg',
-        created_at: now,
-        updated_at: now
-      });
-    }
-
-    await queryInterface.bulkInsert('promotions', promotions);
+    await queryInterface.bulkInsert('promotions', promotions, {});
   },
 
-  async down(queryInterface, Sequelize) {
+  down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('promotions', null, {});
   }
 }; 

@@ -1,0 +1,101 @@
+<%- include('../../../partials/admin/header') %>
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><%= shop ? 'Редактирование магазина' : 'Добавление магазина' %></h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="/admin/shops" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Назад к списку
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <form action="<%= shop ? `/admin/shops/edit/${shop.id}` : '/admin/shops/create' %>" method="POST" enctype="multipart/form-data">
+            <div class="form-section">
+                <h3>Основная информация</h3>
+                
+                <div class="mb-3">
+                    <label for="name" class="form-label required-field">Название</label>
+                    <input type="text" class="form-control" id="name" name="name" value="<%= shop ? shop.name : '' %>" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Описание</label>
+                    <textarea class="form-control" id="description" name="description" rows="3"><%= shop ? shop.description : '' %></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="category" class="form-label required-field">Категория</label>
+                            <select class="form-select" id="category" name="category" required>
+                                <option value="">Выберите категорию</option>
+                                <option value="Одежда" <%= shop && shop.category === 'Одежда' ? 'selected' : '' %>>Одежда</option>
+                                <option value="Электроника" <%= shop && shop.category === 'Электроника' ? 'selected' : '' %>>Электроника</option>
+                                <option value="Спорт" <%= shop && shop.category === 'Спорт' ? 'selected' : '' %>>Спорт</option>
+                                <option value="Продукты" <%= shop && shop.category === 'Продукты' ? 'selected' : '' %>>Продукты</option>
+                                <option value="Развлечения" <%= shop && shop.category === 'Развлечения' ? 'selected' : '' %>>Развлечения</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="floor" class="form-label required-field">Этаж</label>
+                            <input type="number" class="form-control" id="floor" name="floor" value="<%= shop ? shop.floor : '' %>" required min="1" max="5">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Контактная информация</h3>
+                
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Телефон</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" value="<%= shop ? shop.phone : '' %>">
+                </div>
+
+                <div class="mb-3">
+                    <label for="opening_hours" class="form-label">Часы работы</label>
+                    <input type="text" class="form-control" id="opening_hours" name="opening_hours" value="<%= shop ? shop.opening_hours : '' %>" placeholder="10:00-22:00">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Изображение</h3>
+                
+                <div class="mb-3">
+                    <label for="logo" class="form-label">Логотип магазина</label>
+                    <input type="file" class="form-control" id="logo" name="shop_logo" accept="image/*">
+                    <% if (shop && shop.logo_url) { %>
+                        <div class="mt-2">
+                            <p>Текущий логотип:</p>
+                            <img src="<%= shop.logo_url %>" alt="<%= shop.name %>" class="preview-image">
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Настройки</h3>
+                
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="is_active" name="is_active" <%= shop && shop.is_active ? 'checked' : '' %>>
+                        <label class="form-check-label" for="is_active">Активен</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> <%= shop ? 'Сохранить изменения' : 'Создать магазин' %>
+                </button>
+                <a href="/admin/shops" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<%- include('../../../partials/admin/footer') %> 

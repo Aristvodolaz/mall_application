@@ -60,10 +60,7 @@ Shop.init({
         type: DataTypes.STRING,
         allowNull: true
     },
-    is_active: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true
-    },
+
     coordinates: {
         type: DataTypes.JSONB,
         allowNull: true

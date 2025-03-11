@@ -82,80 +82,31 @@
                 <div class="screenings-section mt-5">
                     <h2>Расписание сеансов</h2>
                     
-                    <% if (Object.keys(screeningsByDate).length > 0) { %>
-                        <div class="screenings-tabs">
-                            <ul class="nav nav-tabs" id="screeningsTabs" role="tablist">
-                                <% Object.keys(screeningsByDate).forEach((date, index) => { %>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link <%= index === 0 ? 'active' : '' %>" 
-                                                id="date-<%= index %>-tab" 
-                                                data-bs-toggle="tab" 
-                                                data-bs-target="#date-<%= index %>" 
-                                                type="button" 
-                                                role="tab">
-                                            <%= date %>
-                                        </button>
-                                    </li>
-                                <% }); %>
-                            </ul>
+               
 
-                            <div class="tab-content mt-4" id="screeningsTabsContent">
-                                <% Object.keys(screeningsByDate).forEach((date, index) => { %>
-                                    <div class="tab-pane fade <%= index === 0 ? 'show active' : '' %>" 
-                                         id="date-<%= index %>" 
-                                         role="tabpanel">
-                                        <div class="screenings-grid">
-                                            <% screeningsByDate[date].forEach(screening => { %>
-                                                <div class="screening-card">
-                                                    <div class="screening-time">
-                                                        <%= screening.formattedTime %>
-                                                    </div>
-                                                    <div class="screening-info">
-                                                        <div class="screening-hall">Зал <%= screening.hall %></div>
-                                                        <div class="screening-format">
-                                                            <% if (screening.is_imax) { %>
-                                                                IMAX
-                                                            <% } else if (screening.is_3d) { %>
-                                                                3D
-                                                            <% } else { %>
-                                                                2D
-                                                            <% } %>
-                                                        </div>
-                                                    </div>
-                                                    <div class="screening-prices">
-                                                        <div class="price-item">
-                                                            <span class="price-label">Обычный:</span>
-                                                            <span class="price-value"><%= screening.base_price %> ₽</span>
-                                                        </div>
-                                                        <div class="price-item">
-                                                            <span class="price-label">VIP:</span>
-                                                            <span class="price-value"><%= screening.vip_price %> ₽</span>
-                                                        </div>
-                                                        <div class="price-item">
-                                                            <span class="price-label">Студенческий:</span>
-                                                            <span class="price-value"><%= screening.student_price %> ₽</span>
-                                                        </div>
-                                                        <div class="price-item">
-                                                            <span class="price-label">Детский:</span>
-                                                            <span class="price-value"><%= screening.child_price %> ₽</span>
-                                                        </div>
-                                                    </div>
-                                                    <a href="/cinema/screening/<%= screening.id %>" class="btn btn-primary btn-buy-ticket">
-                                                        Купить билет
-                                                    </a>
-                                                </div>
-                                            <% }); %>
-                                        </div>
+                    <div class="screenings-list">
+                        <% if (screeningsByDate && Object.keys(screeningsByDate).length > 0) { %>
+                            <% Object.keys(screeningsByDate).forEach(date => { %>
+                                <div class="screening-date">
+                                    <h3><%= date %></h3>
+                                    <div class="screening-times">
+                                        <% screeningsByDate[date].forEach(screening => { %>
+                                            <div class="screening-item" style="border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 5px;">
+                                                <div class="time"><strong>Время:</strong> <%= screening.formattedTime %></div>
+                                                <div class="hall"><strong>Зал:</strong> <%= screening.hall %></div>
+                                                <div class="price"><strong>Цена:</strong> от <%= screening.base_price %> ₽</div>
+                                                <a href="/cinema/screening/<%= screening.id %>" class="btn btn-primary mt-2">Купить билет</a>
+                                            </div>
+                                        <% }); %>
                                     </div>
-                                <% }); %>
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <div class="no-screenings">
+                                <p>К сожалению, на данный момент нет доступных сеансов.</p>
                             </div>
-                        </div>
-                    <% } else { %>
-                        <div class="no-screenings">
-                            <i class="bi bi-calendar-x"></i>
-                            <p>Нет доступных сеансов на ближайшие дни</p>
-                        </div>
-                    <% } %>
+                        <% } %>
+                    </div>
                 </div>
 
                 <% if (movie.trailer_url) { %>

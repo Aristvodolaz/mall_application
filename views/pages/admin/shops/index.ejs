@@ -1,0 +1,82 @@
+<%- include('../../../partials/admin/header') %>
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Управление магазинами</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="/admin/shops/create" class="btn btn-primary">
+            <i class="bi bi-plus"></i> Добавить магазин
+        </a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Логотип</th>
+                <th>Название</th>
+                <th>Категория</th>
+                <th>Этаж</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (shops && shops.length > 0) { %>
+                <% shops.forEach(shop => { %>
+                    <tr>
+                        <td><%= shop.id %></td>
+                        <td>
+                            <% if (shop.logo_url) { %>
+                                <img src="<%= shop.logo_url %>" alt="<%= shop.name %>" style="width: 50px; height: 50px; object-fit: cover;">
+                            <% } else { %>
+                                <div class="no-image">Нет фото</div>
+                            <% } %>
+                        </td>
+                        <td><%= shop.name %></td>
+                        <td><%= shop.category %></td>
+                        <td><%= shop.floor %></td>
+                   
+                        <td class="table-actions">
+                            <a href="/admin/shops/edit/<%= shop.id %>" class="btn btn-sm btn-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <button class="btn btn-sm btn-danger" onclick="deleteShop(<%= shop.id %>)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                <% }); %>
+            <% } else { %>
+                <tr>
+                    <td colspan="7" class="text-center">Магазины не найдены</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<script>
+function deleteShop(id) {
+    if (confirm('Вы уверены, что хотите удалить этот магазин?')) {
+        fetch(`/admin/shops/delete/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Ошибка при удалении магазина');
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+            alert('Ошибка при удалении магазина');
+        });
+    }
+}
+</script>
+
+<%- include('../../../partials/admin/footer') %> 

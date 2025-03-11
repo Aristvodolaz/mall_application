@@ -1,152 +1,43 @@
-<div class="shops-page">
-    <!-- Фильтры -->
-    <div class="filters-section bg-light py-4 mb-4">
-        <div class="container">
-            <form class="row g-3" method="GET">
-                <div class="col-md-4">
-                    <label for="category" class="form-label">Категория</label>
-                    <select class="form-select" id="category" name="category">
-                        <option value="">Все категории</option>
-                        <option value="fashion" <%= filters.category === 'fashion' ? 'selected' : '' %>>Одежда и обувь</option>
-                        <option value="electronics" <%= filters.category === 'electronics' ? 'selected' : '' %>>Электроника</option>
-                        <option value="food" <%= filters.category === 'food' ? 'selected' : '' %>>Продукты</option>
-                        <option value="beauty" <%= filters.category === 'beauty' ? 'selected' : '' %>>Красота</option>
-                        <option value="home" <%= filters.category === 'home' ? 'selected' : '' %>>Товары для дома</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label for="floor" class="form-label">Этаж</label>
-                    <select class="form-select" id="floor" name="floor">
-                        <option value="">Все этажи</option>
-                        <option value="1" <%= filters.floor === '1' ? 'selected' : '' %>>1 этаж</option>
-                        <option value="2" <%= filters.floor === '2' ? 'selected' : '' %>>2 этаж</option>
-                        <option value="3" <%= filters.floor === '3' ? 'selected' : '' %>>3 этаж</option>
-                    </select>
-                </div>
-                <div class="col-md-4 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">Применить фильтры</button>
-                </div>
-            </form>
-        </div>
-    </div>
+<%- include('../../partials/header') %>
 
-    <!-- Список магазинов -->
-    <div class="shops-list">
-        <div class="container">
-            <% if (shops.length > 0) { %>
-                <div class="row">
-                    <% shops.forEach(shop => { %>
-                        <div class="col-md-6 col-lg-4 mb-4">
-                            <div class="shop-card">
-                                <div class="shop-image">
-                                    <img src="<%= shop.main_image || '/images/shop-placeholder.jpg' %>" alt="<%= shop.name %>">
-                                    <div class="shop-overlay">
-                                        <span class="shop-floor">Этаж <%= shop.floor %></span>
-                                        <% if (shop.rating > 0) { %>
-                                            <span class="shop-rating">
-                                                <i class="bi bi-star-fill"></i>
-                                                <%= shop.rating.toFixed(1) %>
-                                            </span>
-                                        <% } %>
-                                    </div>
-                                </div>
-                                <div class="shop-info">
-                                    <h3 class="shop-name"><%= shop.name %></h3>
-                                    <p class="shop-description"><%= shop.description %></p>
-                                    <div class="shop-meta">
-                                        <span class="shop-category"><%= shop.category %></span>
-                                        <a href="/shops/<%= shop.id %>" class="btn btn-outline-primary btn-sm">Подробнее</a>
-                                    </div>
-                                </div>
+<main class="main">
+    <div class="container">
+        <h1 class="page-title">Магазины</h1>
+        
+        <div class="shops-grid">
+            <% if (shops && shops.length > 0) { %>
+                <% shops.forEach(shop => { %>
+                    <div class="shop-card">
+                        <% if (shop.image_url) { %>
+                            <div class="shop-logo">
+                                <img src="<%= shop.image_url %>" alt="<%= shop.name %>">
                             </div>
+                        <% } %>
+                        <div class="shop-info">
+                            <h3 class="shop-name"><%= shop.name %></h3>
+                            <p class="shop-category"><%= shop.category %></p>
+                            <% if (shop.floor) { %>
+                                <p class="shop-floor">Этаж: <%= shop.floor %></p>
+                            <% } %>
+                            <% if (shop.working_hours) { %>
+                                <p class="shop-hours">Часы работы: <%= shop.working_hours %></p>
+                            <% } %>
+                            <% if (shop.phone) { %>
+                                <p class="shop-phone">Телефон: <%= shop.phone %></p>
+                            <% } %>
+                            <% if (shop.description) { %>
+                                <p class="shop-description"><%= shop.description %></p>
+                            <% } %>
                         </div>
-                    <% }); %>
-                </div>
+                    </div>
+                <% }); %>
             <% } else { %>
-                <div class="text-center py-5">
-                    <h3>Магазины не найдены</h3>
-                    <p>Попробуйте изменить параметры поиска</p>
+                <div class="no-content">
+                    <p>В данный момент нет доступных магазинов</p>
                 </div>
             <% } %>
         </div>
     </div>
-</div>
+</main>
 
-<style>
-.shop-card {
-    background: white;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.shop-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
-}
-
-.shop-image {
-    position: relative;
-    height: 200px;
-}
-
-.shop-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.shop-overlay {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    display: flex;
-    gap: 0.5rem;
-}
-
-.shop-floor,
-.shop-rating {
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 0.25rem 0.5rem;
-    border-radius: var(--radius-sm);
-    font-size: 0.875rem;
-}
-
-.shop-rating {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-}
-
-.shop-info {
-    padding: 1.5rem;
-}
-
-.shop-name {
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
-}
-
-.shop-description {
-    color: var(--secondary-color);
-    margin-bottom: 1rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.shop-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.shop-category {
-    color: var(--secondary-color);
-    font-size: 0.875rem;
-    text-transform: capitalize;
-}
-</style> 
+<%- include('../../partials/footer') %> 

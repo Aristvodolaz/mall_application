@@ -58,10 +58,21 @@ router.get('/movie/:id', async (req, res) => {
         
         const user = req.session.user || null;
         
-        console.log('Загрузка информации о фильме...');
-        const movie = await Movie.findByPk(movieId);
+        console.log('Загрузка информации о фильме с сеансами...');
+        const movie = await Movie.findByPk(movieId, {
+            include: [{
+                model: Screening,
+                as: 'screenings',
+                where: {
+                    date: { [Op.gte]: new Date() },
+                    is_active: true
+                },
+                required: false
+            }]
+        });
         
         console.log('Найден фильм:', movie ? movie.title : 'не найден');
+        console.log('Данные фильма:', JSON.stringify(movie, null, 2));
         
         if (!movie) {
             console.log('Фильм не найден:', movieId);
@@ -72,37 +83,18 @@ router.get('/movie/:id', async (req, res) => {
             });
         }
         
-        console.log('Загрузка предстоящих сеансов...');
-        const currentDate = new Date();
-        currentDate.setHours(0, 0, 0, 0);
-        
-        console.log('Текущая дата для поиска:', currentDate);
-        
-        const screenings = await Screening.findAll({
-            where: {
-                movie_id: movieId,
-                date: {
-                    [Op.gte]: currentDate
-                },
-                is_active: true
-            },
-            order: [
-                ['date', 'ASC'],
-                ['time', 'ASC']
-            ]
-        });
-        
-        console.log('Найдено сеансов:', screenings.length);
-        console.log('Первый сеанс:', screenings[0] ? {
-            date: screenings[0].date,
-            time: screenings[0].time,
-            hall: screenings[0].hall
-        } : 'нет сеансов');
-        
         const screeningsByDate = {};
+        const screenings = movie.screenings || [];
+        
+        console.log('Количество найденных сеансов:', screenings.length);
         
         if (screenings && screenings.length > 0) {
             screenings.forEach(screening => {
+                if (!screening.date) {
+                    console.log('Пропущен сеанс без даты:', screening.id);
+                    return;
+                }
+                
                 const screeningData = screening.toJSON();
                 const date = new Date(screeningData.date).toLocaleDateString('ru-RU');
                 
@@ -137,12 +129,13 @@ router.get('/movie/:id', async (req, res) => {
         console.log('Рендеринг страницы фильма...');
         res.render('pages/cinema/movie-details', {
             title: `${movie.title} - ТРЦ 'Кристалл'`,
-            movie: {
-                ...movie.toJSON(),
-                rating: 0,
-                reviewsCount: 0
-            },
+            movie: movie.toJSON(),
             screeningsByDate,
+            debug: {
+                movie: movie.toJSON(),
+                screenings: screenings.map(s => s.toJSON()),
+                screeningsByDate
+            },
             user
         });
         console.log('Страница фильма успешно отрендерена');

@@ -69,26 +69,9 @@
                 <% if (movies && movies.length > 0) { %>
                     <% movies.forEach(movie => { %>
                         <div class="movie-card" data-genre="<%= movie.genre || 'all' %>">
-                            <div class="movie-poster">
-                                <img src="<%= movie.poster_url || '/images/movies/default.jpg' %>" alt="<%= movie.title %>">
-                                <div class="movie-overlay">
-                                    <a href="/cinema/movies/<%= movie.id %>" class="btn btn-light">Подробнее</a>
-                                </div>
-                                <% if (movie.is_new) { %>
-                                    <div class="movie-badge new">Новинка</div>
-                                <% } %>
-                                <% if (movie.coming_soon) { %>
-                                    <div class="movie-badge coming-soon">Скоро</div>
-                                <% } %>
-                                <% if (movie.averageRating) { %>
-                                    <div class="movie-badge rating">
-                                        <i class="bi bi-star-fill"></i> <%= movie.averageRating %>
-                                    </div>
-                                <% } %>
-                                <% if (movie.age_restriction) { %>
-                                    <div class="movie-badge age"><%= movie.age_restriction %>+</div>
-                                <% } %>
-                            </div>
+                            <a href="/cinema/movie/<%= movie.id %>" class="movie-link">
+                                <img src="<%= movie.poster_url || '/images/movies/default.jpg' %>" alt="<%= movie.title %>" class="movie-poster">
+                            </a>
                             <div class="movie-content">
                                 <h3 class="movie-title">
                                     <%= movie.title %>

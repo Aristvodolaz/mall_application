@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/auth');
-const { Movie, Screening, Event, Promotion, User, CinemaTicket, Shop, MovieReview } = require('../../models');
+const { Movie, Screening, Event, Promotion,CinemaTicket, Shop } = require('../../models');
 const { Op } = require('sequelize');
+const moment = require('moment');
 
 // Главная страница
 router.get('/', async (req, res) => {
@@ -145,6 +146,110 @@ router.get('/cinema', async (req, res) => {
         console.error('Ошибка при загрузке страницы кинотеатра:', error);
         res.status(500).render('pages/errors/500', {
             title: 'Ошибка сервера',
+            user: req.session.user || null
+        });
+    }
+});
+
+// Страница магазинов
+router.get('/shops', async (req, res) => {
+    try {
+        const { category, floor, search } = req.query;
+        const where = {};
+
+        if (category) {
+            where.category = category;
+        }
+
+        if (floor) {
+            where.floor = floor;
+        }
+
+        if (search) {
+            where[Op.or] = [
+                { name: { [Op.like]: `%${search}%` } },
+                { description: { [Op.like]: `%${search}%` } }
+            ];
+        }
+
+        const shops = await Shop.findAll({
+            where,
+            order: [['name', 'ASC']]
+        });
+
+        res.render('pages/shops/index', {
+            title: 'Магазины - ТРЦ \'Кристалл\'',
+            shops,
+            user: req.session.user || null,
+            path: '/shops',
+            filters: {
+                category: category || '',
+                floor: floor || '',
+                search: search || ''
+            }
+        });
+    } catch (error) {
+        console.error('Ошибка при загрузке списка магазинов:', error);
+        res.render('pages/error', {
+            title: 'Ошибка - ТРЦ \'Кристалл\'',
+            message: 'Произошла ошибка при загрузке списка магазинов',
+            error: process.env.NODE_ENV === 'development' ? error : {},
+            user: req.session.user || null
+        });
+    }
+});
+
+// Страница событий
+router.get('/events', async (req, res) => {
+    try {
+        const { category, date, search } = req.query;
+        const where = {
+            date: {
+                [Op.gte]: new Date()
+            }
+        };
+
+        if (category) {
+            where.category = category;
+        }
+
+        if (date) {
+            where.date = {
+                [Op.gte]: new Date(date),
+                [Op.lt]: new Date(new Date(date).setDate(new Date(date).getDate() + 1))
+            };
+        }
+
+        if (search) {
+            where[Op.or] = [
+                { title: { [Op.like]: `%${search}%` } },
+                { description: { [Op.like]: `%${search}%` } }
+            ];
+        }
+
+        const events = await Event.findAll({
+            where,
+            order: [['date', 'ASC']]
+        });
+
+        res.render('pages/events/index', {
+            title: 'События - ТРЦ \'Кристалл\'',
+            events,
+        
+            user: req.session.user || null,
+            path: '/events',
+            filters: {
+                category: category || '',
+                date: date || '',
+                search: search || ''
+            }
+        });
+    } catch (error) {
+        console.error('Ошибка при загрузке списка событий:', error);
+        res.render('pages/error', {
+            title: 'Ошибка - ТРЦ \'Кристалл\'',
+            message: 'Произошла ошибка при загрузке списка событий',
+            error: process.env.NODE_ENV === 'development' ? error : {},
             user: req.session.user || null
         });
     }
@@ -338,6 +443,202 @@ router.get('/register', (req, res) => {
 router.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
+});
+
+// Страница со всей информацией
+router.get('/all', async (req, res) => {
+    try {
+        console.log('Загрузка всей информации...');
+
+        // Получаем магазины
+        const shops = await Shop.findAll({
+            order: [['name', 'ASC']],
+            limit: 6
+        });
+        console.log(`Найдено ${shops.length} магазинов`);
+
+        // Получаем предстоящие события
+        const events = await Event.findAll({
+            where: {
+                date: {
+                    [Op.gte]: new Date()
+                }
+            },
+            order: [['date', 'ASC']],
+            limit: 3
+        });
+        console.log(`Найдено ${events.length} событий`);
+
+        // Получаем активные акции
+        const promotions = await Promotion.findAll({
+            where: {
+                end_date: {
+                    [Op.gte]: new Date()
+                }
+            },
+            order: [['end_date', 'ASC']],
+            limit: 3
+        });
+        console.log(`Найдено ${promotions.length} акций`);
+
+        res.render('pages/all/index', {
+            title: 'Вся информация - ТРЦ \'Кристалл\'',
+            shops,
+            events,
+            promotions,
+        
+            user: req.session.user || null,
+            path: '/all'
+        });
+        console.log('Рендеринг успешно завершен');
+    } catch (error) {
+        console.error('Ошибка при получении информации:', error);
+        res.render('pages/error', {
+            title: 'Ошибка - ТРЦ \'Кристалл\'',
+            message: 'Произошла ошибка при загрузке информации',
+            error: process.env.NODE_ENV === 'development' ? error : {},
+            user: req.session.user || null
+        });
+    }
+});
+
+// Страница акций
+router.get('/promotions', async (req, res) => {
+    try {
+        const { shop, search } = req.query;
+        const where = {
+            end_date: {
+                [Op.gte]: new Date()
+            }
+        };
+
+        if (search) {
+            where[Op.or] = [
+                { title: { [Op.like]: `%${search}%` } },
+                { description: { [Op.like]: `%${search}%` } }
+            ];
+        }
+
+        const promotions = await Promotion.findAll({
+            where,
+            include: [{
+                model: Shop,
+                attributes: ['id', 'name'],
+                where: shop ? { id: shop } : undefined
+            }],
+            order: [['end_date', 'ASC']]
+        });
+
+        // Получаем список магазинов для фильтра
+        const shops = await Shop.findAll({
+            attributes: ['id', 'name'],
+            order: [['name', 'ASC']]
+        });
+
+        res.render('pages/promotions/index', {
+            title: 'Акции - ТРЦ \'Кристалл\'',
+            promotions,
+            shops,
+            user: req.session.user || null,
+            path: '/promotions',
+            filters: {
+                shop: shop || '',
+                search: search || ''
+            }
+        });
+    } catch (error) {
+        console.error('Ошибка при загрузке списка акций:', error);
+        res.render('pages/error', {
+            title: 'Ошибка - ТРЦ \'Кристалл\'',
+            message: 'Произошла ошибка при загрузке списка акций',
+            error: process.env.NODE_ENV === 'development' ? error : {},
+            user: req.session.user || null
+        });
+    }
+});
+
+// Административная панель
+router.get('/admin', async (req, res) => {
+    try {
+        // Получаем статистику
+        const [
+            shopsCount,
+            eventsCount,
+            promotionsCount,
+            moviesCount,
+            screeningsCount,
+            ticketsCount
+        ] = await Promise.all([
+            Shop.count(),
+            Event.count(),
+            Promotion.count(),
+            Movie.count(),
+            Screening.count(),
+            CinemaTicket.count()
+        ]);
+
+        // Получаем последние добавленные сущности
+        const [
+            latestShops,
+            latestEvents,
+            latestPromotions
+        ] = await Promise.all([
+            Shop.findAll({
+                limit: 5,
+                order: [['created_at', 'DESC']]
+            }),
+            Event.findAll({
+                where: {
+                    date: {
+                        [Op.gte]: new Date()
+                    }
+                },
+                limit: 5,
+                order: [['date', 'ASC']]
+            }),
+            Promotion.findAll({
+                where: {
+                    end_date: {
+                        [Op.gte]: new Date()
+                    }
+                },
+                include: [{
+                    model: Shop,
+                    attributes: ['id', 'name']
+                }],
+                limit: 5,
+                order: [['end_date', 'ASC']]
+            })
+        ]);
+
+        res.render('pages/admin/index', {
+            title: 'Административная панель - ТРЦ \'Кристалл\'',
+            user: req.session.user || null,
+            path: '/admin',
+            stats: {
+                shops: shopsCount,
+                events: eventsCount,
+                promotions: promotionsCount,
+                movies: moviesCount,
+                screenings: screeningsCount,
+                tickets: ticketsCount
+            },
+            latest: {
+                shops: latestShops,
+                events: latestEvents,
+                promotions: latestPromotions
+            },
+            moment
+        });
+    } catch (error) {
+        console.error('Ошибка при загрузке административной панели:', error);
+        res.render('pages/error', {
+            title: 'Ошибка - ТРЦ \'Кристалл\'',
+            message: 'Произошла ошибка при загрузке административной панели',
+            error: process.env.NODE_ENV === 'development' ? error : {},
+            user: req.session.user || null
+        });
+    }
 });
 
 // Обработка 404 ошибки

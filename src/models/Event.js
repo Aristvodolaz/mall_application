@@ -1,35 +1,29 @@
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
-    const Event = sequelize.define('Event', {
+    class Event extends Model {
+        static associate(models) {
+            // Определите здесь связи с другими моделями, если они есть
+        }
+    }
+
+    Event.init({
         title: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        description: {
-            type: DataTypes.TEXT
-        },
-        date: {
-            type: DataTypes.DATE,
-            allowNull: false
-        },
-        time: {
-            type: DataTypes.STRING
-        },
-        category: {
-            type: DataTypes.STRING
-        },
-        image: {
-            type: DataTypes.STRING
-        },
-        location: {
-            type: DataTypes.STRING
-        },
-        price: {
-            type: DataTypes.DECIMAL(10, 2),
-            defaultValue: 0
-        }
+        description: DataTypes.TEXT,
+        date: DataTypes.DATE,
+        time: DataTypes.STRING,
+        location: DataTypes.STRING,
+        image: DataTypes.STRING,
+    
     }, {
+        sequelize,
+        modelName: 'Event',
         tableName: 'events',
-        underscored: true
+        underscored: true,
+        timestamps: true
     });
 
     return Event;

@@ -98,12 +98,14 @@ const webRoutes = {
     profile: { path: './routes/web/profile', prefix: '/profile' },
     shops: { path: './routes/web/shops', prefix: '/shops' },
     promotions: { path: './routes/web/promotions', prefix: '/promotions' },
-    events: { path: './routes/web/events', prefix: '/events' }
+    events: { path: './routes/web/events', prefix: '/events' },
+    admin: { path: './routes/web/admin', prefix: '/admin' }
 };
 
 // Подключаем веб-маршруты
 Object.entries(webRoutes).forEach(([name, { path, prefix }]) => {
     try {
+        console.log(`Loading route ${name} from ${path}...`);
         const route = require(path);
         if (route && typeof route === 'function') {
             app.use(prefix, route);
@@ -115,6 +117,11 @@ Object.entries(webRoutes).forEach(([name, { path, prefix }]) => {
         console.error(`Error loading web route ${name}:`, error);
     }
 });
+
+// Подключаем административные маршруты
+const adminRoutes = require('./routes/web/admin');
+app.use('/admin', adminRoutes);
+console.log('Admin routes loaded successfully at /admin');
 
 // API маршруты
 try {

@@ -1,6 +1,6 @@
-const { Model, DataTypes } = require('sequelize');
+const { Model } = require('sequelize');
 
-module.exports = (sequelize) => {
+module.exports = (sequelize, DataTypes) => {
     console.log('Инициализация модели Shop...');
     
     class Shop extends Model {
@@ -8,6 +8,10 @@ module.exports = (sequelize) => {
             console.log('Настройка ассоциаций для модели Shop...');
             console.log('Доступные модели:', Object.keys(models));
             
+            Shop.hasMany(models.Promotion, {
+                foreignKey: 'shop_id',
+                as: 'promotions'
+            });
             if (models.Review) {
                 Shop.hasMany(models.Review, {
                     foreignKey: 'shop_id',
@@ -27,49 +31,31 @@ module.exports = (sequelize) => {
             autoIncrement: true
         },
         name: {
-            type: DataTypes.STRING(255),
-            allowNull: false,
-            validate: {
-                notEmpty: true
-            }
+            type: DataTypes.STRING,
+            allowNull: false
         },
-        description: {
-            type: DataTypes.TEXT,
-            allowNull: true
-        },
-        category: {
-            type: DataTypes.STRING(255),
-            allowNull: true
-        },
+        description: DataTypes.TEXT,
+        category: DataTypes.STRING,
         floor: {
             type: DataTypes.INTEGER,
-            allowNull: true,
             validate: {
                 min: 1
             }
         },
-        opening_hours: {
-            type: DataTypes.STRING(255),
-            allowNull: true
-        },
-        phone: {
-            type: DataTypes.STRING(255),
-            allowNull: true
-        },
+        opening_hours: DataTypes.STRING,
+        phone: DataTypes.STRING,
         image_url: {
             type: DataTypes.STRING(255),
             allowNull: true
         },
-        logo_url: {
-            type: DataTypes.STRING(255),
-            allowNull: true
-        }
+        logo_url: DataTypes.STRING,
+       
     }, {
         sequelize,
         modelName: 'Shop',
         tableName: 'shops',
-        timestamps: true,
         underscored: true,
+        timestamps: true,
         createdAt: 'created_at',
         updatedAt: 'updated_at'
     });

@@ -1,0 +1,264 @@
+<%- include('../../partials/header') %>
+
+<main class="main">
+    <div class="container">
+        <h1 class="page-title">Вся информация</h1>
+
+        <!-- Секция магазинов -->
+        <section class="section">
+            <h2 class="section-title">
+                <i class="bi bi-shop"></i>
+                Магазины
+                <a href="/shops" class="btn btn-outline-primary btn-sm float-end">Все магазины</a>
+            </h2>
+            <div class="shops-grid">
+                <% if (shops && shops.length > 0) { %>
+                    <% shops.slice(0, 6).forEach(shop => { %>
+                        <a href="/shops/<%= shop.id %>" class="shop-card">
+                            <% if (shop.image_url) { %>
+                                <div class="shop-logo">
+                                    <img src="<%= shop.image_url %>" alt="<%= shop.name %>">
+                                </div>
+                            <% } %>
+                            <div class="shop-info">
+                                <h3 class="shop-name"><%= shop.name %></h3>
+                                <p class="shop-category"><%= shop.category %></p>
+                                <% if (shop.floor) { %>
+                                    <p class="shop-floor">Этаж: <%= shop.floor %></p>
+                                <% } %>
+                                <% if (shop.working_hours) { %>
+                                    <p class="shop-hours">Часы работы: <%= shop.working_hours %></p>
+                                <% } %>
+                            </div>
+                        </a>
+                    <% }); %>
+                <% } else { %>
+                    <div class="no-content">
+                        <p>В данный момент нет доступных магазинов</p>
+                    </div>
+                <% } %>
+            </div>
+        </section>
+
+        <!-- Секция событий -->
+        <section class="section">
+            <h2 class="section-title">
+                <i class="bi bi-calendar-event"></i>
+                События
+                <a href="/events" class="btn btn-outline-primary btn-sm float-end">Все события</a>
+            </h2>
+            <div class="events-grid">
+                <% if (events && events.length > 0) { %>
+                    <% events.slice(0, 3).forEach(event => { %>
+                        <a href="/events/<%= event.id %>" class="event-card">
+                            <% if (event.image_url) { %>
+                                <div class="event-image">
+                                    <img src="<%= event.image_url %>" alt="<%= event.title %>">
+                                </div>
+                            <% } %>
+                            <div class="event-info">
+                                <h3 class="event-title"><%= event.title %></h3>
+                                <div class="event-details">
+                                    <p class="event-date">
+                                        <i class="bi bi-calendar-event"></i>
+                                        <%= moment(event.date).format('DD.MM.YYYY') %>
+                                    </p>
+                                    <% if (event.time) { %>
+                                        <p class="event-time">
+                                            <i class="bi bi-clock"></i>
+                                            <%= event.time %>
+                                        </p>
+                                    <% } %>
+                                    <% if (event.location) { %>
+                                        <p class="event-location">
+                                            <i class="bi bi-geo-alt"></i>
+                                            <%= event.location %>
+                                        </p>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </a>
+                    <% }); %>
+                <% } else { %>
+                    <div class="no-content">
+                        <p>В данный момент нет запланированных событий</p>
+                    </div>
+                <% } %>
+            </div>
+        </section>
+
+        <!-- Секция акций -->
+        <section class="section">
+            <h2 class="section-title">
+                <i class="bi bi-tag"></i>
+                Акции
+                <a href="/promotions" class="btn btn-outline-primary btn-sm float-end">Все акции</a>
+            </h2>
+            <div class="promotions-grid">
+                <% if (promotions && promotions.length > 0) { %>
+                    <% promotions.slice(0, 3).forEach(promotion => { %>
+                        <a href="/promotions/<%= promotion.id %>" class="promotion-card">
+                            <% if (promotion.image_url) { %>
+                                <div class="promotion-image">
+                                    <img src="<%= promotion.image_url %>" alt="<%= promotion.title %>">
+                                </div>
+                            <% } %>
+                            <div class="promotion-info">
+                                <h3 class="promotion-title"><%= promotion.title %></h3>
+                                <div class="promotion-details">
+                                    <p class="promotion-dates">
+                                        <i class="bi bi-calendar-range"></i>
+                                        до <%= moment(promotion.end_date).format('DD.MM.YYYY') %>
+                                    </p>
+                                    <% if (promotion.discount_percent) { %>
+                                        <p class="promotion-discount">
+                                            <i class="bi bi-percent"></i>
+                                            Скидка <%= promotion.discount_percent %>%
+                                        </p>
+                                    <% } %>
+                                </div>
+                                <% if (promotion.description) { %>
+                                    <p class="promotion-description"><%= promotion.description %></p>
+                                <% } %>
+                            </div>
+                        </a>
+                    <% }); %>
+                <% } else { %>
+                    <div class="no-content">
+                        <p>В данный момент нет активных акций</p>
+                    </div>
+                <% } %>
+            </div>
+        </section>
+    </div>
+</main>
+
+<style>
+.section {
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary);
+}
+
+.section-title i {
+    margin-right: 0.5rem;
+    font-size: 1.5rem;
+}
+
+.shops-grid,
+.events-grid,
+.promotions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.shop-card,
+.event-card,
+.promotion-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.shop-card:hover,
+.event-card:hover,
+.promotion-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.shop-logo,
+.event-image,
+.promotion-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.shop-logo img,
+.event-image img,
+.promotion-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.shop-info,
+.event-info,
+.promotion-info {
+    padding: 1rem;
+}
+
+.shop-name,
+.event-title,
+.promotion-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.shop-category,
+.event-details,
+.promotion-details {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.shop-floor,
+.shop-hours,
+.shop-phone,
+.event-time,
+.event-location,
+.promotion-dates,
+.promotion-discount {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.shop-description,
+.event-description,
+.promotion-description {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.float-end {
+    float: right;
+    margin-left: auto;
+}
+
+.no-content {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2rem;
+    background: var(--surface);
+    border-radius: var(--radius);
+    color: var(--text-secondary);
+}
+</style>
+
+<%- include('../../partials/footer') %> 
