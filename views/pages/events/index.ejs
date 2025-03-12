@@ -8,9 +8,9 @@
             <% if (events && events.length > 0) { %>
                 <% events.forEach(event => { %>
                     <div class="event-card">
-                        <% if (event.image_url) { %>
+                        <% if (event.image) { %>
                             <div class="event-image">
-                                <img src="<%= event.image_url %>" alt="<%= event.title %>">
+                                <img src="<%= event.image %>" alt="<%= event.title %>">
                             </div>
                         <% } %>
                         <div class="event-info">

@@ -1,95 +1,67 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+'use strict';
+const { Model } = require('sequelize');
 
-class Event extends Model {}
-
-Event.init({
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    title: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    description: {
-        type: DataTypes.TEXT,
-        allowNull: false
-    },
-    date: {
-        type: DataTypes.DATE,
-        allowNull: false
-    },
-    end_date: {
-        type: DataTypes.DATE,
-        allowNull: true
-    },
-    location: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    category: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    image: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    gallery: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
-        defaultValue: []
-    },
-    price: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false
-    },
-    total_tickets: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    available_tickets: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    is_active: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true
-    },
-    is_featured: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
-    },
-    organizer: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    contact_email: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        validate: {
-            isEmail: true
-        }
-    },
-    contact_phone: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    additional_info: {
-        type: DataTypes.JSONB,
-        allowNull: true
-    }
-}, {
-    sequelize,
-    modelName: 'Event',
-    tableName: 'events',
-    timestamps: true,
-    hooks: {
-        beforeCreate: async (event) => {
-            event.available_tickets = event.total_tickets;
+module.exports = (sequelize, DataTypes) => {
+    class Event extends Model {
+        static associate(models) {
+            Event.hasMany(models.Ticket, {
+                foreignKey: 'event_id',
+                as: 'tickets'
+            });
         }
     }
-});
 
-module.exports = Event; 
+    Event.init({
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
+        title: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
+        },
+        description: {
+            type: DataTypes.TEXT,
+            allowNull: true
+        },
+        date: {
+            type: DataTypes.DATE,
+            allowNull: false
+        },
+        time: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        location: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        category: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        image: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        price: {
+            type: DataTypes.DECIMAL(10, 2),
+            allowNull: true,
+            defaultValue: 0
+        }
+    }, {
+        sequelize,
+        modelName: 'Event',
+        tableName: 'events',
+        underscored: true,
+        timestamps: true,
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
+    });
+
+    return Event;
+}; 

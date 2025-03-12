@@ -7,14 +7,20 @@ const moment = require('moment');
 // Список событий
 router.get('/', async (req, res) => {
     try {
-        console.log('Загрузка списка событий...');
+        console.log('=== Начало загрузки списка событий ===');
+        console.log('Проверка подключения к базе данных...');
+        
+        // Проверяем подключение к базе данных
+        try {
+            await Event.sequelize.authenticate();
+            console.log('Подключение к базе данных успешно установлено');
+        } catch (dbError) {
+            console.error('Ошибка подключения к базе данных:', dbError);
+            throw dbError;
+        }
+
         const { category, date, search } = req.query;
-        const where = {
-            date: {
-                [Op.gte]: new Date()
-            },
-            is_active: true
-        };
+        const where = {};
 
         if (category) {
             where.category = category;
@@ -34,12 +40,19 @@ router.get('/', async (req, res) => {
             ];
         }
 
+        console.log('Условия поиска:', JSON.stringify(where));
+        console.log('Выполнение запроса к базе данных...');
+        
         const events = await Event.findAll({
             where,
             order: [['date', 'ASC']]
         });
-        console.log(`Найдено ${events.length} событий`);
+        
+        console.log('Запрос выполнен успешно');
+        console.log('Найденные события:', JSON.stringify(events, null, 2));
+        console.log(`Всего найдено событий: ${events.length}`);
 
+        console.log('Рендеринг страницы...');
         res.render('pages/events/index', {
             title: 'События - ТРЦ \'Кристалл\'',
             events,
@@ -47,8 +60,9 @@ router.get('/', async (req, res) => {
             user: req.session.user || null,
             path: '/events'
         });
+        console.log('=== Завершение загрузки списка событий ===');
     } catch (error) {
-        console.error('Ошибка при получении списка событий:', error);
+        console.error('!!! Критическая ошибка при получении списка событий:', error);
         res.render('pages/error', {
             title: 'Ошибка - ТРЦ \'Кристалл\'',
             message: 'Произошла ошибка при загрузке списка событий',
