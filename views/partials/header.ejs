@@ -28,25 +28,8 @@
                     </ul>
                 </nav>
 
-                <div class="auth-buttons">
-                    <% if (user) { %>
-                        <div class="dropdown">
-                            <button class="btn btn-outline" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle"></i>
-                                <%= user.username %>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="userMenu">
-                                <li><a class="dropdown-item" href="/profile"><i class="bi bi-person"></i> Профиль</a></li>
-                                <li><a class="dropdown-item" href="/profile/tickets"><i class="bi bi-ticket"></i> Мои билеты</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="/auth/logout"><i class="bi bi-box-arrow-right"></i> Выйти</a></li>
-                            </ul>
-                        </div>
-                    <% } else { %>
-                        <a href="/auth/login" class="btn btn-outline">Войти</a>
-                        <a href="/auth/register" class="btn btn-primary">Регистрация</a>
-                    <% } %>
-                </div>
+            
+            
             </div>
         </div>
     </header>

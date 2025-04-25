@@ -62,9 +62,10 @@
                     <div class="info-card">
                         <h3>Информация</h3>
                         <ul>
-                            <li>Общая площадь: 150,000 м²</li>
+                            <li>Общая площадь: 35 000 м²</li>
                             <li>Этажность: 3 этажа</li>
-                            <li>Парковка: 500 мест</li>
+                            <li>Магазинов: 120+</li>
+                            <li>Парковочных мест: 500</li>
                         </ul>
                     </div>
                 </div>
@@ -162,56 +163,63 @@
 
     <script>
     let camera, scene, renderer, controls;
-    let model;
-    let isWireframe = false;
-
+    let model, floors = {}, isWireframe = false;
+    
     function init() {
         // Создаем сцену
         scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xf5f5f5);
+        scene.background = new THREE.Color(0x87CEEB); // Красивое голубое небо
+        scene.fog = new THREE.Fog(0x87CEEB, 30, 100);
 
         // Настраиваем камеру
-        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(5, 5, 5);
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(30, 20, 30);
 
-        // Создаем рендерер
+        // Создаем рендерер с улучшенными настройками
         renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(document.getElementById('model-viewer').offsetWidth, document.getElementById('model-viewer').offsetHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.2;
         document.getElementById('model-viewer').appendChild(renderer.domElement);
 
-        // Добавляем освещение
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        // Улучшенное освещение
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
         scene.add(ambientLight);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        directionalLight.position.set(10, 10, 10);
+        const directionalLight = new THREE.DirectionalLight(0xffd700, 1); // Теплый солнечный свет
+        directionalLight.position.set(20, 30, 15);
+        directionalLight.castShadow = true;
+        directionalLight.shadow.mapSize.width = 2048;
+        directionalLight.shadow.mapSize.height = 2048;
+        directionalLight.shadow.camera.near = 0.5;
+        directionalLight.shadow.camera.far = 50;
+        directionalLight.shadow.camera.left = -20;
+        directionalLight.shadow.camera.right = 20;
+        directionalLight.shadow.camera.top = 20;
+        directionalLight.shadow.camera.bottom = -20;
         scene.add(directionalLight);
+        
+        const directionalLight2 = new THREE.DirectionalLight(0x4169E1, 0.5); // Синий подсвет
+        directionalLight2.position.set(-15, 20, -10);
+        scene.add(directionalLight2);
 
         // Добавляем управление орбитой
         controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
-
-        // Загружаем модель
-        const loader = new THREE.GLTFLoader();
-        loader.load('/models/mall.glb', function(gltf) {
-            model = gltf.scene;
-            scene.add(model);
-            
-            // Центрируем камеру на модели
-            const box = new THREE.Box3().setFromObject(model);
-            const center = box.getCenter(new THREE.Vector3());
-            controls.target.copy(center);
-            
-            // Настраиваем начальное положение камеры
-            const size = box.getSize(new THREE.Vector3());
-            const maxDim = Math.max(size.x, size.y, size.z);
-            const fov = camera.fov * (Math.PI / 180);
-            const cameraZ = Math.abs(maxDim / Math.sin(fov / 2));
-            camera.position.z = cameraZ;
-            
-            camera.updateProjectionMatrix();
-        });
+        controls.target.set(0, 10, 0);
+        
+        // Создаем модель здания
+        createMallModel();
+        
+        // Создаем базовую поверхность (парковка и земля)
+        createGround();
+        
+        // Добавляем деревья и окружение
+        createEnvironment();
 
         // Обработчики событий
         window.addEventListener('resize', onWindowResize, false);
@@ -221,8 +229,8 @@
         
         document.querySelectorAll('[data-floor]').forEach(button => {
             button.addEventListener('click', (e) => {
-                const floor = e.target.dataset.floor;
-                showFloor(floor);
+                const floorNum = e.target.dataset.floor;
+                showFloor(floorNum);
                 
                 // Обновляем активную кнопку
                 document.querySelectorAll('[data-floor]').forEach(btn => {
@@ -231,6 +239,460 @@
                 e.target.classList.add('active');
             });
         });
+        
+        // Запускаем анимацию
+        animate();
+        
+        // Начальное отображение первого этажа
+        showFloor('1');
+        
+        // Добавляем инфопанель
+        createInfoPanel();
+    }
+    
+    function createGround() {
+        // Создаем более реалистичную землю
+        const groundGeometry = new THREE.PlaneGeometry(100, 100);
+        const groundMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0x90EE90, // Светло-зеленый
+            roughness: 0.8,
+            metalness: 0.2
+        });
+        const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.y = -0.1;
+        ground.receiveShadow = true;
+        scene.add(ground);
+        
+        // Создаем стильную парковку
+        const parkingGeometry = new THREE.PlaneGeometry(40, 20);
+        const parkingMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0x2F4F4F, // Темно-серый
+            roughness: 0.6,
+            metalness: 0.4
+        });
+        const parking = new THREE.Mesh(parkingGeometry, parkingMaterial);
+        parking.rotation.x = -Math.PI / 2;
+        parking.position.set(-10, 0, 15);
+        parking.receiveShadow = true;
+        scene.add(parking);
+        
+        // Добавляем яркую разметку на парковке
+        for (let i = -15; i <= 15; i += 5) {
+            const lineGeometry = new THREE.BoxGeometry(0.5, 0.05, 3);
+            const lineMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0xFFD700, // Золотой
+                metalness: 0.5,
+                roughness: 0.2
+            });
+            const line = new THREE.Mesh(lineGeometry, lineMaterial);
+            line.position.set(i, 0.03, 15);
+            scene.add(line);
+        }
+    }
+    
+    function createMallModel() {
+        model = new THREE.Group();
+        
+        // Создаем группы для каждого этажа
+        floors['1'] = new THREE.Group();
+        floors['2'] = new THREE.Group();
+        floors['3'] = new THREE.Group();
+        
+        // Основное здание - первый этаж
+        createMainBuilding(floors['1'], 0);
+        
+        // Второй этаж
+        createMainBuilding(floors['2'], 6);
+        
+        // Третий этаж
+        createMainBuilding(floors['3'], 12);
+        
+        // Добавляем крышу
+        createRoof();
+        
+        // Добавляем все этажи в модель
+        model.add(floors['1']);
+        model.add(floors['2']);
+        model.add(floors['3']);
+        
+        // Добавляем модель на сцену
+        scene.add(model);
+        
+        // Центрируем модель
+        model.position.set(10, 0, 0);
+    }
+    
+    function createMainBuilding(floor, height) {
+        const buildingWidth = 35;
+        const buildingDepth = 25;
+        const buildingHeight = 6;
+        
+        // Создаем основу здания с градиентной текстурой
+        const buildingGeometry = new THREE.BoxGeometry(buildingWidth, buildingHeight, buildingDepth);
+        const buildingMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0xE6E6FA, // Лавандовый
+            roughness: 0.3,
+            metalness: 0.6,
+            envMapIntensity: 1.0
+        });
+        const building = new THREE.Mesh(buildingGeometry, buildingMaterial);
+        building.position.y = height + buildingHeight/2;
+        building.castShadow = true;
+        building.receiveShadow = true;
+        floor.add(building);
+        
+        // Яркие вертикальные полосы
+        const stripeColors = [0xFF1493, 0x32CD32, 0x4169E1, 0xFFD700, 0xFF4500]; // Яркие цвета
+        const stripeWidth = 1.2;
+        const stripeHeight = buildingHeight;
+        const stripeDepth = 0.2;
+        
+        for (let i = 0; i < stripeColors.length; i++) {
+            const stripeGeo = new THREE.BoxGeometry(stripeWidth, stripeHeight, stripeDepth);
+            const stripeMat = new THREE.MeshStandardMaterial({
+                color: stripeColors[i],
+                roughness: 0.2,
+                metalness: 0.8,
+                envMapIntensity: 1.2
+            });
+            const stripe = new THREE.Mesh(stripeGeo, stripeMat);
+            stripe.position.set(-buildingWidth/2 + 3 + i * 4, height + buildingHeight/2, buildingDepth/2 + 0.1);
+            floor.add(stripe);
+            
+            const backStripe = stripe.clone();
+            backStripe.position.z = -buildingDepth/2 - 0.1;
+            floor.add(backStripe);
+        }
+        
+        // Добавляем декоративные элементы
+        createDecorativeElements(floor, height, buildingWidth, buildingHeight, buildingDepth);
+        
+        // Добавляем окна между полосами
+        createWindows(floor, height, buildingWidth, buildingHeight, buildingDepth);
+        
+        // Добавляем входную группу (только на первом этаже)
+        if (height === 0) {
+            createEntranceArea(floor);
+            createSignage(floor);
+        }
+    }
+    
+    function createDecorativeElements(floor, height, buildingWidth, buildingHeight, buildingDepth) {
+        // Добавляем горизонтальные декоративные линии
+        const lineMaterial = new THREE.MeshStandardMaterial({
+            color: 0x333333,
+            roughness: 0.5,
+            metalness: 0.3
+        });
+        
+        for (let i = 0; i < 3; i++) {
+            const lineGeo = new THREE.BoxGeometry(buildingWidth, 0.1, 0.1);
+            const line = new THREE.Mesh(lineGeo, lineMaterial);
+            line.position.set(0, height + (i + 1) * buildingHeight/3, buildingDepth/2 + 0.2);
+            floor.add(line);
+            
+            const backLine = line.clone();
+            backLine.position.z = -buildingDepth/2 - 0.2;
+            floor.add(backLine);
+        }
+        
+        // Добавляем угловые элементы
+        const cornerMaterial = new THREE.MeshStandardMaterial({
+            color: 0x333333,
+            roughness: 0.4,
+            metalness: 0.4
+        });
+        
+        const cornerPositions = [
+            {x: buildingWidth/2, z: buildingDepth/2},
+            {x: -buildingWidth/2, z: buildingDepth/2},
+            {x: buildingWidth/2, z: -buildingDepth/2},
+            {x: -buildingWidth/2, z: -buildingDepth/2}
+        ];
+        
+        cornerPositions.forEach(pos => {
+            const cornerGeo = new THREE.BoxGeometry(0.5, buildingHeight, 0.5);
+            const corner = new THREE.Mesh(cornerGeo, cornerMaterial);
+            corner.position.set(pos.x, height + buildingHeight/2, pos.z);
+            floor.add(corner);
+        });
+    }
+    
+    function createWindows(floor, height, buildingWidth, buildingHeight, buildingDepth) {
+        // Фронтальные окна
+        const windowRows = 2;
+        const windowCols = 6;
+        const windowWidth = 2.8;
+        const windowHeight = 2.5;
+        const windowSpacingX = (buildingWidth - (windowWidth * windowCols)) / (windowCols + 1);
+        const windowSpacingY = (buildingHeight - (windowHeight * windowRows)) / (windowRows + 1);
+        
+        const windowMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0x2e5c8a,
+            roughness: 0.1,
+            metalness: 0.9,
+            opacity: 0.7,
+            transparent: true,
+            envMapIntensity: 0.8
+        });
+        
+        // Фронтальная сторона
+        for (let row = 0; row < windowRows; row++) {
+            for (let col = 0; col < windowCols; col++) {
+                const windowGeo = new THREE.BoxGeometry(windowWidth, windowHeight, 0.1);
+                const window = new THREE.Mesh(windowGeo, windowMaterial);
+                const posX = -buildingWidth/2 + windowSpacingX * (col + 1) + windowWidth * col + windowWidth/2;
+                const posY = height + windowSpacingY * (row + 1) + windowHeight * row + windowHeight/2;
+                window.position.set(posX, posY, buildingDepth/2 + 0.05);
+                floor.add(window);
+                
+                // Добавляем оконную раму
+                const frameGeo = new THREE.BoxGeometry(windowWidth + 0.2, windowHeight + 0.2, 0.2);
+                const frameMat = new THREE.MeshStandardMaterial({
+                    color: 0x333333,
+                    roughness: 0.5,
+                    metalness: 0.3
+                });
+                const frame = new THREE.Mesh(frameGeo, frameMat);
+                frame.position.set(posX, posY, buildingDepth/2 + 0.1);
+                floor.add(frame);
+                
+                // Задняя сторона
+                const backWindow = window.clone();
+                backWindow.position.z = -buildingDepth/2 - 0.05;
+                floor.add(backWindow);
+                
+                const backFrame = frame.clone();
+                backFrame.position.z = -buildingDepth/2 - 0.1;
+                floor.add(backFrame);
+            }
+        }
+        
+        // Боковые окна
+        const sideWindowCols = 4;
+        const sideWindowSpacingX = (buildingDepth - (windowWidth * sideWindowCols)) / (sideWindowCols + 1);
+        
+        for (let row = 0; row < windowRows; row++) {
+            for (let col = 0; col < sideWindowCols; col++) {
+                const windowGeo = new THREE.BoxGeometry(0.1, windowHeight, windowWidth);
+                const window = new THREE.Mesh(windowGeo, windowMaterial);
+                const posZ = -buildingDepth/2 + sideWindowSpacingX * (col + 1) + windowWidth * col + windowWidth/2;
+                const posY = height + windowSpacingY * (row + 1) + windowHeight * row + windowHeight/2;
+                window.position.set(buildingWidth/2 + 0.05, posY, posZ);
+                floor.add(window);
+                
+                // Добавляем оконную раму
+                const frameGeo = new THREE.BoxGeometry(0.2, windowHeight + 0.2, windowWidth + 0.2);
+                const frameMat = new THREE.MeshStandardMaterial({
+                    color: 0x333333,
+                    roughness: 0.5,
+                    metalness: 0.3
+                });
+                const frame = new THREE.Mesh(frameGeo, frameMat);
+                frame.position.set(buildingWidth/2 + 0.1, posY, posZ);
+                floor.add(frame);
+                
+                // Другая сторона
+                const otherWindow = window.clone();
+                otherWindow.position.x = -buildingWidth/2 - 0.05;
+                floor.add(otherWindow);
+                
+                const otherFrame = frame.clone();
+                otherFrame.position.x = -buildingWidth/2 - 0.1;
+                floor.add(otherFrame);
+            }
+        }
+    }
+    
+    function createEntranceArea(floor) {
+        // Эффектная входная группа
+        const entranceGeo = new THREE.BoxGeometry(15, 10, 8);
+        const entranceMat = new THREE.MeshStandardMaterial({ 
+            color: 0xFF0000, // Яркий красный
+            roughness: 0.1,
+            metalness: 0.9,
+            envMapIntensity: 1.5
+        });
+        const entrance = new THREE.Mesh(entranceGeo, entranceMat);
+        entrance.position.set(5, 5, 15.5);
+        entrance.castShadow = true;
+        entrance.receiveShadow = true;
+        floor.add(entrance);
+        
+        // Стильный цилиндр над входом
+        const cylinderGeo = new THREE.CylinderGeometry(4, 4, 1.5, 32);
+        const cylinderMat = new THREE.MeshStandardMaterial({
+            color: 0xFF0000,
+            roughness: 0.1,
+            metalness: 0.9,
+            envMapIntensity: 1.5
+        });
+        const cylinder = new THREE.Mesh(cylinderGeo, cylinderMat);
+        cylinder.rotation.x = Math.PI / 2;
+        cylinder.position.set(5, 10.5, 15.5);
+        floor.add(cylinder);
+        
+        // Современные стеклянные двери
+        const doorGeo = new THREE.BoxGeometry(8, 7, 0.1);
+        const doorMat = new THREE.MeshPhysicalMaterial({ 
+            color: 0x00BFFF,
+            metalness: 0.9,
+            roughness: 0.1,
+            transmission: 0.9,
+            thickness: 0.5,
+            envMapIntensity: 1.5
+        });
+        const door = new THREE.Mesh(doorGeo, doorMat);
+        door.position.set(5, 3.5, 19.6);
+        floor.add(door);
+        
+        // Светящаяся вывеска
+        const signGeo = new THREE.BoxGeometry(12, 1, 0.5);
+        const signMat = new THREE.MeshStandardMaterial({
+            color: 0xFFD700, // Золотой
+            roughness: 0.1,
+            metalness: 0.9,
+            emissive: 0xFFD700,
+            emissiveIntensity: 0.5
+        });
+        const sign = new THREE.Mesh(signGeo, signMat);
+        sign.position.set(5, 9, 19.6);
+        floor.add(sign);
+    }
+    
+    function createSignage(floor) {
+        // Создаем вывеску "КРИСТАЛЛ"
+        const loader = new THREE.TextureLoader();
+        const signageGeo = new THREE.BoxGeometry(15, 2, 0.5);
+        const signageMat = new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            roughness: 0.3,
+            metalness: 0.5
+        });
+        const signage = new THREE.Mesh(signageGeo, signageMat);
+        signage.position.set(5, 9, 15.7);
+        floor.add(signage);
+    }
+    
+    function createRoof() {
+        // Основная крыша
+        const roofGeometry = new THREE.BoxGeometry(35, 1, 25);
+        const roofMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0x1d4e89,
+            roughness: 0.2,
+            metalness: 0.7,
+            envMapIntensity: 0.8
+        });
+        const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+        roof.position.set(0, 18.5, 0);
+        roof.castShadow = true;
+        model.add(roof);
+        
+        // Верхний элемент крыши
+        const topRoofGeo = new THREE.BoxGeometry(25, 2, 18);
+        const topRoof = new THREE.Mesh(topRoofGeo, roofMaterial);
+        topRoof.position.set(0, 20, 0);
+        topRoof.castShadow = true;
+        model.add(topRoof);
+        
+        // Добавляем парапет
+        const parapetGeo = new THREE.BoxGeometry(37, 0.5, 27);
+        const parapetMat = new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            roughness: 0.3,
+            metalness: 0.4,
+            envMapIntensity: 0.8
+        });
+        const parapet = new THREE.Mesh(parapetGeo, parapetMat);
+        parapet.position.set(0, 19.25, 0);
+        model.add(parapet);
+        
+        // Добавляем световые фонари на крыше
+        const skylightGeo = new THREE.BoxGeometry(2, 0.5, 2);
+        const skylightMat = new THREE.MeshStandardMaterial({
+            color: 0xadd8e6,
+            transparent: true,
+            opacity: 0.8,
+            roughness: 0.1,
+            metalness: 0.9,
+            envMapIntensity: 1.0
+        });
+        
+        const skylightPositions = [
+            {x: -8, z: -8},
+            {x: -8, z: 8},
+            {x: 8, z: -8},
+            {x: 8, z: 8}
+        ];
+        
+        skylightPositions.forEach(pos => {
+            const skylight = new THREE.Mesh(skylightGeo, skylightMat);
+            skylight.position.set(pos.x, 19.25, pos.z);
+            model.add(skylight);
+        });
+    }
+    
+    function createEnvironment() {
+        // Добавляем деревья
+        const treePositions = [
+            {x: 25, z: 10},
+            {x: 30, z: -5},
+            {x: 20, z: -15},
+            {x: -20, z: -20},
+            {x: -15, z: 25},
+            {x: 0, z: -25},
+            {x: -30, z: 0},
+            {x: -25, z: -15},
+        ];
+        
+        for(let pos of treePositions) {
+            createTree(pos.x, pos.z);
+        }
+    }
+    
+    function createTree(x, z) {
+        // Реалистичный ствол
+        const trunkGeo = new THREE.CylinderGeometry(0.5, 0.7, 2, 8);
+        const trunkMat = new THREE.MeshStandardMaterial({
+            color: 0x8B4513, // Коричневый
+            roughness: 0.9,
+            metalness: 0.1
+        });
+        const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+        trunk.position.set(x, 1, z);
+        trunk.castShadow = true;
+        scene.add(trunk);
+        
+        // Пышная крона
+        const crownGeo = new THREE.SphereGeometry(2.5, 16, 16);
+        const crownMat = new THREE.MeshStandardMaterial({
+            color: 0x228B22, // Лесной зеленый
+            roughness: 0.8,
+            metalness: 0.2
+        });
+        const crown = new THREE.Mesh(crownGeo, crownMat);
+        crown.position.set(x, 4.5, z);
+        crown.scale.y = 1.4;
+        crown.castShadow = true;
+        scene.add(crown);
+    }
+    
+    function createInfoPanel() {
+        // Эта функция добавила бы HTML-элемент с информацией, как на изображении
+        // В текущей реализации мы используем существующие .info-card элементы
+        const infoCard = document.querySelector('.info-card:nth-child(2)');
+        if (infoCard) {
+            infoCard.innerHTML = `
+                <h3>Информация</h3>
+                <ul>
+                    <li>Общая площадь: 35 000 м²</li>
+                    <li>Этажность: 3 этажа</li>
+                    <li>Магазинов: 120+</li>
+                    <li>Парковочных мест: 500</li>
+                </ul>
+            `;
+        }
     }
 
     function animate() {
@@ -240,51 +702,39 @@
     }
 
     function onWindowResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.aspect = document.getElementById('model-viewer').offsetWidth / document.getElementById('model-viewer').offsetHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(document.getElementById('model-viewer').offsetWidth, document.getElementById('model-viewer').offsetHeight);
     }
 
     function resetCamera() {
-        if (model) {
-            const box = new THREE.Box3().setFromObject(model);
-            const center = box.getCenter(new THREE.Vector3());
-            controls.target.copy(center);
-            
-            const size = box.getSize(new THREE.Vector3());
-            const maxDim = Math.max(size.x, size.y, size.z);
-            const fov = camera.fov * (Math.PI / 180);
-            const cameraZ = Math.abs(maxDim / Math.sin(fov / 2));
-            
-            camera.position.set(cameraZ, cameraZ, cameraZ);
-            camera.lookAt(center);
-            controls.update();
-        }
+        camera.position.set(30, 20, 30);
+        controls.target.set(0, 10, 0);
+        controls.update();
     }
 
     function toggleWireframe() {
-        if (model) {
-            isWireframe = !isWireframe;
-            model.traverse((child) => {
-                if (child.isMesh) {
-                    child.material.wireframe = isWireframe;
-                }
-            });
-        }
+        isWireframe = !isWireframe;
+        model.traverse((child) => {
+            if (child.isMesh) {
+                child.material.wireframe = isWireframe;
+            }
+        });
     }
 
-    function showFloor(floor) {
-        if (model) {
-            model.traverse((child) => {
-                if (child.isMesh && child.userData.floor) {
-                    child.visible = child.userData.floor === floor;
-                }
-            });
+    function showFloor(floorNum) {
+        // Скрываем все этажи
+        Object.keys(floors).forEach(key => {
+            floors[key].visible = false;
+        });
+        
+        // Показываем выбранный этаж и все этажи ниже
+        for (let i = 1; i <= floorNum; i++) {
+            floors[i.toString()].visible = true;
         }
     }
 
     init();
-    animate();
     </script>
 
     <%- include('../partials/footer') %>
