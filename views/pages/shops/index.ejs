@@ -4,10 +4,23 @@
     <div class="container">
         <h1 class="page-title">Магазины</h1>
         
-        <div class="shops-grid">
+        <!-- Добавление поиска магазинов -->
+        <div class="shops-filters mb-4">
+            <div class="form-group">
+                <label for="searchFilter">Поиск магазина</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="searchFilter" placeholder="Введите название магазина">
+                    <button class="btn btn-primary" type="button" id="searchButton">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="shops-grid" id="shopsContainer">
             <% if (shops && shops.length > 0) { %>
                 <% shops.forEach(shop => { %>
-                    <div class="shop-card">
+                    <div class="shop-card" data-name="<%= shop.name.toLowerCase() %>">
                         <% if (shop.image_url) { %>
                             <div class="shop-logo">
                                 <img src="<%= shop.image_url %>" alt="<%= shop.name %>">
@@ -15,19 +28,22 @@
                         <% } %>
                         <div class="shop-info">
                             <h3 class="shop-name"><%= shop.name %></h3>
-                            <p class="shop-category"><%= shop.category %></p>
+                            <p class="shop-category"><i class="bi bi-tag"></i> <%= shop.category %></p>
                             <% if (shop.floor) { %>
-                                <p class="shop-floor">Этаж: <%= shop.floor %></p>
+                                <p class="shop-floor"><i class="bi bi-layers"></i> Этаж: <%= shop.floor %></p>
                             <% } %>
                             <% if (shop.working_hours) { %>
-                                <p class="shop-hours">Часы работы: <%= shop.working_hours %></p>
+                                <p class="shop-hours"><i class="bi bi-clock"></i> <%= shop.working_hours %></p>
                             <% } %>
                             <% if (shop.phone) { %>
-                                <p class="shop-phone">Телефон: <%= shop.phone %></p>
+                                <p class="shop-phone"><i class="bi bi-telephone"></i> <%= shop.phone %></p>
                             <% } %>
                             <% if (shop.description) { %>
                                 <p class="shop-description"><%= shop.description %></p>
                             <% } %>
+                            <div class="shop-actions mt-3">
+                                <a href="/shops/<%= shop.id %>" class="btn btn-primary w-100">Подробнее</a>
+                            </div>
                         </div>
                     </div>
                 <% }); %>
@@ -39,5 +55,39 @@
         </div>
     </div>
 </main>
+
+<!-- Добавление JavaScript для поиска -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchFilter = document.getElementById('searchFilter');
+        const searchButton = document.getElementById('searchButton');
+        const shopsContainer = document.getElementById('shopsContainer');
+        const shopCards = shopsContainer.querySelectorAll('.shop-card');
+        
+        // Функция поиска магазинов
+        function searchShops() {
+            const searchValue = searchFilter.value.toLowerCase().trim();
+            
+            shopCards.forEach(card => {
+                const shopName = card.dataset.name;
+                if (shopName.includes(searchValue)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        // Обработчик поиска по кнопке
+        searchButton.addEventListener('click', searchShops);
+        
+        // Обработчик поиска при нажатии Enter
+        searchFilter.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                searchShops();
+            }
+        });
+    });
+</script>
 
 <%- include('../../partials/footer') %> 

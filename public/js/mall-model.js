@@ -93,40 +93,46 @@ function createMallModel(scene) {
     road.receiveShadow = true;
     scene.add(road);
     
-    // Основное здание ТЦ
-    const buildingGeometry = new THREE.BoxGeometry(20, 10, 15);
+    // Основное здание ТЦ - двухэтажное
+    const buildingGeometry = new THREE.BoxGeometry(20, 8, 15);
     const buildingMaterial = new THREE.MeshStandardMaterial({ 
         color: 0xf0f0f0,
         roughness: 0.3,
         metalness: 0.5
     });
     const building = new THREE.Mesh(buildingGeometry, buildingMaterial);
-    building.position.set(0, 5, 0);
+    building.position.set(0, 4, 0);
     building.castShadow = true;
     building.receiveShadow = true;
     scene.add(building);
     
+    // Создаём разноцветные полосы на фасаде, как на фото
+    createColorfulStripes(scene, building);
+    
     // Крыша
     const roofGeometry = new THREE.BoxGeometry(22, 1, 17);
     const roofMaterial = new THREE.MeshStandardMaterial({ 
-        color: 0x2196f3,
+        color: 0xE53935, // Красная крыша как на фото
         roughness: 0.4,
         metalness: 0.6
     });
     const roof = new THREE.Mesh(roofGeometry, roofMaterial);
-    roof.position.set(0, 10.5, 0);
+    roof.position.set(0, 8.5, 0);
     roof.castShadow = true;
     roof.receiveShadow = true;
     scene.add(roof);
     
+    // Конструкции на крыше (имитация рамок как на фото)
+    createRoofStructures(scene);
+    
     // Вход
     const entranceGeometry = new THREE.BoxGeometry(5, 5, 2);
     const entranceMaterial = new THREE.MeshStandardMaterial({ 
-        color: 0x2196f3,
+        color: 0xE53935, // Красный как на фото
         roughness: 0.2,
         metalness: 0.8,
         transparent: true,
-        opacity: 0.7
+        opacity: 0.9
     });
     const entrance = new THREE.Mesh(entranceGeometry, entranceMaterial);
     entrance.position.set(0, 2.5, 8.5);
@@ -147,6 +153,131 @@ function createMallModel(scene) {
     createMallSign(scene);
 }
 
+// Создание разноцветных вертикальных полос на фасаде здания
+function createColorfulStripes(scene, building) {
+    // Цвета полос как на фото ТЦ "Кристалл"
+    const colors = [
+        0xE53935, // красный
+        0xFB8C00, // оранжевый  
+        0xFFEB3B, // желтый
+        0x43A047, // зеленый
+        0x1E88E5, // синий
+        0x8E24AA, // фиолетовый
+        0xE53935, // красный
+        0xFB8C00, // оранжевый
+        0xFFEB3B, // желтый
+        0x43A047, // зеленый
+        0x1E88E5, // синий
+        0x8E24AA  // фиолетовый
+    ];
+    
+    // Ширина одной полосы
+    const stripeWidth = 1.8;
+    const buildingWidth = 20;
+    const startX = -buildingWidth/2 + stripeWidth/2;
+    
+    // Создаем полосы на фасаде
+    for (let i = 0; i < colors.length; i++) {
+        // Передняя полоса
+        const frontStripeGeometry = new THREE.PlaneGeometry(stripeWidth, 8);
+        const frontStripeMaterial = new THREE.MeshStandardMaterial({ 
+            color: colors[i],
+            roughness: 0.3,
+            metalness: 0.5,
+            side: THREE.DoubleSide
+        });
+        const frontStripe = new THREE.Mesh(frontStripeGeometry, frontStripeMaterial);
+        frontStripe.position.set(startX + i * stripeWidth, 4, 7.51);
+        frontStripe.castShadow = false;
+        frontStripe.receiveShadow = true;
+        scene.add(frontStripe);
+        
+        // Задняя полоса
+        const backStripe = frontStripe.clone();
+        backStripe.position.set(startX + i * stripeWidth, 4, -7.51);
+        scene.add(backStripe);
+        
+        // Боковые полосы (если нужно)
+        if (i < 8) { // Меньше полос на боковых сторонах
+            const sideStripeGeometry = new THREE.PlaneGeometry(stripeWidth, 8);
+            
+            // Левая сторона
+            const leftStripeMaterial = new THREE.MeshStandardMaterial({ 
+                color: colors[i],
+                roughness: 0.3,
+                metalness: 0.5,
+                side: THREE.DoubleSide
+            });
+            const leftStripe = new THREE.Mesh(sideStripeGeometry, leftStripeMaterial);
+            leftStripe.position.set(-10.01, 4, startX + i * stripeWidth);
+            leftStripe.rotation.y = Math.PI / 2;
+            leftStripe.castShadow = false;
+            leftStripe.receiveShadow = true;
+            scene.add(leftStripe);
+            
+            // Правая сторона
+            const rightStripe = leftStripe.clone();
+            rightStripe.position.set(10.01, 4, startX + i * stripeWidth);
+            scene.add(rightStripe);
+        }
+    }
+}
+
+// Создание конструкций на крыше по типу каркаса с фото
+function createRoofStructures(scene) {
+    // Основной каркас
+    const frameMaterial = new THREE.MeshStandardMaterial({ 
+        color: 0x424242,
+        roughness: 0.4,
+        metalness: 0.8
+    });
+    
+    // Центральная конструкция
+    const centralFrameGeometry = new THREE.BoxGeometry(6, 4, 6);
+    const centralFrame = new THREE.Mesh(centralFrameGeometry, frameMaterial);
+    centralFrame.position.set(0, 11, 0);
+    centralFrame.castShadow = true;
+    centralFrame.receiveShadow = true;
+    scene.add(centralFrame);
+    
+    // Правая башня
+    const rightTowerGeometry = new THREE.BoxGeometry(4, 6, 4);
+    const rightTower = new THREE.Mesh(rightTowerGeometry, frameMaterial);
+    rightTower.position.set(8, 12, 4);
+    rightTower.castShadow = true;
+    rightTower.receiveShadow = true;
+    scene.add(rightTower);
+    
+    // Соединительные элементы
+    const connectGeometry = new THREE.BoxGeometry(4, 1, 1);
+    const connect1 = new THREE.Mesh(connectGeometry, frameMaterial);
+    connect1.position.set(4, 10, 2);
+    connect1.castShadow = true;
+    connect1.receiveShadow = true;
+    scene.add(connect1);
+    
+    // Красные акценты на конструкциях
+    const accentMaterial = new THREE.MeshStandardMaterial({ 
+        color: 0xE53935, // красный
+        roughness: 0.3,
+        metalness: 0.7
+    });
+    
+    const accentGeometry1 = new THREE.BoxGeometry(6.5, 0.5, 6.5);
+    const accent1 = new THREE.Mesh(accentGeometry1, accentMaterial);
+    accent1.position.set(0, 13, 0);
+    accent1.castShadow = true;
+    accent1.receiveShadow = true;
+    scene.add(accent1);
+    
+    const accentGeometry2 = new THREE.BoxGeometry(4.5, 0.5, 4.5);
+    const accent2 = new THREE.Mesh(accentGeometry2, accentMaterial);
+    accent2.position.set(8, 15, 4);
+    accent2.castShadow = true;
+    accent2.receiveShadow = true;
+    scene.add(accent2);
+}
+
 // Создание окон
 function createWindows(scene, building) {
     const windowGeometry = new THREE.PlaneGeometry(1.5, 2);
@@ -161,7 +292,7 @@ function createWindows(scene, building) {
     
     // Окна на передней стороне
     for (let i = -8; i <= 8; i += 4) {
-        for (let j = 2; j <= 8; j += 3) {
+        for (let j = 2; j <= 6; j += 3) { // Меньше высота, только 2 этажа
             const windowMesh = new THREE.Mesh(windowGeometry, windowMaterial);
             windowMesh.position.set(i, j, 7.51);
             windowMesh.castShadow = false;
@@ -172,7 +303,7 @@ function createWindows(scene, building) {
     
     // Окна на боковых сторонах
     for (let i = -5; i <= 5; i += 5) {
-        for (let j = 2; j <= 8; j += 3) {
+        for (let j = 2; j <= 6; j += 3) { // Меньше высота, только 2 этажа
             const leftWindow = new THREE.Mesh(windowGeometry, windowMaterial);
             leftWindow.position.set(-10.01, j, i);
             leftWindow.rotation.y = Math.PI / 2;
@@ -267,15 +398,41 @@ function createTrees(scene) {
 function createMallSign(scene) {
     const signGeometry = new THREE.BoxGeometry(10, 2, 0.5);
     const signMaterial = new THREE.MeshStandardMaterial({ 
-        color: 0x2196f3,
+        color: 0xE53935, // Красный как на фото
         roughness: 0.3,
         metalness: 0.7
     });
     const sign = new THREE.Mesh(signGeometry, signMaterial);
-    sign.position.set(0, 12, 0);
+    sign.position.set(0, 10, 7.8); // Поднял на фасад
     sign.castShadow = true;
     sign.receiveShadow = true;
     scene.add(sign);
+    
+    // Добавляем объемные буквы "КРИСТАЛЛ"
+    const textMaterial = new THREE.MeshStandardMaterial({ 
+        color: 0xFFFFFF,
+        roughness: 0.2,
+        metalness: 0.8
+    });
+    
+    // Имитация объемных букв с помощью маленьких кубиков
+    const letterPositions = [
+        [-4, 10, 8.1],
+        [-3, 10, 8.1],
+        [-2, 10, 8.1],
+        [-1, 10, 8.1],
+        [0, 10, 8.1],
+        [1, 10, 8.1],
+        [2, 10, 8.1],
+        [3, 10, 8.1]
+    ];
+    
+    letterPositions.forEach((pos, index) => {
+        const letterGeometry = new THREE.BoxGeometry(0.8, 0.8, 0.2);
+        const letter = new THREE.Mesh(letterGeometry, textMaterial);
+        letter.position.set(pos[0], pos[1], pos[2]);
+        scene.add(letter);
+    });
 }
 
 // Добавление элементов управления

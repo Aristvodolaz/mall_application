@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { Shop} = require('../../models');
+const { Shop, Review, User } = require('../../models');
 const { Op } = require('sequelize');
 
 console.log('Инициализация маршрутизатора магазинов...');
@@ -25,6 +25,7 @@ router.get('/', async (req, res) => {
     console.log('Получен запрос на страницу магазинов');
     try {
         const { category, floor, search } = req.query;
+        const where = {};
   
         console.log('Параметры запроса:', { category, floor, search });
 
@@ -56,7 +57,12 @@ router.get('/', async (req, res) => {
             title: 'Магазины - ТРЦ \'Кристалл\'',
             shops: shops,
             user: req.session.user || null,
-            path: '/shops'
+            path: '/shops',
+            filters: {
+                category: category || '',
+                floor: floor || '',
+                search: search || ''
+            }
         });
         console.log('Рендеринг успешно завершен');
     } catch (error) {

@@ -99,7 +99,8 @@ const webRoutes = {
     shops: { path: './routes/web/shops', prefix: '/shops' },
     promotions: { path: './routes/web/promotions', prefix: '/promotions' },
     events: { path: './routes/web/events', prefix: '/events' },
-    admin: { path: './routes/web/admin', prefix: '/admin' }
+    admin: { path: './routes/web/admin', prefix: '/admin' },
+    reviews: { path: './routes/web/reviews', prefix: '/reviews' }
 };
 
 // Подключаем веб-маршруты

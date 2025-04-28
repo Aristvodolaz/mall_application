@@ -1,146 +1,309 @@
-<!-- Страница "О нас" -->
-<div class="about-page">
+<%- include('../partials/header') %>
+
+<main class="about-page-main">
+    <!-- Декоративные элементы фона -->
+    <div class="decoration-circle circle-1"></div>
+    <div class="decoration-circle circle-2"></div>
+    <div class="decoration-circle circle-3"></div>
+    
     <div class="container">
-        <h1 class="page-title">О нас</h1>
-        
-        <div class="row">
-            <div class="col-md-6">
-                <div class="about-content">
-                    <h2>Добро пожаловать в ТЦ "Название"</h2>
-                    <p>
-                        Торговый центр "Название" — это современный многофункциональный комплекс, расположенный в центре города. 
-                        Мы предлагаем нашим посетителям широкий выбор магазинов, ресторанов, развлечений и услуг.
-                    </p>
-                    <p>
-                        Наш торговый центр был открыт в 2015 году и с тех пор стал одним из самых популярных мест для шопинга и отдыха в городе. 
-                        Мы постоянно развиваемся и стремимся предложить нашим посетителям лучший сервис и разнообразие брендов.
-                    </p>
-                    <p>
-                        На территории торгового центра расположены более 100 магазинов, современный кинотеатр с 6 залами, 
-                        фуд-корт с разнообразными кухнями мира, детская игровая зона и многое другое.
-                    </p>
-                    
-                    <div class="about-stats">
-                        <div class="stat-item">
-                            <div class="stat-number">100+</div>
-                            <div class="stat-label">Магазинов</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">15+</div>
-                            <div class="stat-label">Ресторанов</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">6</div>
-                            <div class="stat-label">Кинозалов</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">3</div>
-                            <div class="stat-label">Этажа</div>
-                        </div>
+        <div class="about-hero">
+            <div class="hero-content">
+                <div class="section-badge">О нас</div>
+                <h1 class="hero-title">Добро пожаловать в ТРЦ «Кристалл»</h1>
+                <p class="hero-text">
+                    Торговый центр «Кристалл» — это современный многофункциональный комплекс, расположенный в центре города Дятьково. 
+                    Мы предлагаем нашим посетителям широкий выбор магазинов, ресторанов, развлечений и услуг.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Магазинов</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">10+</div>
+                        <div class="stat-label">Ресторанов</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Кинозала</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">2</div>
+                        <div class="stat-label">Этажа</div>
                     </div>
                 </div>
             </div>
-            
-            <div class="col-md-6">
-                <div class="about-image">
-                    <img src="/images/main.jpg" alt="ТЦ Название" class="img-fluid rounded">
+            <div class="hero-image">
+                <img src="/images/main.jpg" alt="ТРЦ Кристалл" class="about-main-image">
+                <div class="image-overlay"></div>
+                <div class="image-badge">
+                    <span>С 2015 года</span>
                 </div>
             </div>
         </div>
         
-        <div class="about-section">
-            <h2>Наша миссия</h2>
-            <p>
-                Наша миссия — создать комфортное пространство для шопинга и отдыха, где каждый посетитель найдет что-то для себя. 
-                Мы стремимся предложить нашим гостям лучший сервис, разнообразие брендов и развлечений, а также создать атмосферу, 
-                в которой приятно проводить время.
-            </p>
+        <div class="about-section mission-section">
+            <div class="section-header">
+                <h2 class="section-title">Наша миссия</h2>
+                <div class="title-decoration"><span></span></div>
+            </div>
+            <div class="mission-card">
+                <div class="mission-icon">
+                    <i class="bi bi-stars"></i>
+                </div>
+                <p class="mission-text">
+                    Наша миссия — создать комфортное пространство для шопинга и отдыха, где каждый посетитель найдет что-то для себя. 
+                    Мы стремимся предложить нашим гостям лучший сервис, разнообразие брендов и развлечений, а также создать атмосферу, 
+                    в которой приятно проводить время.
+                </p>
+            </div>
         </div>
         
-        <div class="about-section">
-            <h2>Преимущества</h2>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="advantage-card">
+        <div class="about-section advantages-section">
+            <div class="section-header">
+                <h2 class="section-title">Преимущества</h2>
+                <div class="title-decoration"><span></span></div>
+            </div>
+            <div class="advantages-grid">
+                <div class="advantage-card">
+                    <div class="advantage-icon">
                         <i class="bi bi-geo-alt"></i>
-                        <h3>Удобное расположение</h3>
-                        <p>Торговый центр расположен в центре города с удобной транспортной доступностью</p>
                     </div>
+                    <h3>Удобное расположение</h3>
+                    <p>Торговый центр расположен в центре города с удобной транспортной доступностью</p>
                 </div>
-                <div class="col-md-4">
-                    <div class="advantage-card">
+                <div class="advantage-card">
+                    <div class="advantage-icon">
                         <i class="bi bi-shop"></i>
-                        <h3>Разнообразие брендов</h3>
-                        <p>Более 100 магазинов популярных российских и международных брендов</p>
+                    </div>
+                    <h3>Разнообразие брендов</h3>
+                    <p>Более 50 магазинов популярных российских и международных брендов</p>
+                </div>
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <i class="bi bi-p-circle"></i>
+                    </div>
+                    <h3>Бесплатная парковка</h3>
+                    <p>Просторная парковка на 500 машиномест с удобным въездом и выездом</p>
+                </div>
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <i class="bi bi-cup-hot"></i>
+                    </div>
+                    <h3>Фудкорт</h3>
+                    <p>Разнообразные кухни мира и уютная атмосфера для отдыха</p>
+                </div>
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <i class="bi bi-film"></i>
+                    </div>
+                    <h3>Кинотеатр</h3>
+                    <p>Современный кинотеатр с комфортными залами и отличным звуком</p>
+                </div>
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <i class="bi bi-balloon"></i>
+                    </div>
+                    <h3>Детская зона</h3>
+                    <p>Безопасное и интересное пространство для детей разных возрастов</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="about-section team-section">
+            <div class="section-header">
+                <h2 class="section-title">Руководство</h2>
+                <div class="title-decoration"><span></span></div>
+            </div>
+            <div class="team-slider">
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="/images/placeholder.svg" alt="Иванов Иван Иванович">
+                        <div class="team-social">
+                            <a href="#" class="social-link"><i class="bi bi-linkedin"></i></a>
+                            <a href="#" class="social-link"><i class="bi bi-envelope"></i></a>
+                        </div>
+                    </div>
+                    <div class="team-info">
+                        <h3>Иванов Иван</h3>
+                        <p class="team-position">Генеральный директор</p>
+                        <p class="team-quote">"Мы создаём пространство, где каждый найдёт что-то для себя"</p>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="advantage-card">
-                        <i class="bi bi-p-circle"></i>
-                        <h3>Бесплатная парковка</h3>
-                        <p>Просторная парковка на 1000 машиномест с удобным въездом и выездом</p>
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="/images/placeholder.svg" alt="Петрова Анна Сергеевна">
+                        <div class="team-social">
+                            <a href="#" class="social-link"><i class="bi bi-linkedin"></i></a>
+                            <a href="#" class="social-link"><i class="bi bi-envelope"></i></a>
+                        </div>
+                    </div>
+                    <div class="team-info">
+                        <h3>Петрова Анна</h3>
+                        <p class="team-position">Коммерческий директор</p>
+                        <p class="team-quote">"Наша цель - предложить лучший выбор для наших посетителей"</p>
+                    </div>
+                </div>
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="/images/placeholder.svg" alt="Сидоров Алексей Петрович">
+                        <div class="team-social">
+                            <a href="#" class="social-link"><i class="bi bi-linkedin"></i></a>
+                            <a href="#" class="social-link"><i class="bi bi-envelope"></i></a>
+                        </div>
+                    </div>
+                    <div class="team-info">
+                        <h3>Сидоров Алексей</h3>
+                        <p class="team-position">Технический директор</p>
+                        <p class="team-quote">"Комфорт и безопасность - наш приоритет"</p>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="about-section">
-            <h2>Руководство</h2>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="team-card">
-                        <div class="team-image">
-                            <img src="/images/placeholder.svg" alt="Иванов Иван Иванович">
-                        </div>
-                        <div class="team-info">
-                            <h3>Иванов Иван Иванович</h3>
-                            <p class="team-position">Генеральный директор</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="team-card">
-                        <div class="team-image">
-                            <img src="/images/placeholder.svg" alt="Петрова Анна Сергеевна">
-                        </div>
-                        <div class="team-info">
-                            <h3>Петрова Анна Сергеевна</h3>
-                            <p class="team-position">Коммерческий директор</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="team-card">
-                        <div class="team-image">
-                            <img src="/images/placeholder.svg" alt="Сидоров Алексей Петрович">
-                        </div>
-                        <div class="team-info">
-                            <h3>Сидоров Алексей Петрович</h3>
-                            <p class="team-position">Технический директор</p>
-                        </div>
+        <div class="about-section cta-section">
+            <div class="cta-card">
+                <div class="cta-content">
+                    <h2>Приходите к нам за покупками и отличным настроением!</h2>
+                    <p>Ждём вас ежедневно с 10:00 до 22:00</p>
+                    <div class="cta-buttons">
+                        <a href="/map" class="btn btn-primary">Схема ТРЦ</a>
+                        <a href="/shops" class="btn btn-outline">Магазины</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</main>
 
-<!-- Стили для страницы "О нас" -->
 <style>
-.about-page {
-    padding: 3rem 0;
+/* Основные стили страницы "О нас" */
+.about-page-main {
+    background-color: #cfe8f7;
+    background-image: linear-gradient(135deg, #cfe8f7 0%, #a6d4f2 100%);
+    min-height: 100vh;
+    padding: 4rem 0;
+    position: relative;
+    overflow: hidden;
 }
 
-.about-content {
+/* Декоративные элементы фона */
+.decoration-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    z-index: 0;
+}
+
+.circle-1 {
+    width: 300px;
+    height: 300px;
+    top: -100px;
+    left: -100px;
+}
+
+.circle-2 {
+    width: 500px;
+    height: 500px;
+    bottom: -200px;
+    right: -200px;
+    background: rgba(255,255,255,0.3);
+}
+
+.circle-3 {
+    width: 200px;
+    height: 200px;
+    top: 30%;
+    right: 10%;
+    background: rgba(255,255,255,0.35);
+}
+
+/* Заголовки секций */
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.section-badge {
+    display: inline-block;
+    background: linear-gradient(45deg, #1976D2, #64B5F6);
+    color: white;
+    padding: 0.4rem 1.2rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    box-shadow: 0 3px 15px rgba(25, 118, 210, 0.3);
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #1a4971;
+    margin-bottom: 1.2rem;
+}
+
+.title-decoration {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.title-decoration span {
+    width: 70px;
+    height: 4px;
+    background: linear-gradient(45deg, #1976D2, #64B5F6);
+    border-radius: 10px;
+}
+
+/* Герой-секция */
+.about-hero {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    margin-bottom: 5rem;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.hero-content {
+    flex: 1;
+    min-width: 300px;
+    animation: fadeInLeft 1s ease-out;
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #1a4971;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.hero-text {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #333;
     margin-bottom: 2rem;
 }
 
-.about-content h2 {
-    margin-bottom: 1.5rem;
-    color: var(--primary);
-}
-
-.about-stats {
+.hero-stats {
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
@@ -149,76 +312,203 @@
 
 .stat-item {
     text-align: center;
+    min-width: 100px;
 }
 
 .stat-number {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     font-weight: bold;
-    color: var(--primary);
+    color: #1976D2;
+    line-height: 1;
 }
 
 .stat-label {
     font-size: 1rem;
-    color: var(--text-secondary);
+    color: #666;
+    margin-top: 0.5rem;
 }
 
-.about-image {
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: var(--shadow);
+.hero-image {
+    flex: 1;
+    min-width: 300px;
+    position: relative;
+    animation: fadeInRight 1s ease-out;
 }
 
-.about-section {
-    margin-top: 4rem;
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
-.about-section h2 {
+.about-main-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    border: 10px solid white;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top right, rgba(25, 118, 210, 0.3), transparent);
+    border-radius: 20px;
+    pointer-events: none;
+}
+
+.image-badge {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    background: white;
+    color: #1976D2;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Секция миссии */
+.mission-section {
+    margin: 6rem 0;
+}
+
+.mission-card {
+    background: white;
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.08);
     text-align: center;
-    margin-bottom: 2rem;
-    color: var(--primary);
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    border-top: 5px solid #1976D2;
+}
+
+.mission-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(45deg, #1976D2, #64B5F6);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 5px 20px rgba(25, 118, 210, 0.4);
+}
+
+.mission-text {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: #555;
+    margin-top: 1.5rem;
+}
+
+/* Секция преимуществ */
+.advantages-section {
+    margin: 6rem 0;
+}
+
+.advantages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
 }
 
 .advantage-card {
-    background-color: var(--background-card);
+    background: rgba(255,255,255,0.85);
+    border-radius: 15px;
     padding: 2rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
     text-align: center;
-    height: 100%;
-    transition: all var(--transition);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .advantage-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    background: white;
 }
 
-.advantage-card i {
-    font-size: 3rem;
-    color: var(--primary);
-    margin-bottom: 1rem;
+.advantage-icon {
+    width: 70px;
+    height: 70px;
+    background: #bbdefb;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #1565C0;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.advantage-card:hover .advantage-icon {
+    background: #1976D2;
+    color: white;
+    transform: scale(1.1);
 }
 
 .advantage-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #333;
     margin-bottom: 1rem;
 }
 
+.advantage-card p {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Секция команды */
+.team-section {
+    margin: 6rem 0;
+}
+
+.team-slider {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
 .team-card {
-    background-color: var(--background-card);
-    border-radius: var(--radius);
+    background: white;
+    border-radius: 15px;
     overflow: hidden;
-    box-shadow: var(--shadow);
-    margin-bottom: 2rem;
-    transition: all var(--transition);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    width: 320px;
+    transition: all 0.3s ease;
 }
 
 .team-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-10px);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.15);
 }
 
 .team-image {
-    height: 250px;
+    height: 300px;
+    position: relative;
     overflow: hidden;
 }
 
@@ -226,6 +516,47 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.team-card:hover .team-image img {
+    transform: scale(1.05);
+}
+
+.team-social {
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+    transition: all 0.3s ease;
+}
+
+.team-card:hover .team-social {
+    bottom: 0;
+}
+
+.social-link {
+    width: 40px;
+    height: 40px;
+    background: white;
+    color: #1976D2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    background: #1976D2;
+    color: white;
+    transform: translateY(-3px);
 }
 
 .team-info {
@@ -233,18 +564,154 @@
     text-align: center;
 }
 
+.team-info h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
 .team-position {
-    color: var(--text-secondary);
+    color: #1976D2;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.team-quote {
+    color: #666;
+    font-style: italic;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* CTA секция */
+.cta-section {
+    margin: 4rem 0 2rem;
+}
+
+.cta-card {
+    background: linear-gradient(45deg, #1565C0, #64B5F6);
+    color: white;
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 15px 40px rgba(25, 118, 210, 0.3);
+    text-align: center;
+}
+
+.cta-content h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.cta-content p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.btn-primary {
+    background: white;
+    color: #1565C0;
+}
+
+.btn-primary:hover {
+    background: transparent;
+    border-color: white;
+    color: white;
+    transform: translateY(-3px);
+}
+
+.btn-outline {
+    background: transparent;
+    border-color: white;
+    color: white;
+}
+
+.btn-outline:hover {
+    background: white;
+    color: #1565C0;
+    transform: translateY(-3px);
+}
+
+/* Медиа-запросы */
+@media (max-width: 992px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .about-hero {
+        flex-direction: column;
+    }
+    
+    .hero-image {
+        order: -1;
+    }
+    
+    .about-main-image {
+        height: 350px;
+    }
+    
+    .mission-card {
+        padding: 2.5rem 2rem;
+    }
 }
 
 @media (max-width: 768px) {
-    .about-image {
-        margin-top: 2rem;
-        margin-bottom: 2rem;
+    .about-page-main {
+        padding: 3rem 0;
     }
     
-    .about-stats {
-        justify-content: center;
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .stat-number {
+        font-size: 2.2rem;
+    }
+    
+    .mission-text {
+        font-size: 1.1rem;
+    }
+    
+    .cta-content h2 {
+        font-size: 1.8rem;
+    }
+    
+    .advantage-card {
+        padding: 1.5rem;
+    }
+    
+    .advantage-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.7rem;
+    }
+    
+    .team-card {
+        width: 100%;
     }
 }
-</style> 
+</style>
+
+<%- include('../partials/footer') %> 

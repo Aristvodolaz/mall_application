@@ -3,53 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Карта ТЦ - ТРЦ "Кристалл"</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <title>3D Карта ТРЦ "Кристалл"</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/model.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap">
 </head>
 <body>
     <%- include('../partials/header') %>
 
     <div class="mall-map-page">
-        <div class="container">
-            <div class="page-header">
-                <h1 class="page-title">Карта ТЦ</h1>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/">Главная</a></li>
-                        <li class="breadcrumb-item active">Карта ТЦ</li>
-                    </ol>
-                </nav>
+        <div class="hero-banner">
+            <div class="container">
+                <h1 class="hero-title">Интерактивная 3D карта<br><span>ТРЦ "Кристалл"</span></h1>
+                <p class="hero-subtitle">Исследуйте торговый центр в удобном трехмерном режиме</p>
             </div>
+            <div class="banner-overlay"></div>
+        </div>
 
+        <div class="container main-content">
             <div class="row">
                 <div class="col-lg-8">
-                    <div class="model-container" id="mallModel">
-                        <div class="model-loading" id="modelLoading">
-                            <div class="model-loading-spinner"></div>
-                            <div class="model-loading-text">Загрузка 3D модели...</div>
+                    <div class="model-container-wrapper">
+                        <div class="model-container" id="mallModel">
+                            <div class="model-loading" id="modelLoading">
+                                <div class="model-loading-spinner"></div>
+                                <div class="model-loading-text">Загрузка 3D модели...</div>
+                            </div>
+                            <div class="model-info">
+                                <h3>ТРЦ "Кристалл"</h3>
+                                <div class="info-divider"></div>
+                                <ul class="model-info-list">
+                                    <li><i class="bi bi-building"></i> <span>35 000 м²</span> общая площадь</li>
+                                    <li><i class="bi bi-layers"></i> <span>2</span> этажа</li>
+                                    <li><i class="bi bi-shop"></i> <span>120+</span> магазинов</li>
+                                    <li><i class="bi bi-car-front"></i> <span>500</span> парковочных мест</li>
+                                </ul>
+                            </div>
+                            <div class="model-floor-info">
+                                <i class="bi bi-mouse"></i> Используйте мышь для вращения модели, колесико для масштабирования
+                            </div>
                         </div>
-                        <div class="model-info">
-                            <h3>ТРЦ "Кристалл"</h3>
-                            <p>Интерактивная 3D модель торгового центра</p>
-                            <ul class="model-info-list">
-                                <li><i class="bi bi-building"></i> Общая площадь: 35 000 м²</li>
-                                <li><i class="bi bi-layers"></i> Количество этажей: 3</li>
-                                <li><i class="bi bi-shop"></i> Магазинов: 120+</li>
-                                <li><i class="bi bi-car-front"></i> Парковочных мест: 500</li>
-                            </ul>
-                        </div>
-                        <div class="model-floor-info">
-                            <i class="bi bi-info-circle"></i> Используйте мышь для вращения модели, колесико для масштабирования
+                        <div class="floor-selector">
+                            <div class="floor-selector-label">Выберите этаж:</div>
+                            <div class="floor-buttons">
+                                <button class="floor-btn active" data-floor="1">1 этаж</button>
+                                <button class="floor-btn" data-floor="2">2 этаж</button>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="mall-map-controls">
                         <div class="control-card">
-                            <h3>Управление</h3>
+                            <div class="card-header">
+                                <i class="bi bi-sliders"></i>
+                                <h3>Управление</h3>
+                            </div>
                             <div class="control-item">
                                 <i class="bi bi-mouse"></i>
                                 <div>
@@ -71,10 +82,18 @@
                                     <p>Зажмите правую кнопку мыши и перемещайте курсор</p>
                                 </div>
                             </div>
+                            <div class="control-actions">
+                                <button class="action-btn reset-view-btn">
+                                    <i class="bi bi-arrow-counterclockwise"></i> Сбросить вид
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="control-card">
-                            <h3>Информация о ТЦ</h3>
+                        <div class="control-card mall-info-card">
+                            <div class="card-header">
+                                <i class="bi bi-info-circle"></i>
+                                <h3>Информация о ТРЦ</h3>
+                            </div>
                             <div class="info-item">
                                 <i class="bi bi-geo-alt"></i>
                                 <div>
@@ -93,12 +112,70 @@
                                 <i class="bi bi-building"></i>
                                 <div>
                                     <h4>Этажи</h4>
-                                    <p>1 этаж: Продуктовый гипермаркет, бутики</p>
-                                    <p>2 этаж: Одежда, обувь, аксессуары</p>
-                                    <p>3 этаж: Фудкорт, кинотеатр, развлечения</p>
+                                    <div class="floor-info">
+                                        <div class="floor-label">1 этаж</div>
+                                        <p>Продуктовый гипермаркет, бутики</p>
+                                    </div>
+                                    <div class="floor-info">
+                                        <div class="floor-label">2 этаж</div>
+                                        <p>Одежда, обувь, аксессуары, фудкорт, кинотеатр</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="control-actions">
+                                <a href="/shops" class="action-btn">
+                                    <i class="bi bi-shop"></i> Все магазины
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="control-card qr-code-card">
+                            <div class="qr-content">
+                                <div class="qr-info">
+                                    <h3>Скачайте карту ТРЦ</h3>
+                                    <p>Сканируйте QR-код, чтобы скачать интерактивную карту на ваш телефон</p>
+                                </div>
+                                <div class="qr-image">
+                                    <img src="/images/qr.png" alt="QR-код для загрузки карты">
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="features-section">
+            <div class="container">
+                <h2 class="section-title">Ваш идеальный центр для шопинга и развлечений</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-shop"></i>
+                        </div>
+                        <h3>Популярные бренды</h3>
+                        <p>Более 120 магазинов мировых и отечественных брендов</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-cup-hot"></i>
+                        </div>
+                        <h3>Фуд-корт</h3>
+                        <p>Широкий выбор ресторанов и кафе на любой вкус</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-film"></i>
+                        </div>
+                        <h3>Кинотеатр</h3>
+                        <p>Современный кинотеатр с комфортными залами</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="bi bi-p-circle"></i>
+                        </div>
+                        <h3>Парковка</h3>
+                        <p>Удобная парковка на 500 машиномест</p>
                     </div>
                 </div>
             </div>
@@ -107,7 +184,7 @@
 
     <%- include('../partials/footer') %>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
     <script src="/js/mall-model.js"></script>
@@ -123,34 +200,267 @@
                 // Инициализируем 3D модель
                 initMallModel('mallModel');
             }, 1000);
+            
+            // Переключение этажей
+            const floorButtons = document.querySelectorAll('.floor-btn');
+            floorButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Сначала удаляем класс active у всех кнопок
+                    floorButtons.forEach(btn => btn.classList.remove('active'));
+                    // Затем добавляем active только нажатой кнопке
+                    this.classList.add('active');
+                    
+                    // Здесь добавить логику переключения этажей в 3D модели
+                    const floor = this.getAttribute('data-floor');
+                    console.log(`Переключение на ${floor} этаж`);
+                });
+            });
+            
+            // Кнопка сброса вида
+            const resetButton = document.querySelector('.reset-view-btn');
+            if (resetButton) {
+                resetButton.addEventListener('click', function() {
+                    // Код для сброса положения камеры будет реализован в mall-model.js
+                    console.log('Сброс вида камеры');
+                });
+            }
         });
     </script>
 
     <style>
-        .mall-map-page {
-            padding: 2rem 0 4rem;
+        /* Основные стили страницы */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f5f9fc;
+            color: #333;
         }
         
-        .page-header {
+        .mall-map-page {
+            padding-bottom: 4rem;
+        }
+        
+        /* Герой-баннер */
+        .hero-banner {
+            position: relative;
+            background-image: url('/images/main.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 6rem 0;
+            margin-bottom: 3rem;
+            color: white;
+            text-align: center;
+        }
+        
+        .banner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(25, 118, 210, 0.85), rgba(100, 181, 246, 0.85));
+        }
+        
+        .hero-title {
+            z-index:1;
+            position: relative;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hero-title span {
+            z-index:1;
+            color: #FFD54F;
+        }
+        
+        .hero-subtitle {
+            z-index:1;
+            position: relative;
+            font-size: 1.3rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        /* Основной контент */
+        .main-content {
+            position: relative;
+            z-index: 1;
+            margin-top: -4rem;
+        }
+        
+        /* Контейнер модели */
+        .model-container-wrapper {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
             margin-bottom: 2rem;
         }
         
-        .page-title {
-            font-size: 2rem;
+        .model-container {
+            position: relative;
+            height: 500px;
+            background: #f0f5fa;
+            overflow: hidden;
+        }
+        
+        .model-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        .model-loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e0e0e0;
+            border-top: 5px solid #1976D2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .model-loading-text {
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .model-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: white;
+            padding: 1.2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 5;
+            max-width: 250px;
+        }
+        
+        .model-info h3 {
+            font-size: 1.3rem;
             font-weight: 700;
-            color: var(--primary-color);
+            color: #1976D2;
             margin-bottom: 0.5rem;
         }
         
-        .breadcrumb {
+        .info-divider {
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(45deg, #1976D2, #64B5F6);
+            margin-bottom: 1rem;
+            border-radius: 3px;
+        }
+        
+        .model-info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .model-info-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.7rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .model-info-list li:last-child {
             margin-bottom: 0;
         }
         
-        .breadcrumb-item a {
-            color: var(--primary-color);
-            text-decoration: none;
+        .model-info-list li i {
+            color: #1976D2;
+            margin-right: 0.7rem;
+            font-size: 1.1rem;
         }
         
+        .model-info-list li span {
+            font-weight: 700;
+            color: #333;
+            margin-right: 0.3rem;
+        }
+        
+        .model-floor-info {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            color: #666;
+        }
+        
+        .model-floor-info i {
+            color: #1976D2;
+            margin-right: 0.7rem;
+            font-size: 1rem;
+        }
+        
+        /* Селектор этажей */
+        .floor-selector {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+        
+        .floor-selector-label {
+            font-weight: 600;
+            color: #666;
+        }
+        
+        .floor-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .floor-btn {
+            border: none;
+            background: #f0f0f0;
+            color: #666;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .floor-btn.active {
+            background: #1976D2;
+            color: white;
+            box-shadow: 0 3px 10px rgba(25, 118, 210, 0.3);
+        }
+        
+        .floor-btn:hover:not(.active) {
+            background: #e0e0e0;
+        }
+        
+        /* Карточки управления */
         .mall-map-controls {
             display: flex;
             flex-direction: column;
@@ -158,50 +468,277 @@
         }
         
         .control-card {
-            background-color: var(--surface-color);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
         }
         
-        .control-card h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 1.25rem;
+        .card-header {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(45deg, #1976D2, #64B5F6);
+            color: white;
+            padding: 1.2rem 1.5rem;
+        }
+        
+        .card-header i {
+            font-size: 1.5rem;
+            margin-right: 0.8rem;
+        }
+        
+        .card-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0;
         }
         
         .control-item, .info-item {
             display: flex;
             align-items: flex-start;
             gap: 1rem;
-            margin-bottom: 1.25rem;
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid #eee;
         }
         
         .control-item:last-child, .info-item:last-child {
-            margin-bottom: 0;
+            border-bottom: none;
         }
         
         .control-item i, .info-item i {
-            font-size: 1.5rem;
-            color: var(--primary-color);
+            font-size: 1.3rem;
+            color: #1976D2;
+            flex-shrink: 0;
+            margin-top: 0.2rem;
         }
         
         .control-item h4, .info-item h4 {
             font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #333;
         }
         
         .control-item p, .info-item p {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0;
+            line-height: 1.5;
         }
         
+        .floor-info {
+            margin-bottom: 0.8rem;
+        }
+        
+        .floor-info:last-child {
+            margin-bottom: 0;
+        }
+        
+        .floor-label {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976D2;
+            padding: 0.2rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        
+        .control-actions {
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            justify-content: center;
+            background: #f9f9f9;
+        }
+        
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #1976D2;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background: #1565C0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(25, 118, 210, 0.3);
+            color: white;
+        }
+        
+        .action-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .reset-view-btn {
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .reset-view-btn:hover {
+            background: #e0e0e0;
+            color: #111;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* QR-код карточка */
+        .qr-code-card {
+            padding: 1.5rem;
+        }
+        
+        .qr-content {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .qr-info {
+            flex: 1;
+        }
+        
+        .qr-info h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1976D2;
+            margin-bottom: 0.8rem;
+        }
+        
+        .qr-info p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+        
+        .qr-image {
+            width: 100px;
+            height: 100px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 5px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .qr-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Секция особенностей */
+        .features-section {
+            background: linear-gradient(45deg, #f5f9fc, #e1f5fe);
+            padding: 4rem 0;
+            margin-top: 3rem;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #1a4971;
+            margin-bottom: 3rem;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(45deg, #1976D2, #64B5F6);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 5px 15px rgba(25, 118, 210, 0.3);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card p {
+            color: #666;
+            margin-bottom: 0;
+            line-height: 1.6;
+        }
+        
+        /* Медиазапросы */
         @media (max-width: 992px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .model-container {
+                height: 400px;
+            }
+            
             .mall-map-controls {
-                margin-top: 2rem;
+                margin-top: 1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-banner {
+                padding: 4rem 0;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .main-content {
+                margin-top: -2rem;
+            }
+            
+            .model-container {
+                height: 350px;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .qr-content {
+                flex-direction: column;
+                text-align: center;
             }
         }
     </style>

@@ -272,63 +272,23 @@
 
         </section>
 
-        <!-- Текущие фильмы -->
-        <section class="movies-section section-padding">
-            <div class="container">
-                <h2 class="section-title">Сейчас в кино</h2>
-                <% if (movies && movies.length > 0) { %>
-                    <div class="movies-grid">
-                        <% movies.forEach(movie => { %>
-                            <div class="movie-card">
-                                <div class="movie-poster">
-                                    <img src="<%= movie.poster_url || '/images/movie-placeholder.jpg' %>" alt="<%= movie.title %>">
-                                    <% if (movie.is_featured) { %>
-                                        <div class="movie-badge badge-featured">Премьера</div>
-                                    <% } %>
-                                    <% if (movie.format && movie.format.includes('3D')) { %>
-                                        <div class="movie-badge badge-3d">3D</div>
-                                    <% } %>
-                                    <% if (movie.format && movie.format.includes('IMAX')) { %>
-                                        <div class="movie-badge badge-imax">IMAX</div>
-                                    <% } %>
-                                </div>
-                                <div class="movie-content">
-                                    <h3 class="movie-title"><%= movie.title %></h3>
-                                    <% if (movie.original_title) { %>
-                                        <p class="movie-original-title"><%= movie.original_title %></p>
-                                    <% } %>
-                                    <div class="movie-meta">
-                                        <span class="movie-meta-item">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                            <%= movie.rating || '0.0' %>
-                                        </span>
-                                        <span class="movie-meta-item">
-                                            <i class="bi bi-clock"></i>
-                                            <%= movie.duration %> мин
-                                        </span>
-                                        <span class="movie-meta-item">
-                                            <i class="bi bi-tag"></i>
-                                            <%= movie.genre %>
-                                        </span>
-                                    </div>
-                                    <div class="movie-actions">
-                                        <a href="/cinema/movies/<%= movie.id %>" class="btn btn-primary">Подробнее</a>
-                                    </div>
-                                </div>
-                            </div>
-                        <% }) %>
-                    </div>
-                <% } else { %>
-                    <div class="empty-state">
-                        <i class="bi bi-film"></i>
-                        <p>В данный момент нет активных фильмов</p>
-                    </div>
-                <% } %>
-                <div class="text-center mt-4">
-                    <a href="https://проспект-кино.рф/?date=2025/03/11&city=dyatkovo&facility=prospekt-dyatkovo" class="btn btn-outline">Все фильмы</a>
-                </div>
+<section>
+    
+<!-- Кинотеатр -->
+<section class="cinema-section section-padding">
+    <div class="container">
+        <div class="cinema-banner">
+            <div class="cinema-content text-center">
+                <h2 class="cinema-title">Кинотеатр</h2>
+                <p class="cinema-description">Смотрите новинки кино в комфортных залах</p>
+                <a href="https://проспект-кино.рф/?date=2025/03/11&city=dyatkovo&facility=prospekt-dyatkovo" class="btn btn-primary btn-lg">
+                    <i class="bi bi-film"></i>
+                    Перейти в кинотеатр
+                </a>
             </div>
-        </section>
+        </div>
+    </div>
+</section>
 
         <!-- Ближайшие события -->
         <section class="events-section section-padding bg-light">
@@ -374,25 +334,23 @@
                     <% if (shops && shops.length > 0) { %>
                         <% shops.forEach(shop => { %>
                             <div class="shop-card" data-category="<%= shop.category %>" data-floor="<%= shop.floor %>">
-                                <div class="shop-logo">
-                                    <img src="<%= shop.image_url || '/images/shop-placeholder.jpg' %>" alt="<%= shop.name %>">
-                                    <% if (shop.Promotions && shop.Promotions.length > 0) { %>
-                                        <div class="shop-badge">Акция</div>
+                                <div class="shop-image">
+                                    <% if (shop.image_url) { %>
+                                        <img src="<%= shop.image_url %>" alt="<%= shop.name %>">
+                                    <% } else { %>
+                                        <div class="shop-placeholder">
+                                            <i class="bi bi-shop"></i>
+                                        </div>
                                     <% } %>
                                 </div>
-                                <div class="shop-content">
-                                    <h3 class="shop-name"><%= shop.name %></h3>
+                                <div class="shop-info">
+                                    <div class="shop-title"><%= shop.name %></div>
                                     <div class="shop-meta">
-                                        <span class="shop-category"><i class="bi bi-tag"></i> <%= shop.category || 'Разное' %></span>
-                                        <span class="shop-floor"><i class="bi bi-layers"></i> <%= shop.floor || '1' %> этаж</span>
-                                    </div>
-                                    <div class="shop-actions">
-                                        <a href="/shops/<%= shop.id %>" class="btn btn-primary">Подробнее</a>
-                                        <button class="btn btn-outline favorite-btn" data-shop-id="<%= shop.id %>">
-                                            <i class="bi bi-heart"></i>
-                                        </button>
+                                        <span><i class="bi bi-tag"></i> <%= shop.category || 'Разное' %></span>
+                                        <span><i class="bi bi-layers"></i> <%= shop.floor || '1' %> этаж</span>
                                     </div>
                                 </div>
+                                <a href="/shops/<%= shop.id %>" class="btn-gradient">Подробнее</a>
                             </div>
                         <% }) %>
                     <% } else { %>
@@ -539,46 +497,101 @@
             </div>
         </section>
 
-        <!-- 3D модель ТЦ -->
-        <section class="model-section section-padding bg-light">
-            <div class="container">
-                <h2 class="section-title">3D модель торгового центра</h2>
-                <div class="model-container">
-                    <div id="model-viewer"></div>
-                </div>
-            </div>
-        </section>
 
         <!-- Как нас найти -->
         <section class="location-section">
             <div class="container">
-                <h2 class="section-title">Как нас найти</h2>
-                <div class="location-content">
-                    <div class="location-info">
-                        <div class="info-item">
-                            <i class="bi bi-geo-alt"></i>
-                            <div>
+                <div class="section-header">
+                    <span class="section-badge">Местоположение</span>
+                    <h2 class="section-title">Как нас найти</h2>
+                    <div class="title-decoration"><span></span></div>
+                </div>
+                
+                <div class="location-flex">
+                    <div class="location-card reveal-from-left">
+                        <div class="card-header">
+                            <div class="header-icon"><i class="bi bi-building"></i></div>
+                            <div class="header-text">Контактная информация</div>
+                        </div>
+                    
+                        <div class="info-item hover-effect">
+                            <div class="info-icon info-icon-location">
+                                <i class="bi bi-geo-alt-fill"></i>
+                                <div class="icon-pulse"></div>
+                            </div>
+                            <div class="info-content">
                                 <h3>Адрес</h3>
                                 <p>г. Дятьково, ул. Ленина, д. 184</p>
+                                <a href="https://yandex.ru/maps/?text=Дятьково, ул. Ленина, д. 184" class="action-link" target="_blank">
+                                    <span>Построить маршрут</span>
+                                    <i class="bi bi-arrow-right"></i>
+                                </a>
                             </div>
                         </div>
-                        <div class="info-item">
-                            <i class="bi bi-clock"></i>
-                            <div>
+                        
+                        <div class="info-item hover-effect">
+                            <div class="info-icon info-icon-clock">
+                                <i class="bi bi-clock-fill"></i>
+                                <div class="icon-pulse"></div>
+                            </div>
+                            <div class="info-content">
                                 <h3>Режим работы</h3>
                                 <p>Ежедневно с 10:00 до 22:00</p>
+                                <div class="work-status">
+                                    <span class="status-indicator"></span>
+                                    <span class="status-text">Сейчас открыто</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="info-item">
-                            <i class="bi bi-telephone"></i>
-                            <div>
+                        
+                        <div class="info-item hover-effect">
+                            <div class="info-icon info-icon-phone">
+                                <i class="bi bi-telephone-fill"></i>
+                                <div class="icon-pulse"></div>
+                            </div>
+                            <div class="info-content">
                                 <h3>Телефон</h3>
-                                <p><a href="tel:+74832777777">+7 (4832) 77-77-77</a></p>
+                                <p><a href="tel:+74832777777" class="phone-link">+7 (4832) 77-77-77</a></p>
+                                <a href="mailto:info@crystal-mall.ru" class="action-link">
+                                    <span>Написать письмо</span>
+                                    <i class="bi bi-envelope"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="social-links">
+                            <a href="#" class="social-link"><i class="bi bi-telegram"></i></a>
+                            <a href="#" class="social-link"><i class="bi bi-vk"></i></a>
+                            <a href="#" class="social-link"><i class="bi bi-whatsapp"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="location-map reveal-from-right">
+                        <div class="map-header">
+                            <div class="map-tabs">
+                                <button class="map-tab active" data-map="yandex">Яндекс.Карты</button>
+                                <button class="map-tab" data-map="scheme">Схема ТЦ</button>
+                            </div>
+                            <div class="map-actions">
+                                <button class="map-action" title="Увеличить"><i class="bi bi-zoom-in"></i></button>
+                                <button class="map-action" title="Уменьшить"><i class="bi bi-zoom-out"></i></button>
+                            </div>
+                        </div>
+                        <div class="map-container">
+                            <%- include('../partials/map') %>
+                        </div>
+                        <div class="map-footer">
+                            <div class="transportation">
+                                <div class="transport-item"><i class="bi bi-bus-front"></i> Автобус: 14, 25, 27</div>
+                                <div class="transport-item"><i class="bi bi-car-front"></i> Бесплатная парковка</div>
                             </div>
                         </div>
                     </div>
-                    <%- include('../partials/map') %>
                 </div>
+            </div>
+            <div class="section-decoration">
+                <div class="decoration-item"></div>
+                <div class="decoration-item"></div>
             </div>
         </section>
     </div>
@@ -706,4 +719,5 @@
         });
     </script>
 </body>
+</html> 
 </html> 
