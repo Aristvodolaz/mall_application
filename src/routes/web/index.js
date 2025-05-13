@@ -57,29 +57,26 @@ router.get('/', async (req, res) => {
         }
 
         // Получаем популярные магазины
+        console.log('Загрузка популярных магазинов...');
         const shops = await Shop.findAll({
             limit: 6,
             include: [{
                 model: Promotion,
-                where: {
-                    end_date: {
-                        [Op.gte]: new Date()
-                    }
-                },
                 required: false
             }],
             order: [['id', 'ASC']]
         });
-        console.log(`Загружено магазинов: ${shops ? shops.length : 0}`);
+
+        console.log('Загружено магазинов:', shops ? shops.length : 0);
         if (shops && shops.length > 0) {
-            console.log('Данные магазинов:', JSON.stringify(shops.map(s => ({
-                id: s.id,
-                name: s.name,
-                logo_url: s.logo_url,
-                category: s.category,
-                floor: s.floor,
-                promotions: s.Promotions ? s.Promotions.length : 0
-            })), null, 2));
+            console.log('Данные магазинов:', shops.map(shop => ({
+                id: shop.id,
+                name: shop.name,
+                category: shop.category,
+                floor: shop.floor
+            })));
+        } else {
+            console.log('Магазины не найдены');
         }
 
         res.render('pages/index', {

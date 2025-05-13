@@ -4,7 +4,18 @@ const router = express.Router();
 const { Shop, Review, User } = require('../../models');
 const { Op } = require('sequelize');
 
-console.log('Инициализация маршрутизатора магазинов...');
+console.log('[Shops] Инициализация маршрутизатора магазинов...');
+
+// Отладочный middleware
+router.use((req, res, next) => {
+    console.log('[Shops] Входящий запрос:', {
+        method: req.method,
+        path: req.path,
+        params: req.params,
+        query: req.query
+    });
+    next();
+});
 
 // Тестовый маршрут
 router.get('/test', (req, res) => {
@@ -22,12 +33,12 @@ router.get('/test', (req, res) => {
 
 // Список магазинов
 router.get('/', async (req, res) => {
-    console.log('Получен запрос на страницу магазинов');
+    console.log('[Shops] Получен запрос на список магазинов');
     try {
         const { category, floor, search } = req.query;
         const where = {};
   
-        console.log('Параметры запроса:', { category, floor, search });
+        console.log('[Shops] Параметры запроса:', { category, floor, search });
 
         if (category) {
             where.category = category;
@@ -44,14 +55,13 @@ router.get('/', async (req, res) => {
             ];
         }
 
-        console.log('Условия поиска:', JSON.stringify(where));
+        console.log('[Shops] Условия поиска:', JSON.stringify(where));
 
-        console.log('Начинаем поиск магазинов...');
         const shops = await Shop.findAll({
             where,
             order: [['name', 'ASC']]
         });
-        console.log(`Найдено магазинов: ${shops.length}`);
+        console.log(`[Shops] Найдено магазинов: ${shops.length}`);
 
         res.render('pages/shops/index', {
             title: 'Магазины - ТРЦ \'Кристалл\'',
@@ -64,9 +74,8 @@ router.get('/', async (req, res) => {
                 search: search || ''
             }
         });
-        console.log('Рендеринг успешно завершен');
     } catch (error) {
-        console.error('Ошибка при получении списка магазинов:', error);
+        console.error('[Shops] Ошибка при получении списка магазинов:', error);
         res.render('pages/error', {
             title: 'Ошибка - ТРЦ \'Кристалл\'',
             message: 'Произошла ошибка при загрузке списка магазинов',
@@ -78,8 +87,21 @@ router.get('/', async (req, res) => {
 
 // Страница деталей магазина
 router.get('/:id', async (req, res) => {
+    console.log('[Shops] Получен запрос на просмотр магазина:', req.params.id);
     try {
-        const shop = await Shop.findByPk(req.params.id, {
+        const shopId = parseInt(req.params.id);
+        if (isNaN(shopId)) {
+            console.log('[Shops] Некорректный ID магазина:', req.params.id);
+            res.status(404);
+            return res.render('pages/error', {
+                title: 'Магазин не найден - ТРЦ \'Кристалл\'',
+                message: 'Некорректный ID магазина',
+                user: req.session.user || null
+            });
+        }
+
+        console.log('[Shops] Поиск магазина в БД:', shopId);
+        const shop = await Shop.findByPk(shopId, {
             include: [{
                 model: Review,
                 as: 'reviews',
@@ -90,8 +112,12 @@ router.get('/:id', async (req, res) => {
                 }]
             }]
         });
+        
+        console.log('[Shops] Результат поиска:', shop ? 'Магазин найден' : 'Магазин не найден');
 
         if (!shop) {
+            console.log('[Shops] Магазин не найден в БД:', shopId);
+            res.status(404);
             return res.render('pages/error', {
                 title: 'Магазин не найден - ТРЦ \'Кристалл\'',
                 message: 'Запрашиваемый магазин не найден',
@@ -105,6 +131,13 @@ router.get('/:id', async (req, res) => {
             ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1)
             : null;
 
+        console.log('[Shops] Рендеринг страницы магазина:', {
+            id: shop.id,
+            name: shop.name,
+            reviewsCount: reviews.length,
+            averageRating
+        });
+
         res.render('pages/shops/show', {
             title: `${shop.name} - ТРЦ 'Кристалл'`,
             shop: {
@@ -115,11 +148,11 @@ router.get('/:id', async (req, res) => {
             user: req.session.user || null
         });
     } catch (error) {
-        console.error('Ошибка при получении деталей магазина:', error);
-        res.render('pages/error', {
+        console.error('[Shops] Ошибка при получении деталей магазина:', error);
+        res.status(500).render('pages/error', {
             title: 'Ошибка - ТРЦ \'Кристалл\'',
             message: 'Произошла ошибка при загрузке деталей магазина',
-            error,
+            error: process.env.NODE_ENV === 'development' ? error : null,
             user: req.session.user || null
         });
     }

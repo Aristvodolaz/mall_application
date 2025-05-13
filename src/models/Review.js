@@ -1,5 +1,20 @@
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
-    const Review = sequelize.define('Review', {
+    class Review extends Model {
+        static associate(models) {
+            Review.belongsTo(models.User, {
+                foreignKey: 'user_id',
+                as: 'user'
+            });
+            Review.belongsTo(models.Shop, {
+                foreignKey: 'shop_id',
+                as: 'shop'
+            });
+        }
+    }
+
+    Review.init({
         user_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -28,6 +43,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT
         }
     }, {
+        sequelize,
+        modelName: 'Review',
         tableName: 'reviews',
         underscored: true
     });

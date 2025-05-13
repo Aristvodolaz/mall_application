@@ -13,37 +13,25 @@ const Screening = require('./Screening')(sequelize, Sequelize.DataTypes);
 const CinemaTicket = require('./CinemaTicket')(sequelize, Sequelize.DataTypes);
 const MovieReview = require('./MovieReview')(sequelize, Sequelize.DataTypes);
 
-// Определение связей
-Shop.hasMany(Review, { foreignKey: 'shop_id' });
-Review.belongsTo(Shop, { foreignKey: 'shop_id' });
+const models = {
+    User,
+    Shop,
+    Event,
+    Promotion,
+    Review,
+    Ticket,
+    Movie,
+    Screening,
+    CinemaTicket,
+    MovieReview
+};
 
-User.hasMany(Review, { foreignKey: 'user_id' });
-Review.belongsTo(User, { foreignKey: 'user_id' });
-
-Shop.hasMany(Promotion, { foreignKey: 'shop_id' });
-Promotion.belongsTo(Shop, { foreignKey: 'shop_id' });
-
-Event.hasMany(Ticket, { foreignKey: 'event_id' });
-Ticket.belongsTo(Event, { foreignKey: 'event_id' });
-
-User.hasMany(Ticket, { foreignKey: 'user_id' });
-Ticket.belongsTo(User, { foreignKey: 'user_id' });
-
-// Связи для кинотеатра
-Movie.hasMany(Screening, { foreignKey: 'movie_id' });
-Screening.belongsTo(Movie, { foreignKey: 'movie_id' });
-
-Screening.hasMany(CinemaTicket, { foreignKey: 'screening_id' });
-CinemaTicket.belongsTo(Screening, { foreignKey: 'screening_id' });
-
-User.hasMany(CinemaTicket, { foreignKey: 'user_id' });
-CinemaTicket.belongsTo(User, { foreignKey: 'user_id' });
-
-Movie.hasMany(MovieReview, { foreignKey: 'movie_id' });
-MovieReview.belongsTo(Movie, { foreignKey: 'movie_id' });
-
-User.hasMany(MovieReview, { foreignKey: 'user_id' });
-MovieReview.belongsTo(User, { foreignKey: 'user_id' });
+// Вызываем associate для каждой модели
+Object.values(models).forEach(model => {
+    if (model.associate) {
+        model.associate(models);
+    }
+});
 
 // Синхронизация моделей с базой данных
 sequelize.sync()
@@ -58,14 +46,5 @@ sequelize.sync()
 module.exports = {
     sequelize,
     Sequelize,
-    User,
-    Shop,
-    Event,
-    Promotion,
-    Review,
-    Ticket,
-    Movie,
-    Screening,
-    CinemaTicket,
-    MovieReview
+    ...models
 }; 

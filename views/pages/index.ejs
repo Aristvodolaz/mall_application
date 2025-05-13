@@ -350,7 +350,11 @@
                                         <span><i class="bi bi-layers"></i> <%= shop.floor || '1' %> этаж</span>
                                     </div>
                                 </div>
-                                <a href="/shops/<%= shop.id %>" class="btn-gradient">Подробнее</a>
+                                <% if (shop && shop.id) { %>
+                                    <a href="/shops/<%= shop.id %>" class="btn-gradient">Подробнее</a>
+                                <% } else { %>
+                                    <span class="btn-gradient disabled">Скоро открытие</span>
+                                <% } %>
                             </div>
                         <% }) %>
                     <% } else { %>
@@ -388,61 +392,7 @@
             </div>
         </section>
 
-        <!-- Акции и скидки -->
-        <section class="promotions-section section-padding">
-            <div class="container">
-                <h2 class="section-title">Акции и скидки</h2>
-                <% if (promotions && promotions.length > 0) { %>
-                    <div class="promotions-grid">
-                        <% promotions.forEach(promotion => { %>
-                            <div class="promotion-card">
-                                <div class="promotion-image">
-                                    <img src="<%= promotion.image_url || '/images/promotion-placeholder.jpg' %>" alt="<%= promotion.title %>">
-                                    <div class="promotion-badge">
-                                        <% if (promotion.discount_type === 'percentage') { %>
-                                            -<%= promotion.discount_value %>%
-                                        <% } else if (promotion.discount_type === 'fixed') { %>
-                                            -<%= promotion.discount_value %> ₽
-                                        <% } else { %>
-                                            Акция
-                                        <% } %>
-                                    </div>
-                                </div>
-                                <div class="promotion-content">
-                                    <h3 class="promotion-title"><%= promotion.title %></h3>
-                                    <p class="promotion-description"><%= promotion.description %></p>
-                                    <div class="promotion-meta">
-                                        <% if (promotion.start_date && promotion.end_date) { %>
-                                            <span class="promotion-dates">
-                                                <i class="bi bi-calendar-event"></i>
-                                                <%= new Date(promotion.start_date).toLocaleDateString('ru') %> - <%= new Date(promotion.end_date).toLocaleDateString('ru') %>
-                                            </span>
-                                        <% } %>
-                                        <% if (promotion.Shop) { %>
-                                            <span class="promotion-shop">
-                                                <i class="bi bi-shop"></i>
-                                                <%= promotion.Shop.name %>
-                                            </span>
-                                        <% } %>
-                                    </div>
-                                    <div class="promotion-actions">
-                                        <a href="/promotions/<%= promotion.id %>" class="btn btn-primary">Подробнее</a>
-                                    </div>
-                                </div>
-                            </div>
-                        <% }) %>
-                    </div>
-                <% } else { %>
-                    <div class="empty-state">
-                        <i class="bi bi-tag"></i>
-                        <p>В данный момент нет активных акций</p>
-                    </div>
-                <% } %>
-                <div class="text-center mt-4">
-                    <a href="/promotions" class="btn btn-outline">Все акции</a>
-                </div>
-            </div>
-        </section>
+
 
         <!-- Программа лояльности -->
         <section class="loyalty-section">

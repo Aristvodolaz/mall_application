@@ -16,6 +16,8 @@ const passport = require('passport');
 const morgan = require('morgan');
 const compression = require('compression');
 
+console.log('[App] Начало инициализации приложения');
+
 moment.locale('ru');
 
 // Инициализация приложения
@@ -28,6 +30,8 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '../views'));
 app.use(expressLayouts);
 app.set('layout', 'layouts/main');
+
+console.log('[App] Базовая конфигурация завершена');
 
 // Настройка безопасности
 app.use(helmet({
@@ -78,6 +82,8 @@ require('./config/passport')(passport);
 // Flash-сообщения
 app.use(flash());
 
+console.log('[App] Аутентификация настроена');
+
 // Глобальные переменные
 app.use((req, res, next) => {
     res.locals.user = req.session.user;
@@ -90,32 +96,38 @@ app.use((req, res, next) => {
     next();
 });
 
-// Регистрация маршрутов
+// Маршруты
+console.log('[App] Начало регистрации маршрутов');
+
+const shopsRoutes = require('./routes/web/shops');
+console.log('[App] Загружен модуль маршрутов магазинов:', typeof shopsRoutes);
+app.use('/shops', shopsRoutes);
+console.log('[App] Маршруты магазинов подключены к /shops');
+
 const webRoutes = {
     index: { path: './routes/web/index', prefix: '/' },
     cinema: { path: './routes/web/cinema', prefix: '/cinema' },
     auth: { path: './routes/web/auth', prefix: '/auth' },
     profile: { path: './routes/web/profile', prefix: '/profile' },
-    shops: { path: './routes/web/shops', prefix: '/shops' },
     promotions: { path: './routes/web/promotions', prefix: '/promotions' },
     events: { path: './routes/web/events', prefix: '/events' },
     admin: { path: './routes/web/admin', prefix: '/admin' },
     reviews: { path: './routes/web/reviews', prefix: '/reviews' }
 };
 
-// Подключаем веб-маршруты
+// Подключаем остальные веб-маршруты
 Object.entries(webRoutes).forEach(([name, { path, prefix }]) => {
     try {
-        console.log(`Loading route ${name} from ${path}...`);
+        console.log(`[App] Загрузка маршрута ${name} из ${path}...`);
         const route = require(path);
         if (route && typeof route === 'function') {
             app.use(prefix, route);
-            console.log(`Web route ${name} loaded successfully at ${prefix}`);
+            console.log(`[App] Маршрут ${name} успешно загружен по пути ${prefix}`);
         } else {
-            console.error(`Web route ${name} is not a function:`, typeof route);
+            console.error(`[App] Маршрут ${name} не является функцией:`, typeof route);
         }
     } catch (error) {
-        console.error(`Error loading web route ${name}:`, error);
+        console.error(`[App] Ошибка загрузки маршрута ${name}:`, error);
     }
 });
 
@@ -148,8 +160,16 @@ try {
 // Обработка 404 ошибок
 app.use(notFoundHandler);
 
+// Настраиваем логирование ошибок
+app.use((err, req, res, next) => {
+    console.error('Ошибка приложения:', err);
+    next(err);
+});
+
 // Обработка ошибок
 app.use(errorHandler);
+
+console.log('[App] Все маршруты зарегистрированы');
 
 // Запуск сервера
 const PORT = process.env.PORT || 3003;
@@ -157,8 +177,9 @@ const PORT = process.env.PORT || 3003;
 // Подключение к базе данных и запуск сервера
 sequelize.authenticate()
     .then(() => {
+        console.log('[App] Успешное подключение к базе данных');
         server.listen(PORT, () => {
-            console.log(`Сервер запущен на порту ${PORT}`);
+            console.log(`[App] Сервер запущен на порту ${PORT}`);
         }).on('error', (err) => {
             if (err.code === 'EADDRINUSE') {
                 console.error(`Порт ${PORT} уже используется. Попробуйте другой порт.`);
@@ -170,7 +191,7 @@ sequelize.authenticate()
         });
     })
     .catch(err => {
-        console.error('Ошибка подключения к базе данных:', err);
+        console.error('[App] Ошибка подключения к базе данных:', err);
         process.exit(1);
     });
 

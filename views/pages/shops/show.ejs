@@ -2,418 +2,197 @@
 
 <div class="shop-page">
     <!-- Хлебные крошки -->
-    <nav aria-label="breadcrumb" class="bg-light py-2">
+    <nav aria-label="breadcrumb" class="bg-light py-3 border-bottom">
         <div class="container">
             <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="/">Главная</a></li>
-                <li class="breadcrumb-item"><a href="/shops">Магазины</a></li>
-                <li class="breadcrumb-item active"><%= shop.name %></li>
+                <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door"></i> Главная</a></li>
+                <li class="breadcrumb-item"><a href="/shops" class="text-decoration-none">Магазины</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><%= shop.name %></li>
             </ol>
         </div>
     </nav>
 
-    <!-- Информация о магазине -->
-    <div class="shop-info-section py-5">
+    <!-- Основная информация о магазине -->
+    <section class="shop-hero py-5">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-6 mb-4 mb-lg-0">
-                    <div class="shop-gallery">
-                        <img src="<%= shop.main_image || '/images/shop-placeholder.jpg' %>" class="img-fluid rounded shadow" alt="<%= shop.name %>">
-                    </div>
-                </div>
+            <div class="row g-4">
+                <!-- Изображение магазина -->
                 <div class="col-lg-6">
-                    <div class="shop-details">
-                        <h1 class="shop-title mb-3"><%= shop.name %></h1>
-                        <div class="shop-meta mb-4">
-                            <div class="badge bg-primary me-2"><%= shop.category %></div>
-                            <span class="badge bg-info me-2">Этаж <%= shop.floor %></span>
-                            <% if (shop.averageRating > 0) { %>
-                                <div class="shop-rating">
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <span><%= shop.averageRating %></span>
-                                    <small class="text-muted">(<%= shop.reviewsCount %> <%= shop.reviewsCount === 1 ? 'отзыв' : shop.reviewsCount < 5 ? 'отзыва' : 'отзывов' %>)</small>
-                                </div>
-                            <% } %>
+                    <div class="shop-image-wrapper position-relative rounded-4 overflow-hidden shadow-lg">
+                        <img 
+                            src="<%= shop.image_url || '/images/shop-placeholder.jpg' %>" 
+                            class="img-fluid w-100 h-100 object-fit-cover"
+                            alt="<%= shop.name %>"
+                            style="max-height: 400px;"
+                        >
+                        <div class="position-absolute bottom-0 start-0 w-100 p-3" 
+                             style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);">
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-primary me-2"><%= shop.category %></span>
+                                <span class="badge bg-info"><i class="bi bi-layers-fill"></i> Этаж <%= shop.floor %></span>
+                            </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Информация о магазине -->
+                <div class="col-lg-6">
+                    <div class="shop-info-card bg-white rounded-4 shadow-sm p-4">
+                        <h1 class="display-5 fw-bold mb-4"><%= shop.name %></h1>
+                        
                         <div class="shop-description mb-4">
-                            <h4 class="mb-3">О магазине</h4>
-                            <p><%= shop.full_description || shop.description || 'Нет описания' %></p>
+                            <h4 class="text-primary mb-3">О магазине</h4>
+                            <p class="lead text-secondary"><%= shop.full_description || shop.description || 'Описание магазина пока не добавлено' %></p>
                         </div>
-                        <div class="shop-contacts mb-4">
-                            <h4 class="mb-3">Контактная информация</h4>
-                            <ul class="list-unstyled">
-                                <% if (shop.phone) { %>
-                                    <li class="mb-2">
-                                        <i class="bi bi-telephone me-2"></i>
-                                        <a href="tel:<%= shop.phone %>" class="text-decoration-none"><%= shop.phone %></a>
-                                    </li>
-                                <% } %>
-                                <% if (shop.email) { %>
-                                    <li class="mb-2">
-                                        <i class="bi bi-envelope me-2"></i>
-                                        <a href="mailto:<%= shop.email %>" class="text-decoration-none"><%= shop.email %></a>
-                                    </li>
-                                <% } %>
-                                <% if (shop.website) { %>
-                                    <li class="mb-2">
-                                        <i class="bi bi-globe me-2"></i>
-                                        <a href="<%= shop.website %>" target="_blank" class="text-decoration-none"><%= shop.website %></a>
-                                    </li>
-                                <% } %>
-                            </ul>
-                        </div>
-                        <div class="shop-working-hours mb-4">
-                            <h4 class="mb-3">Режим работы</h4>
-                            <% if (shop.working_hours && typeof shop.working_hours === 'object') { %>
-                                <ul class="list-unstyled">
-                                    <% Object.entries(shop.working_hours).forEach(([day, hours]) => { %>
-                                        <li class="mb-1">
-                                            <strong><%= day %>:</strong>
-                                            <%= hours %>
+
+                        <div class="shop-details">
+                            <div class="contact-info bg-light rounded-3 p-4 mb-4">
+                                <h4 class="text-primary mb-3">Контактная информация</h4>
+                                <ul class="list-unstyled mb-0">
+                                    <% if (shop.phone) { %>
+                                        <li class="mb-3">
+                                            <a href="tel:<%= shop.phone %>" class="text-decoration-none d-flex align-items-center">
+                                                <div class="contact-icon me-3">
+                                                    <i class="bi bi-telephone-fill text-primary fs-4"></i>
+                                                </div>
+                                                <div class="contact-text">
+                                                    <div class="text-muted small">Телефон</div>
+                                                    <div class="fw-bold"><%= shop.phone %></div>
+                                                </div>
+                                            </a>
                                         </li>
-                                    <% }); %>
+                                    <% } %>
+
+                                    <% if (shop.email) { %>
+                                        <li class="mb-3">
+                                            <a href="mailto:<%= shop.email %>" class="text-decoration-none d-flex align-items-center">
+                                                <div class="contact-icon me-3">
+                                                    <i class="bi bi-envelope-fill text-primary fs-4"></i>
+                                                </div>
+                                                <div class="contact-text">
+                                                    <div class="text-muted small">Email</div>
+                                                    <div class="fw-bold"><%= shop.email %></div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    <% } %>
+
+                                    <% if (shop.website) { %>
+                                        <li class="mb-3">
+                                            <a href="<%= shop.website %>" target="_blank" class="text-decoration-none d-flex align-items-center">
+                                                <div class="contact-icon me-3">
+                                                    <i class="bi bi-globe text-primary fs-4"></i>
+                                                </div>
+                                                <div class="contact-text">
+                                                    <div class="text-muted small">Веб-сайт</div>
+                                                    <div class="fw-bold"><%= shop.website %></div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    <% } %>
                                 </ul>
-                            <% } else if (shop.working_hours) { %>
-                                <p><i class="bi bi-clock me-2"></i><%= shop.working_hours %></p>
-                            <% } else { %>
-                                <p><i class="bi bi-clock me-2"></i>10:00 - 22:00, без выходных</p>
-                            <% } %>
-                        </div>
-                        <% if (shop.social_media && Object.keys(shop.social_media).length > 0) { %>
-                            <div class="shop-social mb-4">
-                                <h4 class="mb-3">Мы в соцсетях</h4>
-                                <div class="social-links">
-                                    <% Object.entries(shop.social_media).forEach(([network, url]) => { %>
-                                        <a href="<%= url %>" class="btn btn-outline-primary me-2" target="_blank">
-                                            <i class="bi bi-<%= network %>"></i>
-                                        </a>
-                                    <% }); %>
+                            </div>
+
+                            <div class="working-hours bg-light rounded-3 p-4">
+                                <h4 class="text-primary mb-3">Режим работы</h4>
+                                <div class="d-flex align-items-center">
+                                    <div class="hours-icon me-3">
+                                        <i class="bi bi-clock-fill text-primary fs-4"></i>
+                                    </div>
+                                    <div class="hours-text">
+                                        <% if (shop.working_hours && typeof shop.working_hours === 'object') { %>
+                                            <ul class="list-unstyled mb-0">
+                                                <% Object.entries(shop.working_hours).forEach(([day, hours]) => { %>
+                                                    <li class="mb-2">
+                                                        <span class="text-muted"><%= day %>:</span>
+                                                        <span class="fw-bold ms-2"><%= hours %></span>
+                                                    </li>
+                                                <% }); %>
+                                            </ul>
+                                        <% } else { %>
+                                            <p class="mb-0 fw-bold">10:00 - 22:00, без выходных</p>
+                                        <% } %>
+                                    </div>
                                 </div>
                             </div>
-                        <% } %>
-                        <% if (shop.location_description) { %>
-                            <div class="shop-location mb-4">
-                                <h4 class="mb-3">Как найти</h4>
-                                <p><i class="bi bi-geo-alt me-2"></i><%= shop.location_description %></p>
-                            </div>
-                        <% } %>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Акции и предложения -->
-    <% if (shop.promotions && shop.promotions.length > 0) { %>
-        <div class="shop-promotions-section py-5 bg-light">
+    <% if (shop.location_description) { %>
+        <!-- Как найти -->
+        <section class="shop-location py-5 bg-light">
             <div class="container">
-                <h2 class="section-title mb-4">Акции и предложения</h2>
-                <div class="row">
-                    <% shop.promotions.forEach(promotion => { %>
-                        <div class="col-md-6 col-lg-4 mb-4">
-                            <div class="promotion-card h-100">
-                                <div class="promotion-image">
-                                    <img src="<%= promotion.image_url || '/images/promotion-placeholder.jpg' %>" alt="<%= promotion.title %>">
-                                    <% if (promotion.discount_value) { %>
-                                        <div class="promotion-badge">
-                                            <% if (promotion.discount_type === 'percentage') { %>
-                                                -<%= promotion.discount_value %>%
-                                            <% } else { %>
-                                                -<%= promotion.discount_value %> ₽
-                                            <% } %>
-                                        </div>
-                                    <% } %>
-                                </div>
-                                <div class="promotion-content p-3">
-                                    <h3 class="promotion-title h5 mb-2"><%= promotion.title %></h3>
-                                    <p class="promotion-description mb-3"><%= promotion.description %></p>
-                                    <div class="promotion-dates text-muted">
-                                        <small>
-                                            <i class="bi bi-calendar-event me-1"></i>
-                                            <%= new Date(promotion.start_date).toLocaleDateString() %> - 
-                                            <%= new Date(promotion.end_date).toLocaleDateString() %>
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <% }); %>
+                <div class="location-card bg-white rounded-4 shadow-sm p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <i class="bi bi-geo-alt-fill text-primary fs-2 me-3"></i>
+                        <h3 class="mb-0">Как найти</h3>
+                    </div>
+                    <p class="lead mb-0"><%= shop.location_description %></p>
                 </div>
             </div>
-        </div>
+        </section>
     <% } %>
-
-    <!-- Отзывы -->
-    <div class="shop-reviews-section py-5">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="section-title mb-0">Отзывы</h2>
-                <% if (user) { %>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reviewModal">
-                        <i class="bi bi-plus-lg me-2"></i>Написать отзыв
-                    </button>
-                <% } else { %>
-                    <a href="/login" class="btn btn-outline-primary">
-                        Войдите, чтобы оставить отзыв
-                    </a>
-                <% } %>
-            </div>
-
-            <% if (shop.reviews && shop.reviews.length > 0) { %>
-                <div class="reviews-list">
-                    <% shop.reviews.forEach(review => { %>
-                        <div class="review-card">
-                            <div class="review-header">
-                                <div class="review-author">
-                                    <img src="<%= review.user.avatar_url || '/images/default-avatar.jpg' %>" 
-                                         alt="<%= review.user.username %>" 
-                                         class="review-avatar">
-                                    <div>
-                                        <h5 class="mb-0"><%= review.user.username %></h5>
-                                        <div class="review-rating">
-                                            <% for(let i = 0; i < review.rating; i++) { %>
-                                                <i class="bi bi-star-fill text-warning"></i>
-                                            <% } %>
-                                            <% for(let i = review.rating; i < 5; i++) { %>
-                                                <i class="bi bi-star text-warning"></i>
-                                            <% } %>
-                                        </div>
-                                    </div>
-                                </div>
-                                <small class="text-muted">
-                                    <%= new Date(review.createdAt).toLocaleDateString() %>
-                                </small>
-                            </div>
-                            <div class="review-content">
-                                <p><%= review.comment %></p>
-                                <% if (review.images && review.images.length > 0) { %>
-                                    <div class="review-images">
-                                        <% review.images.forEach(image => { %>
-                                            <img src="<%= image %>" alt="Фото к отзыву" class="img-thumbnail">
-                                        <% }); %>
-                                    </div>
-                                <% } %>
-                            </div>
-                            <% if (review.reply) { %>
-                                <div class="review-reply">
-                                    <small class="text-muted">Ответ магазина</small>
-                                    <p class="mb-0"><%= review.reply %></p>
-                                </div>
-                            <% } %>
-                        </div>
-                    <% }); %>
-                </div>
-            <% } else { %>
-                <div class="text-center py-5">
-                    <i class="bi bi-chat-square-text display-4 text-muted mb-3"></i>
-                    <h3>Пока нет отзывов</h3>
-                    <p class="text-muted">Будьте первым, кто оставит отзыв о магазине <%= shop.name %></p>
-                </div>
-            <% } %>
-        </div>
-    </div>
 </div>
 
-<!-- Модальное окно для создания отзыва -->
-<% if (user) { %>
-    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="reviewModalLabel">Написать отзыв</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="/reviews" method="POST" enctype="multipart/form-data">
-                    <div class="modal-body">
-                        <input type="hidden" name="shop_id" value="<%= shop.id %>">
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Оценка</label>
-                            <div class="rating-input">
-                                <% for(let i = 5; i >= 1; i--) { %>
-                                    <input type="radio" name="rating" value="<%= i %>" id="star<%= i %>" required>
-                                    <label for="star<%= i %>"><i class="bi bi-star-fill"></i></label>
-                                <% } %>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="comment" class="form-label">Комментарий</label>
-                            <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="images" class="form-label">Фотографии</label>
-                            <input type="file" class="form-control" id="images" name="images" multiple accept="image/*">
-                            <small class="text-muted">Можно загрузить до 5 фотографий</small>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                        <button type="submit" class="btn btn-primary">Отправить</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-<% } %>
-
+<!-- Стили -->
 <style>
-.shop-gallery img {
-    width: 100%;
-    height: 400px;
-    object-fit: cover;
-}
+    .shop-page {
+        background-color: #f8f9fa;
+    }
 
-.shop-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--primary-color);
-}
+    .shop-hero {
+        background-color: white;
+    }
 
-.shop-meta {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-}
+    .shop-image-wrapper {
+        position: relative;
+        transition: transform 0.3s ease;
+    }
 
-.shop-rating {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background-color: #fff3cd;
-    padding: 0.35rem 0.75rem;
-    border-radius: 1rem;
-}
+    .shop-image-wrapper:hover {
+        transform: translateY(-5px);
+    }
 
-.section-title {
-    font-size: 1.75rem;
-    font-weight: 600;
-    color: var(--primary-color);
-    margin-bottom: 1.5rem;
-}
+    .contact-icon, .hours-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+    }
 
-.review-card {
-    background: white;
-    border-radius: 1rem;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
+    .shop-info-card {
+        height: 100%;
+    }
 
-.review-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1rem;
-}
+    .contact-info a:hover {
+        background-color: rgba(var(--bs-primary-rgb), 0.05);
+        border-radius: 8px;
+    }
 
-.review-author {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
+    .contact-info a {
+        padding: 10px;
+        transition: background-color 0.3s ease;
+    }
 
-.review-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    object-fit: cover;
-}
+    .breadcrumb-item a {
+        color: var(--bs-primary);
+    }
 
-.review-content {
-    margin-bottom: 1rem;
-}
+    .breadcrumb-item a:hover {
+        color: var(--bs-primary-darker);
+    }
 
-.review-images {
-    display: flex;
-    gap: 0.5rem;
-    overflow-x: auto;
-    padding-bottom: 0.5rem;
-}
-
-.review-images img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 0.5rem;
-}
-
-.review-reply {
-    background-color: #f8f9fa;
-    border-left: 3px solid var(--primary-color);
-    padding: 1rem;
-    margin-top: 1rem;
-    border-radius: 0 0.5rem 0.5rem 0;
-}
-
-.promotion-card {
-    background-color: white;
-    border-radius: 1rem;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-}
-
-.promotion-card:hover {
-    transform: translateY(-5px);
-}
-
-.promotion-image {
-    position: relative;
-    height: 200px;
-    overflow: hidden;
-}
-
-.promotion-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.promotion-badge {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: rgba(220, 53, 69, 0.9);
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 2rem;
-    font-weight: 600;
-}
-
-.rating-input {
-    display: flex;
-    flex-direction: row-reverse;
-    gap: 0.5rem;
-}
-
-.rating-input input {
-    display: none;
-}
-
-.rating-input label {
-    cursor: pointer;
-    font-size: 1.5rem;
-    color: #ddd;
-}
-
-.rating-input label:hover,
-.rating-input label:hover ~ label,
-.rating-input input:checked ~ label {
-    color: #ffc107;
-}
-
-.rating-input label:hover i,
-.rating-input label:hover ~ label i,
-.rating-input input:checked ~ label i {
-    transform: scale(1.2);
-}
-
-.rating-input i {
-    transition: transform 0.2s ease;
-}
+    .badge {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
 </style>
 
 <%- include('../../partials/footer') %> 
