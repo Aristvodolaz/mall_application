@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { Shop, Review, User } = require('../../models');
+const { Shop, Review, User, Promotion } = require('../../models');
 const { Op } = require('sequelize');
 
 console.log('[Shops] Инициализация маршрутизатора магазинов...');
@@ -110,6 +110,16 @@ router.get('/:id', async (req, res) => {
                     as: 'user',
                     attributes: ['id', 'username', 'avatar_url']
                 }]
+            }, {
+                model: Promotion,
+                as: 'promotions',
+                where: {
+                    end_date: {
+                        [Op.gte]: new Date()
+                    },
+                    is_active: true
+                },
+                required: false
             }]
         });
         

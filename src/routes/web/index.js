@@ -41,6 +41,7 @@ router.get('/', async (req, res) => {
             },
             include: [{
                 model: Shop,
+                as: 'shop',
                 attributes: ['id', 'name']
             }],
             limit: 3,
@@ -52,7 +53,7 @@ router.get('/', async (req, res) => {
                 id: p.id,
                 title: p.title,
                 end_date: p.end_date,
-                shop: p.Shop ? p.Shop.name : null
+                shop: p.shop ? p.shop.name : null
             })), null, 2));
         }
 
@@ -62,6 +63,7 @@ router.get('/', async (req, res) => {
             limit: 6,
             include: [{
                 model: Promotion,
+                as: 'promotions',
                 required: false
             }],
             order: [['id', 'ASC']]

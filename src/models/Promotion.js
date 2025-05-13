@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         description: DataTypes.TEXT,
         shop_id: {
             type: DataTypes.INTEGER,
+            allowNull: false,
             references: {
                 model: 'shops',
                 key: 'id'
@@ -26,6 +27,10 @@ module.exports = (sequelize, DataTypes) => {
         start_date: DataTypes.DATE,
         end_date: DataTypes.DATE,
         discount_value: DataTypes.INTEGER,
+        discount_type: {
+            type: DataTypes.ENUM('percentage', 'fixed'),
+            defaultValue: 'percentage'
+        },
         image_url: DataTypes.STRING,
         is_active: {
             type: DataTypes.BOOLEAN,
